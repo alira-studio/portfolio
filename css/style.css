@@ -813,12 +813,6 @@ button {
   color: var(--muted);
 }
 
-.visual-note strong {
-  font-family: var(--font-mono);
-  font-weight: 400;
-  color: var(--ink);
-}
-
 .work-shot {
   grid-column: 1 / -1;
   display: flex;
