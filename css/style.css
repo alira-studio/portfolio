@@ -808,35 +808,6 @@ button {
   gap: 12px;
 }
 
-.media-tile {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: 14px;
-  background: repeating-linear-gradient(45deg, #ececea 0 8px, #f6f6f4 8px 16px);
-  display: flex;
-  align-items: flex-end;
-  padding: 12px;
-}
-
-.media-tile.tall {
-  aspect-ratio: 9 / 16;
-}
-
-.media-tile span {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #4a4945;
-  background: #ffffff;
-  padding: 5px 8px;
-  border-radius: 6px;
-}
-
-.tile-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
 .visual-note {
   font-size: 13px;
   color: var(--muted);
