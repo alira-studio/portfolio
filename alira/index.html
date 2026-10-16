@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alira Dancing Studio — Redesign concept</title>
+<meta name="description" content="Alira Dancing Studio: pole and dance training in Ho Chi Minh City. Memberships, class schedule and room renting.">
+<link rel="icon" href="../assets/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand" aria-label="Alira Dancing Studio">alira<span>.</span></a>
+    <nav class="nav-links" id="nav-links" aria-label="Main">
+      <a href="#pricing" data-i18n="nav_pricing">Pricing</a>
+      <a href="#membership" data-i18n="nav_membership">Membership</a>
+      <a href="#schedule" data-i18n="nav_schedule">Class schedule</a>
+      <a href="#rent" data-i18n="nav_rent">Room renting</a>
+      <a href="#about" data-i18n="nav_about">About us</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="lang" id="lang" type="button" aria-label="Switch language">EN</button>
+      <a href="#" class="btn-text" data-i18n="login">Log in</a>
+      <a href="#join" class="btn btn-ink" data-i18n="cta_join">Become a member</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="hero-copy">
+      <p class="eyebrow" data-i18n="hero_eyebrow">Dance studio · Ho Chi Minh City</p>
+      <h1><span data-i18n="hero_h1a">Dance training,</span> <em data-i18n="hero_h1b">crafted for you.</em></h1>
+      <p class="lede" data-i18n="hero_lede">Pole and dance classes in bright, mirrored studios across three branches. Start with a trial class, book from your phone, move at your own pace.</p>
+      <div class="hero-cta">
+        <a href="#join" class="btn btn-pink" data-i18n="cta_join">Become a member</a>
+        <a href="#schedule" class="btn btn-line" data-i18n="cta_schedule">View class schedule</a>
+      </div>
+      <dl class="hero-stats">
+        <div><dt>3</dt><dd data-i18n="stat_studios">studios</dd></div>
+        <div><dt>300+</dt><dd data-i18n="stat_students">students in a year</dd></div>
+        <div><dt>2</dt><dd data-i18n="stat_app">apps: student + teacher</dd></div>
+      </dl>
+    </div>
+    <div class="hero-media">
+      <img class="photo-main" src="../assets/images/alira-branch1-b.jpg" alt="Branch 1 studio: white room with mirrors, silver poles and a blue LED strip along the floor" width="825" height="1100">
+      <img class="photo-float" src="../assets/images/alira-app-booking.webp" alt="Alira app: book classes and see remaining sessions" width="230" height="498">
+      <span class="tag"><i></i><span data-i18n="tag_open">Trial classes open</span></span>
+    </div>
+  </section>
+
+  <!-- Quick links -->
+  <section class="container quick" aria-label="Quick links">
+    <a href="#pricing" class="quick-card"><span data-i18n="q1">Pricing</span><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    <a href="#schedule" class="quick-card"><span data-i18n="q2">Class schedule</span><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    <a href="#rent" class="quick-card"><span data-i18n="q3">Rent a room</span><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    <a href="#studios" class="quick-card"><span data-i18n="q4">Our 3 studios</span><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  </section>
+
+  <!-- Pricing / membership -->
+  <section class="section container" id="pricing">
+    <div class="head">
+      <p class="eyebrow" data-i18n="pr_eyebrow">Pricing &amp; membership</p>
+      <h2 data-i18n="pr_h2">Simple ways to start dancing.</h2>
+    </div>
+    <div class="plans" id="membership">
+      <article class="plan">
+        <h3 data-i18n="p1_t">Trial class</h3>
+        <p data-i18n="p1_d">Try one class, meet the teachers, see the studio. No commitment.</p>
+        <ul>
+          <li data-i18n="p1_a">Single session</li>
+          <li data-i18n="p1_b">Beginner friendly</li>
+          <li data-i18n="p1_c">Book in the app</li>
+        </ul>
+        <a href="#join" class="btn btn-line" data-i18n="p1_cta">Book a trial</a>
+      </article>
+      <article class="plan plan-featured">
+        <span class="badge" data-i18n="p2_badge">Most popular</span>
+        <h3 data-i18n="p2_t">Membership</h3>
+        <p data-i18n="p2_d">Session packs for regular training. Track what is left in your account.</p>
+        <ul>
+          <li data-i18n="p2_a">Session packs (e.g. 8 sessions)</li>
+          <li data-i18n="p2_b">All 3 branches</li>
+          <li data-i18n="p2_c">See remaining sessions anytime</li>
+        </ul>
+        <a href="#join" class="btn btn-pink" data-i18n="p2_cta">Become a member</a>
+      </article>
+      <article class="plan">
+        <h3 data-i18n="p3_t">Room renting</h3>
+        <p data-i18n="p3_d">Practice, shoot or teach in a mirrored studio by the hour.</p>
+        <ul>
+          <li data-i18n="p3_a">Mirrors &amp; poles</li>
+          <li data-i18n="p3_b">Book by time slot</li>
+          <li data-i18n="p3_c">For students and teachers</li>
+        </ul>
+        <a href="#rent" class="btn btn-line" data-i18n="p3_cta">Rent a room</a>
+      </article>
+    </div>
+    <p class="note" data-i18n="pr_note">Current prices and packages are shown after you log in.</p>
+  </section>
+
+  <!-- Schedule -->
+  <section class="section alt" id="schedule">
+    <div class="container split">
+      <div>
+        <p class="eyebrow" data-i18n="sc_eyebrow">Class schedule</p>
+        <h2 data-i18n="sc_h2">Find a class that fits your week.</h2>
+        <p class="lede" data-i18n="sc_p">Filter by branch, level and teacher, then book in two taps. Cancel or change from the same screen.</p>
+        <ol class="steps">
+          <li><b>1</b><span data-i18n="sc_1">Pick a branch and a class</span></li>
+          <li><b>2</b><span data-i18n="sc_2">Use a session from your membership</span></li>
+          <li><b>3</b><span data-i18n="sc_3">Get a reminder, show up and dance</span></li>
+        </ol>
+        <a href="#join" class="btn btn-ink" data-i18n="sc_cta">Open the schedule</a>
+      </div>
+      <div class="phones">
+        <img src="../assets/images/alira-app-students.webp" alt="Alira app home screen with membership and classes" width="230" height="498" loading="lazy">
+        <img src="../assets/images/alira-app-booking.webp" alt="Alira app booking screen" width="230" height="498" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Studios -->
+  <section class="section container" id="studios">
+    <div class="head">
+      <p class="eyebrow" data-i18n="st_eyebrow">Studios</p>
+      <h2 data-i18n="st_h2">Three bright rooms, one community.</h2>
+    </div>
+    <div class="gallery">
+      <figure class="g1"><img src="../assets/images/alira-branch1-a.jpg" alt="Branch 1 studio with mirrors and silver poles" loading="lazy"><figcaption data-i18n="b1">Branch 1</figcaption></figure>
+      <figure class="g2"><img src="../assets/images/alira-branch2.jpg" alt="Branch 2 studio with a wooden floor and large window" loading="lazy"><figcaption data-i18n="b2">Branch 2</figcaption></figure>
+      <figure class="g3"><img src="../assets/images/alira-branch3.jpg" alt="Branch 3 studio with a tall window over the city" loading="lazy"><figcaption data-i18n="b3">Branch 3</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Rent -->
+  <section class="section container" id="rent">
+    <div class="rent">
+      <div>
+        <p class="eyebrow light" data-i18n="rt_eyebrow">Room renting</p>
+        <h2 data-i18n="rt_h2">Need a room of your own?</h2>
+        <p data-i18n="rt_p">Rent a studio for practice, content shoots or your own classes. Pick the slot in the app and walk in.</p>
+      </div>
+      <a href="#join" class="btn btn-pink" data-i18n="rt_cta">Book a room</a>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section container split" id="about">
+    <div>
+      <p class="eyebrow" data-i18n="ab_eyebrow">About us</p>
+      <h2 data-i18n="ab_h2">A studio built to feel welcoming.</h2>
+    </div>
+    <div>
+      <p class="lede" data-i18n="ab_p">Alira is a dance studio in Ho Chi Minh City with three branches, a student app and a teacher app on one booking system. We keep classes friendly, spaces clean and bright, and the community at the centre.</p>
+      <blockquote>“<span data-i18n="ab_q">You make people feel welcome, put real heart into what you do, and bring the community together.</span>”<cite data-i18n="ab_c">A student</cite></blockquote>
+    </div>
+  </section>
+
+  <!-- Join -->
+  <section class="section container" id="join">
+    <div class="join">
+      <h2 data-i18n="jn_h2">Ready for your first class?</h2>
+      <p data-i18n="jn_p">Create an account, pick a trial, and we will see you in the studio.</p>
+      <div class="hero-cta center">
+        <a href="https://alirastudio.vn/" class="btn btn-pink" data-i18n="cta_join">Become a member</a>
+        <a href="https://www.tiktok.com/" class="btn btn-line" target="_blank" rel="noopener">TikTok</a>
+        <a href="https://www.instagram.com/" class="btn btn-line" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="container foot">
+  <a href="#top" class="brand">alira<span>.</span></a>
+  <span data-i18n="foot">Alira Dancing Studio · Ho Chi Minh City</span>
+  <span class="small" data-i18n="foot2">Redesign concept</span>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
