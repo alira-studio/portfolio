@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baseline — Tennis Club &amp; Academy</title>
+<meta name="description" content="Baseline is a members' tennis club and academy where focused coaching meets championship courts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.18/+esm" } }
+</script>
+<style>
+:root{
+  --background:#ffffff;--foreground:#0a0a0a;--brand:#2563c9;--brand-deep:#0f2f63;--brand-light:#5790e6;
+  --accent-teal:#0b6e97;--surface:#f4f4f4;--surface-card:#ffffff;--ink:#0a0a0a;--ink-soft:#717784;
+  --ghost:#d7dae1;--hairline:#e6e8ec;--on-brand:#ffffff;
+  --radius-card:1.5rem;--radius-card-lg:2rem;--radius-pill:62.5rem;
+}
+html{font-size:16px}
+@media (max-width:1920px){html{font-size:0.833333vw}}
+@media (max-width:1440px){html{font-size:1.111111vw}}
+@media (max-width:1024px){html{font-size:1.5625vw}}
+@media (max-width:640px){html{font-size:4.444444vw}}
+html.locked{position:relative;overflow:hidden;height:100%}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+body{font-family:"Onest",system-ui,sans-serif;min-height:100vh;background:var(--background);color:var(--foreground);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--brand-light);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.mk{width:1.25rem;height:1.25rem;flex:none}
+.ar{width:1rem;height:1rem;flex:none}
+main{width:100%;overflow-x:clip;padding:.5rem}
+@media (min-width:640px){main{padding:.75rem}}
+.m{font-weight:500}
+.tight{letter-spacing:-.02em}
+
+/* clip-mask text */
+.cl{display:block;overflow:hidden;padding-bottom:.14em}
+.cl.w{display:inline-block;vertical-align:top;padding-bottom:.12em}
+.ci{display:block;will-change:transform}
+.cl.w .ci{display:inline-block}
+.h2{font-size:3rem;font-weight:500;line-height:.95;letter-spacing:-.02em;margin-top:1rem}
+
+/* eyebrow */
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft)}
+.eyebrow i{width:.375rem;height:.375rem;border-radius:var(--radius-pill);background:var(--brand)}
+.eyebrow.light{color:rgba(255,255,255,.7)}.eyebrow.light i{background:var(--brand-light)}
+
+/* pill + arrow buttons */
+.pill{display:inline-flex;align-items:center;gap:.5rem;border-radius:var(--radius-pill);padding:.875rem 1.75rem;font-size:.875rem;font-weight:500;text-transform:uppercase;letter-spacing:.025em;transition:background .25s,color .25s,border-color .25s}
+.pill .ar{width:1rem;height:1rem}
+.pill-light{background:#fff;color:var(--brand-deep)}
+.pill-solid{background:var(--ink);color:#fff}
+.pill:disabled{opacity:.6;cursor:default}
+.abtn{display:grid;place-items:center;width:3rem;height:3rem;border-radius:var(--radius-pill);border:1px solid var(--hairline);transition:background .25s,color .25s,border-color .25s}
+.abtn svg{width:1.25rem;height:1.25rem}
+.abtn.out{color:var(--ink)}
+.abtn.sol{background:var(--ink);border-color:var(--ink);color:#fff}
+.abtn.prev svg{margin:0}
+.abtn.prev .flip{transform:scaleX(-1)}
+@media (min-width:640px){.abtn{width:3.5rem;height:3.5rem}}
+@media (min-width:769px){
+  .pill-light:hover{background:var(--brand-light);color:#fff}
+  .pill-solid:hover{background:var(--brand-deep)}
+  .abtn.out:hover{border-color:var(--ink)}
+  .abtn.sol:hover{background:var(--brand-deep)}
+  .bookbtn:hover{text-decoration:underline}
+  .burger:hover{background:rgba(255,255,255,.25)}
+  .xbtn.w:hover{background:rgba(255,255,255,.25)}
+  .xbtn.g:hover{background:var(--hairline)}
+  .nav-l a:hover{opacity:1}
+  .menu-links a:hover{color:var(--brand-light)}
+  .foot a:hover{color:#fff}
+  .submit:hover{background:var(--brand-deep)}
+}
+.dots{display:flex;gap:.5rem}
+.dots button{padding:.375rem}
+.dots span{display:block;height:.375rem;width:.375rem;border-radius:var(--radius-pill);background:var(--ghost);transition:width .35s,background .35s}
+.dots.light span{background:rgba(255,255,255,.4)}
+.dots button[aria-current="true"] span{width:1.25rem;background:var(--ink)}
+.dots.light button[aria-current="true"] span{background:#fff}
+
+/* hero */
+.hero{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;background:var(--brand-deep);color:#fff;border-radius:var(--radius-card-lg);height:calc(100svh - 1rem);min-height:36rem}
+@media (min-width:640px){.hero{height:calc(100svh - 1.5rem)}}
+.plate{position:absolute;inset:0;z-index:-10;overflow:hidden}
+.plate-in{position:absolute;left:0;right:0;top:-16%;height:132%;width:100%}
+.plate-in img{width:100%;height:100%;object-fit:cover}
+.plate-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,47,99,.65),rgba(15,47,99,.35),rgba(15,47,99,.75))}
+.hdr{display:flex;align-items:center;padding:1.5rem 1.5rem 0;font-size:.75rem;color:#fff}
+@media (min-width:640px){.hdr{padding:2rem 2.5rem 0}}
+.nav-l{display:none;flex:1;gap:2rem}
+.nav-l a{opacity:.9;transition:opacity .2s}
+.brand{display:flex;align-items:center;gap:.5rem;font-size:1rem;font-weight:500;text-transform:uppercase;letter-spacing:.2em}
+.brand .mk{width:1.25rem;height:1.25rem}
+.hdr .brand{flex:1}
+.hdr-r{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:1rem}
+.bookbtn{display:none;text-transform:uppercase;letter-spacing:.025em}
+.burger{display:grid;place-content:center;gap:5px;width:2.5rem;height:2.5rem;border-radius:var(--radius-pill);background:rgba(255,255,255,.15);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .2s}
+.burger i{display:block;width:1rem;height:1px;background:#fff}
+@media (min-width:640px){.bookbtn{display:inline}.hdr-r{gap:1.25rem}}
+@media (min-width:1024px){.nav-l{display:flex}.hdr .brand{justify-content:center}}
+.title{padding:1rem 1.5rem 0}
+@media (min-width:640px){.title{padding:1rem 2.5rem 0}}
+#hero-title{font-size:12.5vw;font-weight:500;text-transform:uppercase;line-height:.85;letter-spacing:-.02em;white-space:nowrap}
+.hrow{margin-top:auto;padding:0 1.5rem 2rem;display:flex;flex-direction:column;gap:1.5rem}
+@media (min-width:640px){.hrow{padding:0 2.5rem 2.5rem;flex-direction:row;justify-content:space-between;align-items:flex-end}}
+.tag{font-size:2.4rem;font-weight:500;text-transform:uppercase;line-height:.95;letter-spacing:-.02em;color:rgba(255,255,255,.85)}
+.tag .cl{padding-bottom:.08em}
+.cluster{display:flex;align-items:flex-end;gap:1rem}
+.coll{display:none;width:16rem;flex-direction:column;gap:.75rem}
+@media (min-width:768px){.coll{display:flex}}
+.stack{display:grid}.stack>*{grid-area:1/1}
+.glass{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.1);border-radius:var(--radius-card);padding:.75rem;box-shadow:0 .75rem 2rem rgba(15,47,99,.2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.cc{display:flex;gap:.75rem;align-items:center}
+.cc img{width:3.5rem;height:3.5rem;border-radius:.75rem;object-fit:cover;flex:none}
+.cc .t{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.cc b{font-size:.7rem;font-weight:500;text-transform:uppercase;letter-spacing:.025em}
+.cc span{font-size:.7rem;text-transform:uppercase;opacity:.8}
+.cc a{font-size:.65rem;text-decoration:underline;text-underline-offset:2px}
+.mem{display:flex;gap:.75rem;align-items:stretch;width:100%;max-width:20rem}
+@media (min-width:640px){.mem{width:15rem}}
+.mem .l{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:.75rem}
+.mem .big{font-size:1.875rem;font-weight:500;line-height:1}
+.av{display:flex}.av i{width:1.25rem;height:1.25rem;border-radius:var(--radius-pill);border:1px solid rgba(15,47,99,.4);margin-left:-.5rem}.av i:first-child{margin-left:0}
+.mem small{font-size:.65rem;opacity:.8}
+.mem img{width:4rem;aspect-ratio:3/4;object-fit:cover;border-radius:.75rem;flex:none}
+
+/* trust */
+.trust{position:relative;isolation:isolate;overflow:hidden;background:var(--background);padding:4rem 1.5rem}
+@media (min-width:640px){.trust{padding:5rem 2.5rem;min-height:56rem}}
+.badges{position:relative;z-index:20;display:flex;flex-direction:column;gap:1.5rem;justify-content:space-between}
+@media (min-width:640px){.badges{flex-direction:row}}
+.pct{display:grid;place-content:center;justify-items:center;text-align:center;width:7rem;height:7rem;border-radius:var(--radius-pill);background:var(--surface);flex:none}
+@media (min-width:640px){.pct{width:8rem;height:8rem}}
+.pct b{font-size:1.5rem;font-weight:500}.pct small{font-size:.6rem;color:var(--ink-soft);max-width:7em;line-height:1.3}
+.bcard{display:flex;gap:1rem;max-width:28rem;border-radius:var(--radius-card);background:var(--surface);padding:1.25rem}
+@media (min-width:640px){.bcard{gap:1.25rem;padding:1.5rem}}
+.bcard .idx{align-self:flex-start;border-radius:.75rem;background:var(--background);padding:.5rem 1rem;font-size:1.25rem;font-weight:500}
+.bcard h3{font-size:1.125rem;font-weight:500}.bcard p{font-size:.75rem;color:var(--ink-soft);line-height:1.6;margin-top:.5rem}
+#trust-title{position:relative;z-index:0;pointer-events:none;user-select:none;max-width:88rem;margin:3rem auto 0;font-size:8.2vw;font-weight:500;text-transform:uppercase;line-height:1.02;letter-spacing:-.02em;color:var(--ghost)}
+#trust-title .row{display:flex;justify-content:space-between}
+#trust-title .gw{display:block}
+#trust-title .gw.ink{color:var(--ink)}
+#trust-title .cl{padding-bottom:.12em}
+.coach-pos{position:relative;z-index:10;display:flex;justify-content:center;margin-top:2rem}
+@media (min-width:640px){.coach-pos{position:absolute;left:50%;top:50%;margin:0;transform:translate(-50%,-50%)}}
+.coach{position:relative;width:13rem;aspect-ratio:3/4;rotate:6deg;border-radius:var(--radius-card);background:var(--brand);overflow:hidden;color:#fff}
+@media (min-width:640px){.coach{width:16rem}}
+.coach img{width:100%;height:100%;object-fit:cover}
+.coach figcaption{position:absolute;left:.75rem;right:.75rem;bottom:.75rem;border-radius:.75rem;background:rgba(15,47,99,.4);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:.5rem .75rem}
+.coach figcaption b{display:block;font-size:.875rem;font-weight:500}.coach figcaption span{font-size:.65rem;opacity:.8}
+.ctrl{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;margin-top:3rem}
+@media (min-width:640px){.ctrl{margin-top:6rem}}
+
+/* programs */
+.programs{background:var(--surface);padding:6rem 1.5rem}
+@media (min-width:640px){.programs{padding:6rem 2.5rem}}
+.plist{margin-top:3.5rem}
+.plist>li>a{display:block;border-top:1px solid var(--hairline)}
+.plist>li:last-child>a{border-bottom:1px solid var(--hairline)}
+.plist>li>a:focus-visible{background:var(--background)}
+.prow{display:flex;align-items:center;gap:1.5rem;padding:1.75rem 0}
+.prow .n{width:2.5rem;font-size:.875rem;font-weight:500;color:var(--ink-soft);flex:none}
+.prow .tx{flex:1}
+.prow h3{font-size:1.5rem;font-weight:500;letter-spacing:-.02em}
+.prow p{font-size:.875rem;color:var(--ink-soft);margin-top:.25rem}
+@media (min-width:640px){.prow h3{font-size:1.875rem}}
+.prow .circ{display:grid;place-items:center;width:2.75rem;height:2.75rem;border-radius:var(--radius-pill);border:1px solid var(--hairline);flex:none}
+.prow .circ .parr{display:grid}.prow .circ svg{width:1.25rem;height:1.25rem}
+
+/* facilities */
+.fac{position:relative;z-index:1;background:var(--background);border-radius:var(--radius-card-lg);margin-top:-2.5rem;padding:4rem 1.5rem 5rem}
+@media (min-width:640px){.fac{padding:4rem 2.5rem 5rem}}
+.fgrid{display:grid;gap:2.5rem;align-items:end}
+@media (min-width:768px){.fgrid{grid-template-columns:1fr 1fr}}
+.fintro{max-width:24rem}
+.fintro .ico{width:4rem;height:4rem;border-radius:var(--radius-card);object-fit:cover}
+.fintro .h2{margin-top:1.5rem}
+.fintro p{font-size:.875rem;color:var(--ink-soft);max-width:20rem;margin-top:1.5rem;line-height:1.5}
+.fintro p .wd{display:inline-block}
+.tiles{display:flex;align-items:flex-end;gap:1.25rem}
+.tiles>div{flex:1}
+.tiles>div:nth-child(2){margin-bottom:2rem}
+.tile{position:relative;aspect-ratio:3/4;border-radius:var(--radius-card);overflow:hidden;background:var(--surface);color:#fff}
+.tile img{width:100%;height:100%;object-fit:cover}
+.tile figcaption{position:absolute;left:.75rem;right:.75rem;bottom:.75rem;border-radius:.75rem;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:.75rem 1rem}
+.tile.blue figcaption{background:rgba(11,110,151,.55)}.tile.clay figcaption{background:rgba(15,47,99,.4)}
+.tile figcaption b{display:block;font-size:.875rem;font-weight:500}.tile figcaption span{display:block;font-size:.65rem;opacity:.85;margin-top:.15rem;line-height:1.4}
+
+/* stats */
+.stats{background:var(--brand-deep);color:#fff;border-radius:var(--radius-card-lg);margin-top:.75rem;padding:5rem 1.5rem}
+@media (min-width:640px){.stats{padding:5rem 2.5rem}}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:2rem;row-gap:3rem;margin-top:4rem}
+@media (min-width:1024px){.sgrid{grid-template-columns:repeat(4,1fr)}}
+.scell{border-top:1px solid rgba(255,255,255,.2);padding-top:1.25rem}
+.scell .v{display:block;font-size:3.75rem;font-weight:500;letter-spacing:-.02em;line-height:1}
+@media (min-width:640px){.scell .v{font-size:4.5rem}}
+.scell .lb{display:block;font-size:.875rem;color:rgba(255,255,255,.65);margin-top:.75rem}
+.scell dd{margin:0}
+
+/* testimonials */
+.tst{background:var(--background);padding:5rem 1.5rem}
+@media (min-width:640px){.tst{padding:6rem 2.5rem}}
+.tgrid{display:grid;gap:1.25rem;margin-top:3.5rem}
+@media (min-width:768px){.tgrid{grid-template-columns:repeat(3,1fr)}}
+.tgrid>li{display:flex}
+.tgrid>li>div{display:flex;width:100%}
+.tcard{display:flex;flex-direction:column;justify-content:space-between;height:100%;width:100%;border-radius:var(--radius-card);background:var(--surface);padding:1.75rem}
+.tcard .q{font-size:2.25rem;color:var(--brand);line-height:1}
+.tcard blockquote{font-size:1.125rem;line-height:1.6;color:var(--ink);margin-top:1rem}
+.tcard figcaption{border-top:1px solid var(--hairline);padding-top:1rem;margin-top:1.5rem}
+.tcard figcaption b{font-weight:500;display:block}.tcard figcaption span{font-size:.875rem;color:var(--ink-soft)}
+
+/* footer */
+.foot{background:var(--brand-deep);color:#fff;border-radius:var(--radius-card-lg);margin-top:.75rem;padding:3.5rem 1.5rem}
+@media (min-width:640px){.foot{padding:4rem 2.5rem}}
+.cta{display:flex;flex-direction:column;gap:2rem;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:3.5rem}
+@media (min-width:640px){.cta{flex-direction:row;justify-content:space-between;align-items:flex-end}}
+.cta p.big{font-size:3.75rem;font-weight:500;line-height:.92;letter-spacing:-.02em;margin-top:1rem}
+.fcols{display:grid;gap:2.5rem;padding:3.5rem 0}
+@media (min-width:768px){.fcols{grid-template-columns:1.4fr 1fr 1fr 1fr}}
+.fbrand{max-width:20rem}.fbrand .brand{font-size:1.125rem}
+.fbrand p{font-size:.875rem;color:rgba(255,255,255,.65);margin-top:1rem;line-height:1.5}
+.fbrand address{font-style:normal;margin-top:1.5rem;font-size:.875rem;color:rgba(255,255,255,.8);display:flex;flex-direction:column;gap:.25rem}
+.fbrand address span{color:rgba(255,255,255,.55)}
+.fnav h4{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.5)}
+.fnav ul{margin-top:1rem;font-size:.875rem;color:rgba(255,255,255,.8);display:flex;flex-direction:column;gap:.75rem}
+.fbar{border-top:1px solid rgba(255,255,255,.15);padding-top:2rem;font-size:.875rem;color:rgba(255,255,255,.6);display:flex;flex-direction:column;gap:1.25rem}
+@media (min-width:640px){.fbar{flex-direction:row;justify-content:space-between;align-items:center}}
+.fbar nav{display:flex;gap:1.25rem;flex-wrap:wrap}
+
+/* overlays */
+.xbtn{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:var(--radius-pill);transition:background .2s;flex:none}
+.xbtn.w{background:rgba(255,255,255,.15);color:#fff}.xbtn.g{background:var(--surface);color:var(--ink)}
+.xbtn svg{width:1.25rem;height:1.25rem}
+#menu{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;pointer-events:none;color:#fff}
+#menu.open{pointer-events:auto}
+#menu .bd{position:absolute;inset:0;background:var(--brand-deep)}
+#menu .pn{position:relative;flex:1;display:flex;flex-direction:column;padding:.5rem}
+@media (min-width:640px){#menu .pn{padding:.75rem}}
+#menu .in{flex:1;display:flex;flex-direction:column;padding:1.5rem 1.5rem 2rem}
+@media (min-width:640px){#menu .in{padding:2rem 2.5rem 2.5rem}}
+.mtop{display:flex;justify-content:space-between;align-items:center}
+.menu-links{flex:1;display:flex;flex-direction:column;justify-content:center;gap:.5rem}
+.menu-links a{display:block;font-size:3rem;font-weight:500;letter-spacing:-.02em;line-height:1.1;transition:color .2s}
+@media (min-width:640px){.menu-links a{font-size:4.5rem}}
+.mbot{border-top:1px solid rgba(255,255,255,.15);padding-top:2rem;display:flex;flex-direction:column;gap:1.5rem;font-size:.875rem}
+@media (min-width:640px){.mbot{flex-direction:row;justify-content:space-between;align-items:center}}
+.mbot nav{display:flex;gap:1.25rem;color:rgba(255,255,255,.7)}.mbot nav a:hover{color:#fff}
+#modal{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;padding:.75rem;pointer-events:none}
+@media (min-width:640px){#modal{align-items:center;padding:1.5rem}}
+#modal.open{pointer-events:auto}
+#modal .bd{position:absolute;inset:0;background:rgba(15,47,99,.4);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#modal .pn{position:relative;width:100%;max-height:92svh;overflow-y:auto;border-radius:var(--radius-card-lg);background:var(--surface-card);padding:1.5rem;color:var(--ink);box-shadow:0 2rem 5rem rgba(15,47,99,.35)}
+@media (min-width:640px){#modal .pn{max-width:32rem;padding:2rem}}
+.mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.mhead .h2{font-size:2.25rem;margin-top:.75rem}
+@media (min-width:640px){.mhead .h2{font-size:3rem}}
+form{margin-top:1.75rem;display:flex;flex-direction:column;gap:1rem}
+label{display:flex;flex-direction:column;gap:.5rem;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft)}
+input,textarea{font:inherit;width:100%;border-radius:.75rem;border:1px solid var(--hairline);background:var(--background);padding:.75rem 1rem;font-size:.875rem;text-transform:none;letter-spacing:0;color:var(--ink);resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus{border-color:var(--brand-light);box-shadow:0 0 0 2px rgba(87,144,230,.35)}
+.submit{align-self:flex-start;border-radius:var(--radius-pill);background:var(--ink);color:#fff;padding:.875rem 1.75rem;font-size:.875rem;font-weight:500;text-transform:uppercase;letter-spacing:.025em;transition:background .25s}
+.submit:disabled{opacity:.6;cursor:default}
+.ok{margin-top:2rem;border-radius:var(--radius-card);background:var(--surface);padding:1.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.ok .chk{display:grid;place-items:center;width:3rem;height:3rem;border-radius:var(--radius-pill);background:var(--brand);color:#fff}
+.ok .chk svg{width:1.5rem;height:1.5rem}
+.ok b{font-size:1.125rem;font-weight:500}.ok p{font-size:.875rem;color:var(--ink-soft)}
+.ok .pill{margin-top:.75rem}
+[hidden]{display:none!important}
+
+/* loader */
+#loader{position:fixed;inset:0;z-index:200;background:var(--brand-deep);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+#loader .brand{font-size:1.5rem;letter-spacing:.2em}#loader .brand .mk{width:1.75rem;height:1.75rem}
+#loader .track{width:10rem;height:1px;border-radius:var(--radius-pill);background:rgba(255,255,255,.2);overflow:hidden}
+#loader .fill{height:100%;background:#fff;transform:scaleX(0);transform-origin:left}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<div id="loader" aria-hidden="true">
+  <div class="brand" id="ld-mark"><svg class="mk"><use href="#mark"/></svg>Baseline</div>
+  <div class="track"><div class="fill" id="ld-fill"></div></div>
+</div>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="plate" id="plate">
+    <div class="plate-in" id="plate-in"><img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/hero/hero-court.webp" alt="Player lunging for a shot on a hard court" loading="eager" fetchpriority="high"></div>
+    <div class="plate-ov"></div>
+  </div>
+  <header class="hdr">
+    <nav class="nav-l" aria-label="Primary">
+      <a href="#programs">Programs &amp; Coaches</a>
+      <a href="#facilities">Club &amp; Events</a>
+    </nav>
+    <a class="brand" href="#top"><svg class="mk"><use href="#mark"/></svg>Baseline</a>
+    <div class="hdr-r">
+      <button class="bookbtn" data-open-modal>Book a Visit</button>
+      <button class="burger" id="burger" aria-label="Open menu"><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="title"><h1 id="hero-title" aria-label="Own The Court" data-words="Own The Court"></h1></div>
+  <div class="hrow">
+    <p class="tag" id="tagline" data-lines="Show Up,|Level Up" data-gate data-delay="350" data-stagger="110" data-dur="900"></p>
+    <div class="cluster">
+      <div class="coll" data-iv="o:0,y:28" data-cfg="200,26" data-delay="650" data-gate>
+        <div class="stack glass" id="coll-stack"><div class="cc" id="cc-a"></div><div class="cc" id="cc-b"></div></div>
+        <div class="dots light" id="coll-dots"></div>
+      </div>
+      <article class="mem glass" data-iv="o:0,y:28" data-cfg="200,26" data-delay="780" data-gate>
+        <div class="l">
+          <span class="big">9K+</span>
+          <div class="av"><i style="background:#5790e6"></i><i style="background:#c2e029"></i><i style="background:#0b6e97"></i><i style="background:#ffffff"></i></div>
+          <small>Members on court</small>
+        </div>
+        <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp" alt="Player waiting to return on a clay court" loading="eager">
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust" id="trust">
+  <div class="badges">
+    <div class="pct" data-iv="o:0,s:.9" data-cfg="220,22"><b>100%</b><small>Coaching built around your game</small></div>
+    <article class="bcard" data-iv="o:0,y:24" data-cfg="200,26" data-delay="120">
+      <span class="idx">#01</span>
+      <div><h3>Trusted by serious players</h3><p>From first-timers to nationally ranked juniors, players train here because the progress shows up on the scoreboard.</p></div>
+    </article>
+  </div>
+  <h2 id="trust-title" aria-live="polite">
+    <span class="row"><span class="gw" data-i="0"><span class="cl"><span class="ci"></span></span></span><span class="gw" data-i="1"><span class="cl"><span class="ci"></span></span></span></span>
+    <span class="row"><span class="gw ink" data-i="2"><span class="cl"><span class="ci"></span></span></span><span class="gw" data-i="3"><span class="cl"><span class="ci"></span></span></span></span>
+  </h2>
+  <div class="coach-pos">
+    <figure class="coach" data-iv="o:0,y:60,s:.92" data-cfg="170,26">
+      <img id="coach-img" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/5.webp" alt="Head coach set in a ready stance on clay" loading="lazy">
+      <figcaption><b id="coach-name">Marco Vidal</b><span id="coach-role">Head Coach</span></figcaption>
+    </figure>
+  </div>
+  <div class="ctrl">
+    <button class="abtn out prev" id="t-prev" aria-label="Previous coach"><svg class="flip"><use href="#arrow"/></svg></button>
+    <div class="dots" id="t-dots"></div>
+    <button class="abtn sol next" id="t-next" aria-label="Next coach"><svg><use href="#arrow"/></svg></button>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="programs" id="programs">
+  <span class="eyebrow"><i></i>Training programs</span>
+  <h2 class="h2" id="programs-title" data-lines="Built for|every level"></h2>
+  <ul class="plist">
+    <li><a href="#junior"><div class="prow" data-iv="o:0,y:26" data-cfg="190,26" data-delay="0"><span class="n">01</span><div class="tx"><h3>Junior Development</h3><p>Fundamentals, footwork, and match play for ages 6–14.</p></div><span class="circ"><span class="parr"><svg><use href="#arrow"/></svg></span></span></div></a></li>
+    <li><a href="#performance"><div class="prow" data-iv="o:0,y:26" data-cfg="190,26" data-delay="90"><span class="n">02</span><div class="tx"><h3>Performance Squad</h3><p>High-volume training for competitive and ranked players.</p></div><span class="circ"><span class="parr"><svg><use href="#arrow"/></svg></span></span></div></a></li>
+    <li><a href="#adult"><div class="prow" data-iv="o:0,y:26" data-cfg="190,26" data-delay="180"><span class="n">03</span><div class="tx"><h3>Adult Clinics</h3><p>Small-group sessions to sharpen technique and fitness.</p></div><span class="circ"><span class="parr"><svg><use href="#arrow"/></svg></span></span></div></a></li>
+    <li><a href="#private"><div class="prow" data-iv="o:0,y:26" data-cfg="190,26" data-delay="270"><span class="n">04</span><div class="tx"><h3>Private Coaching</h3><p>One-to-one sessions tailored to your goals and schedule.</p></div><span class="circ"><span class="parr"><svg><use href="#arrow"/></svg></span></span></div></a></li>
+  </ul>
+</section>
+
+<!-- FACILITIES -->
+<section class="fac" id="facilities">
+  <div class="fgrid">
+    <div class="fintro">
+      <img class="ico" data-iv="o:0,s:.85" data-cfg="240,20" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/3.webp" alt="Player stretching for a forehand on clay" loading="lazy">
+      <h2 class="h2" id="facilities-title" data-lines="Tour Our|World-Class|Courts" data-stagger="120"></h2>
+      <p id="fac-body" data-words="Reserve a court for focused practice, squad drills, or private sessions — and train in the same conditions you'll compete in."></p>
+    </div>
+    <div class="tiles">
+      <div data-iv="o:0,y:48" data-cfg="180,26" data-delay="0"><figure class="tile clay"><img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp" alt="Player on the baseline of an outdoor clay court" loading="lazy"><figcaption><b>Redline Clay</b><span>A fast outdoor clay court tuned for long, physical rallies.</span></figcaption></figure></div>
+      <div data-iv="o:0,y:48" data-cfg="180,26" data-delay="140"><figure class="tile blue"><img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/4.webp" alt="Player following through on a blue hard court" loading="lazy"><figcaption><b>Harbor Court</b><span>A sheltered hard court built for precision and night play.</span></figcaption></figure></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <span class="eyebrow light"><i></i>By the numbers</span>
+  <h2 class="h2" id="stats-title" data-lines="A club that|keeps score"></h2>
+  <dl class="sgrid">
+    <div class="scell" data-iv="o:0,y:30" data-cfg="180,24" data-delay="0"><dt class="sr-only">Certified coaches</dt><dd><span class="v">24</span><span class="lb" aria-hidden="true">Certified coaches</span></dd></div>
+    <div class="scell" data-iv="o:0,y:30" data-cfg="180,24" data-delay="110"><dt class="sr-only">Championship courts</dt><dd><span class="v">12</span><span class="lb" aria-hidden="true">Championship courts</span></dd></div>
+    <div class="scell" data-iv="o:0,y:30" data-cfg="180,24" data-delay="220"><dt class="sr-only">Members training</dt><dd><span class="v">9K+</span><span class="lb" aria-hidden="true">Members training</span></dd></div>
+    <div class="scell" data-iv="o:0,y:30" data-cfg="180,24" data-delay="330"><dt class="sr-only">Years on the baseline</dt><dd><span class="v">15</span><span class="lb" aria-hidden="true">Years on the baseline</span></dd></div>
+  </dl>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="tst" id="testimonials">
+  <span class="eyebrow"><i></i>What players say</span>
+  <h2 class="h2" id="testimonials-title" data-lines="Loved by|the locker room"></h2>
+  <ul class="tgrid">
+    <li><div data-iv="o:0,y:40" data-cfg="180,26" data-delay="0"><figure class="tcard" data-lift><div><span class="q" aria-hidden="true">“</span><blockquote>I added a level to my serve in one season. The coaching is detailed and it actually sticks.</blockquote></div><figcaption><b>Priya Anand</b><span>Performance Squad</span></figcaption></figure></div></li>
+    <li><div data-iv="o:0,y:40" data-cfg="180,26" data-delay="120"><figure class="tcard" data-lift><div><span class="q" aria-hidden="true">“</span><blockquote>Best courts in the city and a team that treats every member like a competitor.</blockquote></div><figcaption><b>Lukas Brenner</b><span>Adult Clinics</span></figcaption></figure></div></li>
+    <li><div data-iv="o:0,y:40" data-cfg="180,26" data-delay="240"><figure class="tcard" data-lift><div><span class="q" aria-hidden="true">“</span><blockquote>My daughter went from shy beginner to club champion. Worth every minute.</blockquote></div><figcaption><b>Dana Okafor</b><span>Parent, Junior Development</span></figcaption></figure></div></li>
+  </ul>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot" id="contact">
+  <div class="cta">
+    <div><span class="eyebrow light"><i></i>Get started</span><p class="big" id="cta-lines" data-lines="Ready to|play?"></p></div>
+    <div data-iv="o:0,y:20" data-cfg="200,24" data-delay="150"><button class="pill pill-light" data-open-modal>Book a Visit<svg class="ar"><use href="#arrow"/></svg></button></div>
+  </div>
+  <div class="fcols">
+    <div class="fbrand">
+      <a class="brand" href="#top"><svg class="mk"><use href="#mark"/></svg>Baseline</a>
+      <p>A members' tennis club and academy where focused coaching meets championship courts.</p>
+      <address><a href="mailto:play@baseline.club">play@baseline.club</a><a href="tel:+12125550148">+1 (212) 555-0148</a><span>120 Court Lane, New York</span></address>
+    </div>
+    <nav class="fnav" aria-label="Programs"><h4>Programs</h4><ul><li><a href="#junior">Junior Development</a></li><li><a href="#performance">Performance Squad</a></li><li><a href="#adult">Adult Clinics</a></li><li><a href="#private">Private Coaching</a></li></ul></nav>
+    <nav class="fnav" aria-label="Club"><h4>Club</h4><ul><li><a href="#membership">Membership</a></li><li><a href="#facilities">Facilities</a></li><li><a href="#club">Events</a></li><li><a href="#shop">Pro Shop</a></li></ul></nav>
+    <nav class="fnav" aria-label="Company"><h4>Company</h4><ul><li><a href="#about">About</a></li><li><a href="#programs">Coaches</a></li><li><a href="#careers">Careers</a></li><li><a href="#contact">Contact</a></li></ul></nav>
+  </div>
+  <div class="fbar">
+    <p>© 2026 Baseline Tennis Club. All rights reserved.</p>
+    <nav aria-label="Social"><a href="#instagram">Instagram</a><a href="#x">X</a><a href="#youtube">YouTube</a><a href="#linkedin">LinkedIn</a></nav>
+    <nav aria-label="Legal"><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+  </div>
+</footer>
+</main>
+
+<!-- MENU -->
+<div id="menu" inert aria-hidden="true">
+  <div class="bd" id="menu-bd"></div>
+  <div class="pn" id="menu-pn">
+    <div class="in">
+      <div class="mtop">
+        <a class="brand" href="#top"><svg class="mk"><use href="#mark"/></svg>Baseline</a>
+        <button class="xbtn w" id="menu-x" aria-label="Close menu"><svg><use href="#x"/></svg></button>
+      </div>
+      <nav class="menu-links" aria-label="Menu">
+        <a href="#programs" data-iv="o:0,y:28">Programs</a>
+        <a href="#facilities" data-iv="o:0,y:28">Facilities</a>
+        <a href="#testimonials" data-iv="o:0,y:28">Reviews</a>
+        <a href="#contact" data-iv="o:0,y:28">Contact</a>
+      </nav>
+      <div class="mbot">
+        <button class="pill pill-light" id="menu-book">Book a Visit<svg class="ar"><use href="#arrow"/></svg></button>
+        <nav aria-label="Social"><a href="#instagram">Instagram</a><a href="#x">X</a><a href="#youtube">YouTube</a><a href="#linkedin">LinkedIn</a></nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" inert aria-hidden="true">
+  <div class="bd" id="modal-bd"></div>
+  <div class="pn" id="modal-pn" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="mhead">
+      <div><span class="eyebrow"><i></i>Book a visit</span><h2 class="h2" id="modal-title" data-lines="Come see|the courts" data-manual></h2></div>
+      <button class="xbtn g" id="modal-x" aria-label="Close"><svg><use href="#x"/></svg></button>
+    </div>
+    <form id="form" novalidate>
+      <label>Full name<input name="name" id="f-name" type="text" placeholder="Alex Rivera" autocomplete="name"></label>
+      <label>Email<input name="email" type="email" placeholder="you@email.com" autocomplete="email"></label>
+      <label>What would you like to play?<textarea name="msg" rows="3" placeholder="I'd love to try a private lesson on the clay courts…"></textarea></label>
+      <button class="submit" id="submit" type="submit">Request a visit</button>
+    </form>
+    <div class="ok" id="ok" hidden>
+      <span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+      <b>Request received</b>
+      <p id="ok-msg"></p>
+      <button class="pill pill-solid" id="ok-done" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+const B = "https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000";
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const html = document.documentElement;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const desk = () => innerWidth > 768;
+history.scrollRestoration = "manual";
+scrollTo(0, 0);
+
+/* ---------- adaptive rem (scale up above 1920) ---------- */
+function fit() {
+  const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+  const reduction = ((BASE_W - innerWidth) / BASE_W) * 100 * COEF;
+  const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+  if (size > FONT_BASE) html.style.fontSize = size + "px"; else html.style.removeProperty("font-size");
+}
+fit(); addEventListener("resize", fit);
+
+/* ---------- easings, springs, tweens ---------- */
+const ease = {
+  easeOutExpo: t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t),
+  easeOutQuart: t => 1 - Math.pow(1 - t, 4),
+  easeInOutCubic: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+};
+class Sp {
+  constructor(x) { this.x = x; this.v = 0; this.t = x; this.k = 170; this.f = 26; }
+  step(dt) {
+    const n = Math.max(1, Math.ceil(dt / 0.004)), h = dt / n;
+    for (let i = 0; i < n; i++) { this.v += (-this.k * (this.x - this.t) - this.f * this.v) * h; this.x += this.v * h; }
+    if (Math.abs(this.v) < .001 && Math.abs(this.x - this.t) < .001) { this.x = this.t; this.v = 0; return false; }
+    return true;
+  }
+}
+const DEF = { o: 1, x: 0, y: 0, s: 1, r: 0 };
+const active = new Set(), motions = new WeakMap(), tweens = new Set(), pars = [];
+class Mo {
+  constructor(el, from = {}) {
+    this.el = el; this.p = {}; this.useO = false;
+    for (const k in DEF) this.p[k] = new Sp(DEF[k]);
+    this.jump(from);
+  }
+  jump(v) { for (const k in v) { const s = this.p[k]; s.x = s.t = v[k]; s.v = 0; if (k === "o") this.useO = true; } this.render(); }
+  to(v, cfg = [170, 26], delay = 0) {
+    const go = () => { for (const k in v) { const s = this.p[k]; s.t = v[k]; s.k = cfg[0]; s.f = cfg[1]; if (k === "o") this.useO = true; } active.add(this); };
+    delay ? setTimeout(go, delay) : go();
+  }
+  render() {
+    const p = this.p;
+    this.el.style.transform = `translate3d(${p.x.x}px,${p.y.x}px,0) scale(${p.s.x}) rotate(${p.r.x}deg)`;
+    if (this.useO) this.el.style.opacity = Math.max(0, Math.min(1, p.o.x));
+  }
+}
+const mo = (el, from) => { let m = motions.get(el); if (!m) { m = new Mo(el, from); motions.set(el, m); } else if (from) m.jump(from); return m; };
+function tween(dur, delay, easing, fn, done) {
+  const tw = { t0: performance.now() + delay, dur, easing, fn, done };
+  tweens.add(tw); return tw;
+}
+const parse = str => { const o = {}; str.split(",").forEach(p => { const [k, v] = p.split(":"); o[k.trim()] = parseFloat(v); }); return o; };
+const REST = { o: 1, x: 0, y: 0, s: 1 };
+
+let last = performance.now(), lenis = null;
+function tick(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (lenis) lenis.raf(now);
+  for (const m of active) { let alive = false; for (const k in m.p) if (m.p[k].step(dt)) alive = true; m.render(); if (!alive) active.delete(m); }
+  for (const tw of tweens) {
+    const t = Math.min(1, Math.max(0, (now - tw.t0) / tw.dur));
+    if (now >= tw.t0) { tw.fn(tw.easing(t)); if (t >= 1) { tweens.delete(tw); tw.done && tw.done(); } }
+  }
+  const vh = innerHeight;
+  for (const p of pars) {
+    const r = p.ref.getBoundingClientRect();
+    const prog = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    p.fn(prog);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ---------- gate / visibility ---------- */
+let openGate; const gate = new Promise(r => (openGate = r));
+function onView(el, fn, gated) {
+  const run = () => { if (gated) gate.then(fn); else fn(); };
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); run(); } }, { rootMargin: "0px 0px -8% 0px", threshold: 0.01 });
+  io.observe(el);
+}
+
+/* ---------- reveal primitives ---------- */
+function revealSpans(spans, { delay = 0, stagger = 0, dur = 950, easing = ease.easeOutExpo, y = 115, unit = "%" }) {
+  spans.forEach((s, i) => {
+    s.style.transform = `translateY(${y}${unit})`; s.style.opacity = 0;
+    tween(dur, delay + i * stagger, easing, e => { s.style.transform = `translateY(${y * (1 - e)}${unit})`; s.style.opacity = Math.min(1, e * 1.4); });
+  });
+}
+function buildLines(el) {
+  const lines = el.dataset.lines.split("|");
+  el.setAttribute("aria-label", lines.join(" "));
+  el.innerHTML = lines.map(l => `<span class="cl" aria-hidden="true"><span class="ci">${l}</span></span>`).join("");
+  return $$(".ci", el);
+}
+$$("[data-lines]").forEach(el => {
+  const spans = buildLines(el);
+  spans.forEach(s => { s.style.transform = "translateY(115%)"; s.style.opacity = 0; });
+  if ("manual" in el.dataset) return;
+  const go = () => revealSpans(spans, { delay: +(el.dataset.delay || 0), stagger: +(el.dataset.stagger || 120), dur: +(el.dataset.dur || 950) });
+  onView(el, go, "gate" in el.dataset);
+});
+// hero title: word-by-word
+{
+  const h = $("#hero-title");
+  const words = h.dataset.words.split(" ");
+  h.innerHTML = words.map((w, i) => `<span class="cl w" aria-hidden="true"><span class="ci">${w}</span></span>${i < words.length - 1 ? " " : ""}`).join("");
+  const spans = $$(".ci", h); spans.forEach(s => { s.style.transform = "translateY(115%)"; s.style.opacity = 0; });
+  gate.then(() => revealSpans(spans, { stagger: 140, dur: 1100 }));
+}
+// facilities body: word fade + rise
+{
+  const p = $("#fac-body");
+  p.innerHTML = p.dataset.words.split(" ").map(w => `<span class="wd">${w}</span>`).join(" ");
+  const ws = $$(".wd", p); ws.forEach(s => { s.style.opacity = 0; s.style.transform = "translateY(18px)"; });
+  onView(p, () => revealSpans(ws, { delay: 250, stagger: 28, dur: 700, easing: ease.easeOutQuart, y: 18, unit: "px" }));
+}
+
+/* ---------- inview + hover ---------- */
+$$("[data-iv]").forEach(el => {
+  if (el.closest("#menu")) return;
+  const from = parse(el.dataset.iv), cfg = (el.dataset.cfg || "170,26").split(",").map(Number), delay = +(el.dataset.delay || 0);
+  const m = mo(el, from);
+  onView(el, () => m.to(REST, cfg, delay), "gate" in el.dataset);
+});
+function hover(trigger, el, base, over, cfg) {
+  const m = mo(el, base);
+  trigger.addEventListener("pointerenter", () => desk() && m.to(over, cfg));
+  trigger.addEventListener("pointerleave", () => m.to(base, cfg));
+  trigger.addEventListener("focusin", () => desk() && m.to(over, cfg));
+  trigger.addEventListener("focusout", () => m.to(base, cfg));
+}
+$$(".pill:has(.ar)").forEach(b => hover(b, $(".ar", b), { x: 0 }, { x: 5 }, [320, 20]));
+$$(".abtn").forEach(b => hover(b, $("svg", b), { s: 1 }, { s: 1.15 }, [320, 18]));
+$$(".xbtn").forEach(b => { const svg = $("svg", b); hover(b, svg, { r: 0 }, { r: 90 }, [300, 18]); });
+$$(".prow").forEach(r => hover(r.closest("a"), $(".parr", r), { x: 0, o: .55 }, { x: 8, o: 1 }, [300, 20]));
+$$(".tile").forEach(t => hover(t, $("img", t), { s: 1 }, { s: 1.03 }, [300, 22]));
+$$("[data-lift]").forEach(c => hover(c, c, { y: 0 }, { y: -8 }, [300, 22]));
+
+/* ---------- parallax ---------- */
+{
+  const pin = $("#plate-in");
+  pars.push({ ref: $(".hero"), fn: p => { pin.style.transform = `translateY(${12 * p}%)`; } });
+  const trust = $("#trust");
+  const pairs = [[-3, 3], [3, -3], [-2, 4], [4, -3]];
+  $$("#trust-title .gw").forEach((g, i) => pars.push({ ref: trust, fn: p => { g.style.transform = `translateX(${pairs[i][0] + (pairs[i][1] - pairs[i][0]) * p}%)`; } }));
+}
+
+/* ---------- carousel dots ---------- */
+function makeDots(host, n, onPick) {
+  host.innerHTML = "";
+  const bs = Array.from({ length: n }, (_, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", `Go to slide ${i + 1}`);
+    b.innerHTML = "<span></span>"; b.onclick = () => onPick(i); host.appendChild(b); return b;
+  });
+  return i => bs.forEach((b, j) => b.setAttribute("aria-current", j === i ? "true" : "false"));
+}
+
+/* ---------- hero collection slider ---------- */
+{
+  const S = [
+    { img: "2.webp", brand: "Baseline Pro", title: "Featured Gear", cta: "Shop the kit", alt: "Player driving a backhand on a hard court" },
+    { img: "3.webp", brand: "Court Series", title: "Summer Drop", cta: "View the line", alt: "Player stretching for a forehand on clay" },
+    { img: "5.webp", brand: "Academy Kit", title: "Junior Range", cta: "Browse juniors", alt: "Player set in a ready stance on clay" },
+  ];
+  const fill = (el, s) => { el.innerHTML = `<img src="${B}/${s.img}" alt="${s.alt}"><div class="t"><b>${s.brand}</b><span>${s.title}</span><a href="#shop">${s.cta} →</a></div>`; };
+  const layers = [$("#cc-a"), $("#cc-b")], OUT = { o: 0, y: 16, s: .96 }, CFG = [210, 24];
+  let cur = 0, front = 0, timer;
+  fill(layers[0], S[0]); fill(layers[1], S[1]);
+  mo(layers[0], REST); mo(layers[1], OUT); layers[1].style.pointerEvents = "none";
+  const setActive = makeDots($("#coll-dots"), 3, i => { go(i); restart(); });
+  setActive(0);
+  function go(i) {
+    i = (i + S.length) % S.length; if (i === cur) return;
+    const out = layers[front], inn = layers[1 - front];
+    fill(inn, S[i]); mo(inn).jump(OUT);
+    mo(out).to(OUT, CFG); mo(inn).to(REST, CFG);
+    out.style.pointerEvents = "none"; inn.style.pointerEvents = "";
+    front = 1 - front; cur = i; setActive(i);
+  }
+  const restart = () => { clearInterval(timer); timer = setInterval(() => go(cur + 1), 3800); };
+  gate.then(restart);
+}
+
+/* ---------- trust carousel ---------- */
+{
+  const T = [
+    { img: "5.webp", name: "Marco Vidal", role: "Head Coach", alt: "Head coach set in a ready stance on clay", h: ["Expert", "Result-", "Driven", "Coaching"] },
+    { img: "4.webp", name: "Elena Sokolova", role: "Performance Coach", alt: "Performance coach following through on a serve", h: ["Sharper", "Faster", "Stronger", "Player"] },
+    { img: "1.webp", name: "James Okoro", role: "Juniors Lead", alt: "Juniors lead waiting to return on clay", h: ["Future", "Champions", "Start", "Here"] },
+  ];
+  T.forEach(t => { new Image().src = `${B}/${t.img}`; });
+  const words = $$("#trust-title .ci"), img = $("#coach-img");
+  let idx = 0, shown = false;
+  words.forEach(w => { w.style.transform = "translateY(115%)"; w.style.opacity = 0; });
+  const paint = () => { T[idx].h.forEach((t, i) => (words[i].textContent = t)); $("#trust-title").setAttribute("aria-label", T[idx].h.join(" ")); };
+  const reveal = () => revealSpans(words, { stagger: 90, dur: 700 });
+  paint(); onView($("#trust-title"), () => { shown = true; reveal(); });
+  const setActive = makeDots($("#t-dots"), 3, i => set(i)); setActive(0);
+  function set(i) {
+    idx = (i + T.length) % T.length; const t = T[idx];
+    setActive(idx); paint(); if (shown) reveal();
+    const m = mo(img, { o: 1 }); m.jump({ o: 0 });
+    img.src = `${B}/${t.img}`; img.alt = t.alt; $("#coach-name").textContent = t.name; $("#coach-role").textContent = t.role;
+    m.to({ o: 1 }, [260, 26]);
+  }
+  $("#t-prev").onclick = () => set(idx - 1);
+  $("#t-next").onclick = () => set(idx + 1);
+}
+
+/* ---------- scroll lock + Lenis ---------- */
+const locks = new Set();
+function syncLock() {
+  html.classList.toggle("locked", locks.size > 0);
+  if (lenis) locks.size ? lenis.stop() : lenis.start();
+}
+const lock = k => { locks.add(k); syncLock(); };
+const unlock = k => { locks.delete(k); syncLock(); };
+lock("loader");
+import("lenis").then(m => { lenis = new (m.default || m.Lenis)({ smoothWheel: true }); syncLock(); }).catch(() => {});
+
+function goTo(hash) {
+  const t = hash.length > 1 && document.querySelector(hash);
+  if (!t) return;
+  lenis ? lenis.scrollTo(t, { offset: 0 }) : t.scrollIntoView({ behavior: "smooth" });
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#"]'); if (!a) return;
+  e.preventDefault();
+  if (a.closest("#menu")) { closeMenu(); setTimeout(() => goTo(a.getAttribute("href")), 30); }
+  else goTo(a.getAttribute("href"));
+});
+
+/* ---------- menu ---------- */
+const menu = $("#menu");
+const menuBd = mo($("#menu-bd"), { o: 0 }), menuPn = mo($("#menu-pn"), { o: 0, y: -24 });
+const menuLinks = $$(".menu-links a").map(a => mo(a, { o: 0, y: 28 }));
+function openMenu() {
+  menu.classList.add("open"); menu.inert = false; menu.removeAttribute("aria-hidden"); lock("menu");
+  menuBd.to({ o: 1 }, [260, 30]); menuPn.to({ o: 1, y: 0 }, [220, 28]);
+  menuLinks.forEach((m, i) => m.to({ o: 1, y: 0 }, [200, 26], 120 + i * 70));
+}
+function closeMenu() {
+  if (!menu.classList.contains("open")) return;
+  menu.classList.remove("open"); menu.inert = true; menu.setAttribute("aria-hidden", "true"); unlock("menu");
+  menuBd.to({ o: 0 }, [260, 30]); menuPn.to({ o: 0, y: -24 }, [220, 28]);
+  menuLinks.forEach(m => m.to({ o: 0, y: 28 }, [200, 26]));
+}
+$("#burger").onclick = openMenu; $("#menu-x").onclick = closeMenu; $("#menu-bd").onclick = closeMenu;
+$("#menu-book").onclick = () => { closeMenu(); openModal(); };
+
+/* ---------- contact modal ---------- */
+const modal = $("#modal"), form = $("#form"), okBox = $("#ok");
+const mBd = mo($("#modal-bd"), { o: 0 }), mPn = mo($("#modal-pn"), { o: 0, y: 28, s: .96 });
+const mTitle = $$("#modal-title .ci");
+let resetT;
+function openModal() {
+  clearTimeout(resetT);
+  modal.classList.add("open"); modal.inert = false; modal.removeAttribute("aria-hidden"); lock("modal");
+  mBd.to({ o: 1 }, [240, 30]); mPn.to({ o: 1, y: 0, s: 1 }, [240, 26]);
+  revealSpans(mTitle, { stagger: 90, dur: 800 });
+  setTimeout(() => $("#f-name").focus({ preventScroll: true }), 120);
+}
+function closeModal() {
+  if (!modal.classList.contains("open")) return;
+  modal.classList.remove("open"); modal.inert = true; modal.setAttribute("aria-hidden", "true"); unlock("modal");
+  mBd.to({ o: 0 }, [240, 30]); mPn.to({ o: 0, y: 28, s: .96 }, [240, 26]);
+  resetT = setTimeout(() => { form.reset(); form.hidden = false; okBox.hidden = true; $("#submit").disabled = false; $("#submit").textContent = "Request a visit"; }, 350);
+}
+$$("[data-open-modal]").forEach(b => b.addEventListener("click", openModal));
+$("#modal-x").onclick = closeModal; $("#modal-bd").onclick = closeModal; $("#ok-done").onclick = closeModal;
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const btn = $("#submit"); btn.disabled = true; btn.textContent = "Sending…";
+  const first = (form.elements.name.value || "").trim().split(/\s+/)[0] || "there";
+  setTimeout(() => {
+    $("#ok-msg").textContent = `Thanks, ${first} — our team will be in touch to lock in your visit.`;
+    form.hidden = true; okBox.hidden = false;
+  }, 700);
+});
+addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeMenu(); } });
+
+/* ---------- loader ---------- */
+{
+  const MIN = reduce ? 200 : 1400, MAX = 2600, EXIT = reduce ? 1 : 850;
+  const loader = $("#loader");
+  mo($("#ld-mark"), { o: 0, y: 16 }).to(REST, [200, 22]);
+  tween(MIN - 120, 120, ease.easeInOutCubic, e => { $("#ld-fill").style.transform = `scaleX(${e})`; });
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    openGate(); unlock("loader");
+    tween(EXIT, 0, ease.easeInOutCubic, e => { loader.style.transform = `translateY(${-105 * e}%)`; }, () => loader.remove());
+  };
+  let started = false;
+  const start = () => { if (started) return; started = true; setTimeout(finish, MIN); };
+  if (document.readyState === "complete") start(); else addEventListener("load", start);
+  setTimeout(finish, MAX);
+}
+</script>
+</body>
+</html>
