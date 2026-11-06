@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d0714">
+<title>ALIRA POLE ONLINE</title>
+<meta name="description" content="Trò chơi 3D mô phỏng studio múa cột — tập động tác, lên cấp, mở khóa.">
+<link rel="icon" href="../assets/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   GIAO DIỆN — đổi màu thương hiệu ở đây (biến CSS)
+   ===================================================================== */
+:root{
+  --pink:#ff2d95; --pink-d:#c4166e; --purple:#8a3ffc; --purple-d:#3b1675;
+  --black:#0d0714; --ink:#1a0b2e; --gold:#f5c451; --gold-d:#b98a1f;
+  --text:#fff3fa; --muted:#c9b3da;
+  --glass:rgba(22,8,38,.74); --line:rgba(255,45,149,.38);
+  --glow:0 0 14px rgba(255,45,149,.45);
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--black);color:var(--text);
+  font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+#app{position:fixed;inset:0;height:100dvh}
+canvas#view{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:0}
+
+/* ---------- Màn hình tải ---------- */
+#loading{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 20%,#4a1470 0%,#1a0b2e 55%,#0d0714 100%);transition:opacity .6s}
+#loading.done{opacity:0;pointer-events:none}
+#loading .logo{font-weight:800;font-size:clamp(26px,8vw,44px);letter-spacing:.06em;text-align:center;line-height:1.1;
+  background:linear-gradient(180deg,#fff 0%,var(--gold) 55%,var(--gold-d) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(255,45,149,.7))}
+#loading .sub{margin-top:6px;color:var(--pink);letter-spacing:.5em;font-weight:700;text-shadow:0 0 12px var(--pink)}
+#loading .bar{margin-top:34px;width:min(70vw,300px);height:8px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden}
+#loading .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--gold));box-shadow:var(--glow);transition:width .25s}
+#loading .msg{margin-top:14px;color:var(--muted);font-size:14px;min-height:20px;text-align:center;padding:0 20px}
+#loading .foot{position:absolute;bottom:calc(14px + var(--safe-b));font-size:12px;color:var(--muted);opacity:.8}
+
+/* ---------- HUD trên ---------- */
+#hud{position:absolute;left:0;right:0;top:0;padding:calc(8px + var(--safe-t)) 10px 0;pointer-events:none;z-index:10;
+  display:flex;flex-direction:column;gap:6px;max-width:560px;margin:0 auto}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:16px;box-shadow:var(--glow);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.hud-top{display:flex;align-items:center;gap:9px;padding:7px 9px}
+.badge{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:22px;
+  background:linear-gradient(145deg,var(--pink),var(--purple));border:2px solid var(--gold);box-shadow:var(--glow)}
+.who{flex:1;min-width:0}
+.nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lv{font-size:12px;color:var(--gold);font-weight:600;display:flex;justify-content:space-between;gap:6px}
+.lv .expnum{color:var(--muted);font-weight:400}
+.bar{height:7px;border-radius:7px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:7px;transition:width .35s}
+.bar.exp i{background:linear-gradient(90deg,var(--purple),var(--pink))}
+.bar.st i{background:linear-gradient(90deg,var(--gold-d),var(--gold))}
+.tools{display:flex;align-items:center;gap:6px;pointer-events:auto}
+.pill{font-size:11px;font-weight:700;padding:5px 8px;border-radius:20px;background:rgba(0,0,0,.35);border:1px solid var(--line);white-space:nowrap}
+.pill .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ffb020;margin-right:4px;box-shadow:0 0 8px #ffb020}
+.pill.on .dot{background:#35e08a;box-shadow:0 0 8px #35e08a}
+.ibtn{width:36px;height:36px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid var(--line);font-size:17px;display:grid;place-items:center}
+.ibtn:active,.nav button:active,.side button:active{transform:scale(.93)}
+.stam{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;font-weight:600}
+.stam .bar{flex:1;height:9px}
+.stam b{min-width:54px;text-align:right;color:var(--gold)}
+.stats{display:flex;gap:4px;padding:5px}
+.chip{flex:1;min-width:0;text-align:center;padding:3px 0 4px;border-radius:11px;background:rgba(255,255,255,.06)}
+.chip .e{font-size:15px;line-height:1.1}
+.chip .v{font-size:12px;font-weight:700}
+.chip small{display:block;font-size:9px;color:var(--muted);line-height:1}
+
+/* ---------- Nút bên phải (xã hội) ---------- */
+.side{position:absolute;right:10px;top:50%;transform:translateY(-30%);display:flex;flex-direction:column;gap:8px;z-index:10}
+.side button{width:46px;height:46px;border-radius:50%;background:var(--glass);border:1px solid var(--line);box-shadow:var(--glow);font-size:20px;display:grid;place-items:center}
+
+/* ---------- Nút MÚA ---------- */
+#danceBtn{position:absolute;left:50%;bottom:calc(86px + var(--safe-b));transform:translateX(-50%) scale(.6);opacity:0;pointer-events:none;z-index:11;
+  padding:14px 30px;border-radius:40px;font-weight:800;font-size:19px;letter-spacing:.08em;color:#2a0a1d;
+  background:linear-gradient(180deg,#ffe08a,var(--gold) 55%,var(--gold-d));border:2px solid #fff3c4;
+  box-shadow:0 0 22px rgba(245,196,81,.75),0 0 40px rgba(255,45,149,.55);transition:opacity .2s,transform .2s;white-space:nowrap}
+#danceBtn small{display:block;font-size:11px;font-weight:600;letter-spacing:.02em;opacity:.8}
+#danceBtn.show{opacity:1;transform:translateX(-50%) scale(1);pointer-events:auto;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{box-shadow:0 0 30px rgba(245,196,81,1),0 0 58px rgba(255,45,149,.8)}}
+
+/* ---------- Menu dưới ---------- */
+.bottom{position:absolute;left:0;right:0;bottom:0;z-index:10;padding:0 8px calc(4px + var(--safe-b));max-width:560px;margin:0 auto}
+.nav{display:flex;gap:2px;padding:5px 4px}
+.nav button{flex:1;min-width:0;padding:5px 0 3px;border-radius:12px;font-size:10.5px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
+.nav button .e{font-size:20px;line-height:1.1}
+.nav button:hover{background:rgba(255,45,149,.15);color:#fff}
+.copy{text-align:center;font-size:10px;color:var(--muted);opacity:.75;padding:3px 0 0}
+
+/* ---------- Toast ---------- */
+#toast{position:absolute;left:50%;top:calc(200px + var(--safe-t));transform:translate(-50%,-10px);z-index:30;max-width:88vw;
+  background:rgba(13,7,20,.92);border:1px solid var(--gold);color:var(--text);padding:9px 16px;border-radius:14px;font-size:13px;text-align:center;
+  opacity:0;pointer-events:none;transition:.25s;box-shadow:0 0 18px rgba(245,196,81,.35)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Sheet (cửa sổ trượt) ---------- */
+.sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(5,2,10,.6);opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet.open{opacity:1;pointer-events:auto}
+.sheet-card{width:100%;max-width:560px;max-height:82dvh;display:flex;flex-direction:column;border-radius:22px 22px 0 0;
+  background:linear-gradient(180deg,#2a0f47,#150826);border:1px solid var(--line);border-bottom:0;box-shadow:0 -6px 30px rgba(255,45,149,.3);
+  transform:translateY(30px);transition:transform .25s}
+.sheet.open .sheet-card{transform:none}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
+.sheet-head h2{margin:0;font-size:18px;color:var(--gold);text-shadow:0 0 10px rgba(245,196,81,.4)}
+.sheet-head button{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);font-size:16px}
+.sheet-body{padding:4px 16px calc(18px + var(--safe-b));overflow:auto;-webkit-overflow-scrolling:touch;font-size:14px;line-height:1.5;-webkit-user-select:text;user-select:text}
+.sheet-body h3{margin:14px 0 6px;font-size:14px;color:var(--pink)}
+.sheet-body ul{margin:4px 0;padding-left:20px}
+.soon{text-align:center;padding:10px 0 4px}
+.soon .big{font-size:46px}
+.soon .tag{display:inline-block;margin:6px 0 10px;padding:3px 12px;border-radius:20px;background:rgba(245,196,81,.15);border:1px solid var(--gold);color:var(--gold);font-size:12px;font-weight:700}
+.soon ul{text-align:left;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.btn{display:inline-block;padding:10px 18px;border-radius:14px;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:var(--glow);border:1px solid rgba(255,255,255,.25)}
+.btn.gold{color:#2a0a1d;background:linear-gradient(180deg,#ffe08a,var(--gold));}
+.btn.ghost{background:rgba(255,255,255,.08);box-shadow:none}
+.btn.danger{background:#7a1630}
+.btn.block{display:block;width:100%;margin-top:10px;text-align:center}
+input[type=text]{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--text);font:inherit;-webkit-user-select:text;user-select:text}
+input[type=range]{width:150px;accent-color:var(--pink)}
+select{padding:8px;border-radius:10px;background:#210d3a;color:var(--text);border:1px solid var(--line);font:inherit}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.kv div{display:flex;justify-content:space-between;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:10px}
+
+/* ---------- Tạo nhân vật ---------- */
+#custom{position:fixed;left:0;right:0;bottom:0;z-index:35;max-width:560px;margin:0 auto;border-radius:22px 22px 0 0;padding:14px 16px calc(14px + var(--safe-b));
+  background:linear-gradient(180deg,rgba(42,15,71,.96),rgba(13,7,20,.98));border:1px solid var(--line);border-bottom:0;box-shadow:0 -6px 30px rgba(255,45,149,.35);
+  transform:translateY(110%);transition:transform .35s;max-height:56dvh;overflow:auto}
+#custom.open{transform:none}
+#custom h2{margin:0 0 8px;color:var(--gold);font-size:17px;text-align:center}
+.opt-label{font-size:12px;color:var(--muted);margin:10px 0 5px;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:7px}
+.opts button{padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid transparent;font-size:13px}
+.opts button.sel{border-color:var(--gold);background:rgba(245,196,81,.16);box-shadow:0 0 10px rgba(245,196,81,.4)}
+.opts button.sw{width:36px;height:36px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.25)}
+.opts button.sw.sel{border-color:var(--gold);box-shadow:0 0 10px rgba(245,196,81,.7)}
+body.customizing #hud,body.customizing .bottom,body.customizing .side,body.customizing #danceBtn{display:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="view" tabindex="0"></canvas>
+
+  <!-- HUD cố định phía trên -->
+  <div id="hud">
+    <div class="panel hud-top">
+      <div class="badge">💃</div>
+      <div class="who">
+        <div class="nm" id="hudName">Học viên mới</div>
+        <div class="lv"><span>Cấp <b id="hudLv">1</b>/50</span><span class="expnum" id="hudExpTxt">0/50 EXP</span></div>
+        <div class="bar exp"><i id="hudExp"></i></div>
+      </div>
+      <div class="tools">
+        <button class="pill" id="btnNet" aria-label="Trạng thái kết nối"><span class="dot"></span><span id="netTxt">Bot</span></button>
+        <button class="ibtn" id="btnSettings" aria-label="Cài đặt">⚙️</button>
+        <button class="ibtn" id="btnHelp" aria-label="Trợ giúp">❔</button>
+      </div>
+    </div>
+    <div class="panel stam"><span>⚡ Thể lực</span><div class="bar st"><i id="hudSt"></i></div><b id="hudStTxt">100/100</b></div>
+    <div class="panel stats">
+      <div class="chip"><div class="e">💪</div><div class="v" id="sStr">5</div><small>Sức mạnh</small></div>
+      <div class="chip"><div class="e">🤸</div><div class="v" id="sFlex">5</div><small>Dẻo dai</small></div>
+      <div class="chip"><div class="e">⚖️</div><div class="v" id="sBal">5</div><small>Thăng bằng</small></div>
+      <div class="chip"><div class="e">💃</div><div class="v" id="sArt">5</div><small>Nghệ thuật</small></div>
+      <div class="chip"><div class="e">🔥</div><div class="v" id="sCal">0</div><small>Calo</small></div>
+      <div class="chip"><div class="e">🪙</div><div class="v" id="sCoin">100</div><small>Xu</small></div>
+    </div>
+  </div>
+
+  <!-- Nút xã hội (Giai đoạn 4) -->
+  <div class="side">
+    <button id="btnChat" aria-label="Chat">💬</button>
+    <button id="btnEmote" aria-label="Emote">😊</button>
+    <button id="btnFriends" aria-label="Bạn bè">👥</button>
+  </div>
+
+  <button id="danceBtn">💃 MÚA<small id="danceSub"></small></button>
+  <div id="toast"></div>
+
+  <!-- Menu dưới -->
+  <div class="bottom">
+    <div class="panel nav">
+      <button data-menu="quests"><span class="e">📜</span>Nhiệm vụ</button>
+      <button data-menu="shop"><span class="e">🛍️</span>Shop</button>
+      <button data-menu="plans"><span class="e">🎟️</span>Gói tập</button>
+      <button data-menu="profile"><span class="e">👤</span>Hồ sơ</button>
+      <button data-menu="board"><span class="e">🏆</span>Bảng</button>
+      <button data-menu="help"><span class="e">❔</span>Trợ giúp</button>
+    </div>
+    <div class="copy" id="copy"></div>
+  </div>
+</div>
+
+<!-- Tạo / đổi diện mạo -->
+<div id="custom">
+  <h2>✨ Tạo nhân vật của bạn</h2>
+  <input type="text" id="cName" maxlength="16" placeholder="Tên của bạn (VD: Học viên mới)">
+  <div class="opt-label">Kiểu tóc</div><div class="opts" id="oHair"></div>
+  <div class="opt-label">Màu tóc</div><div class="opts" id="oHairColor"></div>
+  <div class="opt-label">Màu da</div><div class="opts" id="oSkin"></div>
+  <div class="opt-label">Trang phục</div><div class="opts" id="oOutfit"></div>
+  <button class="btn gold block" id="cDone">Vào studio ✨</button>
+</div>
+
+<!-- Cửa sổ trượt dùng chung -->
+<div class="sheet" id="sheet"><div class="sheet-card">
+  <div class="sheet-head"><h2 id="sheetTitle"></h2><button id="sheetClose" aria-label="Đóng">✕</button></div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div></div>
+
+<!-- Màn hình tải -->
+<div id="loading">
+  <div class="logo" id="ldLogo">ALIRA</div>
+  <div class="sub">POLE ONLINE</div>
+  <div class="bar"><i id="ldBar"></i></div>
+  <div class="msg" id="ldMsg">Đang mở cửa studio…</div>
+  <div class="foot" id="ldFoot"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* =====================================================================
+   1. CẤU HÌNH NỘI DUNG — CHỈNH Ở ĐÂY (tên studio, link đặt lớp, cột, ...)
+   ===================================================================== */
+const CONFIG = {
+  STUDIO_NAME : 'ALIRA',                      // [TÊN STUDIO]
+  OWNER       : 'Alira Dancing Studio',       // [TÊN CHỦ SỞ HỮU]
+  YEAR        : new Date().getFullYear(),     // [NĂM]
+  BOOKING_URL : '[LINK ZALO/FANPAGE/FORM]',   // nút "Đặt lớp thật tại studio" (dùng ở Giai đoạn 3)
+  DEFAULT_NAME: 'Học viên mới',
+  MAX_LEVEL   : 50,
+
+  STAMINA_MAX : 100,
+  STAMINA_REGEN_PER_SEC: 1/6,                 // hồi 1 thể lực mỗi 6 giây
+  START_STATS : { str:5, flex:5, bal:5, art:5 },
+  START_COINS : 100,
+
+  // Kích thước phòng (mét). Gốc tọa độ ở giữa sàn; tường gương ở phía z âm.
+  ROOM : { halfW:11, halfD:8, height:4.7 },
+
+  // 6 cột. kind: 'static' (cột đứng) | 'spin' (cột xoay).  r = bán kính (m).
+  // finish: chrome | gold | black | rose
+  POLES : [
+    { id:'p1', name:'Cột Mảnh Chrome', kind:'static', r:0.030, finish:'chrome', x:-6, z:-4.6 },
+    { id:'p2', name:'Cột Vàng Chuẩn',  kind:'static', r:0.045, finish:'gold',   x: 0, z:-4.6 },
+    { id:'p3', name:'Cột Xoay Chrome', kind:'spin',   r:0.045, finish:'chrome', x: 6, z:-4.6 },
+    { id:'p4', name:'Cột To Đen',      kind:'static', r:0.075, finish:'black',  x:-6, z: 0.6 },
+    { id:'p5', name:'Cột Xoay Vàng',   kind:'spin',   r:0.060, finish:'gold',   x: 0, z: 0.6 },
+    { id:'p6', name:'Cột Xoay Mini',   kind:'spin',   r:0.030, finish:'rose',   x: 6, z: 0.6 },
+  ],
+  POLE_USE_DISTANCE : 1.7,                    // đứng gần cột bao nhiêu mét thì hiện nút [MÚA]
+
+  // Tuỳ chọn diện mạo (Giai đoạn 3 sẽ thêm đồ từ Shop)
+  HAIR_STYLES : ['Búi cao','Tóc dài','Đuôi ngựa','Tóc bob'],
+  HAIR_COLORS : ['#1b1b1f','#5b3a29','#c9a24a','#e0449a','#8a3ffc','#ece4d6'],
+  SKINS       : ['#f6d5c0','#e8b998','#c68b62','#8d5a3c'],
+  OUTFITS : [
+    { name:'Hồng Sport', top:'#ff2d95', bottom:'#1a1a22', shoes:'#ffffff' },
+    { name:'Tím Neon',   top:'#8a3ffc', bottom:'#2a1450', shoes:'#f5c451' },
+    { name:'Đen Gold',   top:'#15151b', bottom:'#15151b', shoes:'#f5c451' },
+    { name:'Trắng Ngọc', top:'#f4eefa', bottom:'#e0449a', shoes:'#8a3ffc' },
+  ],
+  BOT_NAMES : ['Mai Anh','Thảo Vy','Khánh Linh'],
+};
+
+/* =====================================================================
+   2. TIỆN ÍCH
+   ===================================================================== */
+const $ = (id)=>document.getElementById(id);
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp = (a,b,t)=>a+(b-a)*t;
+const fmt = (n)=>Math.round(n).toLocaleString('vi-VN');
+const rand = (a,b)=>a+Math.random()*(b-a);
+function angDiff(a,b){ let d=(b-a)%(Math.PI*2); if(d>Math.PI)d-=Math.PI*2; if(d<-Math.PI)d+=Math.PI*2; return d; }
+function frame(){ return new Promise(r=>requestAnimationFrame(()=>r())); }
+
+/* =====================================================================
+   3. TRẠNG THÁI GAME + LƯU TRỮ (localStorage)
+   ===================================================================== */
+const SAVE_KEY = 'poleonline.save.v1';
+const GAME = {
+  state: null,
+  defaults(){
+    return {
+      v:1, name:CONFIG.DEFAULT_NAME, firstRun:true,
+      level:1, exp:0,
+      stamina:CONFIG.STAMINA_MAX, staminaAt:Date.now(),
+      stats:{...CONFIG.START_STATS}, calo:0, coins:CONFIG.START_COINS,
+      look:{ hair:0, hairColor:0, skin:1, outfit:0 },
+      settings:{ quality:null, sens:1, tags:true },
+      // Các phần dưới sẽ dùng ở giai đoạn sau:
+      unlocked:[], badges:[], totalScore:0, quests:{}, inventory:[], plan:null,
+    };
+  },
+  load(){
+    let s=null;
+    try{ s=JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){}
+    const d=this.defaults();
+    this.state = s ? Object.assign(d, s, {
+      stats:Object.assign(d.stats,s.stats||{}),
+      look:Object.assign(d.look,s.look||{}),
+      settings:Object.assign(d.settings,s.settings||{}),
+    }) : d;
+    this.tickStamina();      // hồi thể lực theo thời gian đã offline
+  },
+  save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(this.state)); }catch(e){} },
+  reset(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} location.reload(); },
+  // Thể lực hồi dần theo thời gian thực (kể cả khi đóng game)
+  tickStamina(){
+    const s=this.state, now=Date.now();
+    if(s.stamina < CONFIG.STAMINA_MAX){
+      s.stamina = Math.min(CONFIG.STAMINA_MAX, s.stamina + (now-s.staminaAt)/1000*CONFIG.STAMINA_REGEN_PER_SEC);
+    }
+    s.staminaAt = now;
+  },
+  // EXP cần để lên cấp kế tiếp (Giai đoạn 2 dùng) — chỉnh công thức tại đây
+  expNeed(level){ return 50 + (level-1)*30; },
+};
+
+/* =====================================================================
+   4. KẾT NỐI (bản giả lập) — chừa chỗ nối Firebase / Supabase sau này
+   ===================================================================== */
+const Net = {
+  mode:'bot',                   // 'bot' = giả lập cục bộ | 'online' = backend thật
+  connected:false,
+  async connect(){
+    // TODO (Firebase/Supabase): khởi tạo client, đăng nhập ẩn danh, đặt this.connected = true, this.mode = 'online'
+    this.mode='bot'; this.connected=false; return this.mode;
+  },
+  sendChat(text){ /* TODO: đẩy tin nhắn lên backend */ },
+  onChat(cb){ /* TODO: lắng nghe tin nhắn từ người khác */ },
+  fetchLeaderboard(){ /* TODO: lấy bảng xếp hạng thật */ return []; },
+  fetchFriends(){ /* TODO: lấy danh sách bạn bè thật */ return []; },
+  syncProfile(profile){ /* TODO: đồng bộ hồ sơ lên backend */ },
+};
+
+/* =====================================================================
+   5. BIẾN TOÀN CỤC CỦA CẢNH 3D
+   ===================================================================== */
+let renderer, scene, camera;
+const A = {};                           // kho tài nguyên (texture, vật liệu) dùng chung
+const matCache = {};
+const ROOM = CONFIG.ROOM;
+const COLLIDERS = [];                   // vật cản (để nhân vật không đi xuyên)
+const poleRefs = {};                    // id -> { ringMat, hit, def }
+const hitMeshes = [];                   // hộp va chạm vô hình để chạm vào cột
+let spinAnim = [];                      // các đối tượng xoay (cột xoay)
+let mirrorRoot, mirrorWrap;             // thế giới phản chiếu sau tường gương
+let mirrorOn = true;
+
+function M(color, kind, extra){
+  const key=color+'|'+(kind||'l')+'|'+(extra?JSON.stringify(extra):'');
+  if(matCache[key]) return matCache[key];
+  const o=Object.assign({color}, extra||{});
+  const m = kind==='p' ? new THREE.MeshPhongMaterial(o) : kind==='b' ? new THREE.MeshBasicMaterial(o) : new THREE.MeshLambertMaterial(o);
+  return matCache[key]=m;
+}
+
+/* =====================================================================
+   6. TEXTURE VẼ BẰNG CANVAS (nhẹ, không cần file ảnh)
+   ===================================================================== */
+function canvasTex(w,h,draw){
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  draw(c.getContext('2d'),w,h);
+  const t=new THREE.CanvasTexture(c); t.anisotropy=2; return t;
+}
+function makeAssets(){
+  // Sàn gỗ
+  A.floorTex = canvasTex(512,512,(g,w,h)=>{
+    const n=8, pw=w/n;
+    for(let i=0;i<n;i++){
+      let y=0;
+      while(y<h){
+        const len=rand(120,260), l=rand(46,60);
+        g.fillStyle=`hsl(24,${rand(34,46)}%,${l*0.42}%)`;
+        g.fillRect(i*pw,y,pw,Math.min(len,h-y));
+        g.fillStyle='rgba(0,0,0,.35)'; g.fillRect(i*pw,y,pw,2);
+        for(let k=0;k<5;k++){ g.fillStyle=`rgba(255,220,180,${rand(.02,.07)})`; g.fillRect(i*pw+rand(0,pw),y,1.5,len); }
+        y+=len;
+      }
+      g.fillStyle='rgba(0,0,0,.45)'; g.fillRect(i*pw,0,2,h);
+    }
+  });
+  A.floorTex.wrapS=A.floorTex.wrapT=THREE.RepeatWrapping;
+  A.floorTex.repeat.set(ROOM.halfW*2/2.2, ROOM.halfD*2/2.2);
+  A.floorMat = new THREE.MeshPhongMaterial({map:A.floorTex, specular:0x553355, shininess:50});
+
+  // Tường (dải dọc: tường tím đậm + chân tường + viền vàng)
+  A.wallTex = canvasTex(8,512,(g,w,h)=>{
+    const gr=g.createLinearGradient(0,0,0,h);
+    gr.addColorStop(0,'#150826'); gr.addColorStop(.7,'#2a1048'); gr.addColorStop(1,'#3a1668');
+    g.fillStyle=gr; g.fillRect(0,0,w,h);
+    const wy=h*(1-1.0/ROOM.height);
+    g.fillStyle='#120620'; g.fillRect(0,wy,w,h-wy);
+    g.fillStyle='#f5c451'; g.fillRect(0,wy-3,w,4);
+  });
+  A.wallMat = new THREE.MeshLambertMaterial({map:A.wallTex});
+
+  // Gương: nền tối trong suốt + vệt sáng chéo
+  A.mirrorTex = canvasTex(256,512,(g,w,h)=>{
+    g.fillStyle='rgba(20,8,36,.42)'; g.fillRect(0,0,w,h);
+    const streak=(x,wd,a)=>{
+      g.save(); g.translate(x,0); g.transform(1,0,-0.45,1,0,0);
+      const gr=g.createLinearGradient(-wd,0,wd,0);
+      gr.addColorStop(0,'rgba(255,255,255,0)'); gr.addColorStop(.5,`rgba(255,235,250,${a})`); gr.addColorStop(1,'rgba(255,255,255,0)');
+      g.fillStyle=gr; g.fillRect(-wd,0,wd*2,h); g.restore();
+    };
+    streak(70,22,.16); streak(150,10,.12); streak(210,30,.1);
+  });
+  A.mirrorMat = new THREE.MeshBasicMaterial({map:A.mirrorTex, transparent:true, depthWrite:false});
+
+  // Chữ neon trên tường lễ tân
+  A.signTex = canvasTex(512,160,(g,w,h)=>{
+    g.textAlign='center'; g.textBaseline='middle';
+    g.shadowColor='#ff2d95'; g.shadowBlur=22; g.fillStyle='#ffd6ee';
+    g.font='800 76px "Be Vietnam Pro",system-ui,sans-serif'; g.fillText(CONFIG.STUDIO_NAME,w/2,62);
+    g.shadowColor='#8a3ffc'; g.fillStyle='#e6d2ff'; g.font='700 34px "Be Vietnam Pro",system-ui,sans-serif';
+    g.fillText('P O L E   O N L I N E',w/2,126);
+  });
+  A.signMat = new THREE.MeshBasicMaterial({map:A.signTex, transparent:true, depthWrite:false});
+
+  // Poster
+  A.posters = ['STRONG','FLEXIBLE','FEARLESS','FLY'].map((t,i)=>canvasTex(256,360,(g,w,h)=>{
+    const c1=['#ff2d95','#8a3ffc','#f5c451','#ff2d95'][i], c2=['#3b1675','#150826','#3b1675','#150826'][i];
+    const gr=g.createLinearGradient(0,0,w,h); gr.addColorStop(0,c2); gr.addColorStop(1,'#0d0714');
+    g.fillStyle=gr; g.fillRect(0,0,w,h);
+    g.strokeStyle=c1; g.lineWidth=6; g.strokeRect(10,10,w-20,h-20);
+    g.shadowColor=c1; g.shadowBlur=18; g.fillStyle='#fff'; g.textAlign='center';
+    g.font='800 44px "Be Vietnam Pro",sans-serif'; g.fillText(t,w/2,h*0.55);
+    g.font='80px sans-serif'; g.fillText('💃',w/2,h*0.3);
+  }));
+
+  // Bóng mờ dưới chân nhân vật
+  A.shadowTex = canvasTex(64,64,(g,w,h)=>{
+    const gr=g.createRadialGradient(32,32,2,32,32,32); gr.addColorStop(0,'rgba(0,0,0,.55)'); gr.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=gr; g.fillRect(0,0,w,h);
+  });
+  A.shadowMat = new THREE.MeshBasicMaterial({map:A.shadowTex, transparent:true, depthWrite:false});
+
+  // Hoàn thiện vật liệu cột
+  A.pole = {
+    chrome:new THREE.MeshPhongMaterial({color:0xdfe3ee, specular:0xffffff, shininess:120}),
+    gold  :new THREE.MeshPhongMaterial({color:0xf0c250, specular:0xfff2c0, shininess:100}),
+    black :new THREE.MeshPhongMaterial({color:0x1b1b22, specular:0x9a8ab0, shininess:80}),
+    rose  :new THREE.MeshPhongMaterial({color:0xf2a0b8, specular:0xffffff, shininess:100}),
+  };
+  CONFIG.POLES.forEach(p=>{
+    A['ring_'+p.id] = new THREE.MeshBasicMaterial({color:0xff2d95, transparent:true, opacity:.55, side:THREE.DoubleSide});
+  });
+}
+
+/* =====================================================================
+   7. DỰNG STUDIO  (gọi 2 lần: 1 lần thật, 1 lần để tạo hình phản chiếu trong gương)
+   ===================================================================== */
+function neon(root, color, w,h,d, x,y,z){
+  const core=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), M(color,'b'));
+  core.position.set(x,y,z); root.add(core);
+  const halo=new THREE.Mesh(new THREE.BoxGeometry(w+(w>.2?0:.14),h+(h>.2?0:.14),d+(d>.2?0:.14)),
+    M(color,'b',{transparent:true,opacity:.2,blending:THREE.AdditiveBlending,depthWrite:false}));
+  halo.position.copy(core.position); root.add(halo);
+}
+function box(root,w,h,d,x,y,z,mat){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); root.add(m); return m; }
+function cyl(root,rt,rb,h,x,y,z,mat,seg){ const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||18),mat); m.position.set(x,y,z); root.add(m); return m; }
+
+function buildStudio(root, isMirror){
+  const W=ROOM.halfW, D=ROOM.halfD, H=ROOM.height;
+  const GOLD=M('#f5c451','p',{specular:0xfff0b0,shininess:80});
+  const DARK=M('#14091f','p',{specular:0x553366,shininess:40});
+
+  // Sàn + trần
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(W*2,D*2),A.floorMat); floor.rotation.x=-Math.PI/2; root.add(floor);
+  const ceil=new THREE.Mesh(new THREE.PlaneGeometry(W*2,D*2),M('#0d0714')); ceil.rotation.x=Math.PI/2; ceil.position.y=H; root.add(ceil);
+
+  // Tường trái / phải / trước (mặt hướng vào trong phòng)
+  const wl=new THREE.Mesh(new THREE.PlaneGeometry(D*2,H),A.wallMat); wl.rotation.y=Math.PI/2;  wl.position.set(-W,H/2,0); root.add(wl);
+  const wr=new THREE.Mesh(new THREE.PlaneGeometry(D*2,H),A.wallMat); wr.rotation.y=-Math.PI/2; wr.position.set( W,H/2,0); root.add(wr);
+  const wf=new THREE.Mesh(new THREE.PlaneGeometry(W*2,H),A.wallMat); wf.rotation.y=Math.PI;     wf.position.set(0,H/2, D); root.add(wf);
+
+  // Tường sau = TƯỜNG GƯƠNG (chỉ dựng ở bản thật)
+  if(!isMirror){
+    const wainH=0.9, topY=4.3, mh=topY-wainH, n=5, pw=W*2/n;
+    box(root,W*2,wainH,0.1,0,wainH/2,-D-0.05,DARK);                 // chân tường
+    box(root,W*2,H-topY,0.1,0,topY+(H-topY)/2,-D-0.05,DARK);        // trần giả phía trên gương
+    for(let i=0;i<n;i++){
+      const p=new THREE.Mesh(new THREE.PlaneGeometry(pw-0.08,mh),A.mirrorMat);
+      p.position.set(-W+pw*(i+.5),wainH+mh/2,-D+0.01); p.renderOrder=2; root.add(p);
+    }
+    for(let i=0;i<=n;i++) box(root,0.07,mh,0.1,-W+pw*i,wainH+mh/2,-D+0.02,GOLD);   // khung vàng
+    box(root,W*2,0.07,0.1,0,wainH,-D+0.02,GOLD);
+    box(root,W*2,0.07,0.1,0,topY,-D+0.02,GOLD);
+    // Thanh bám (barre) trước gương
+    box(root,W*1.6,0.05,0.05,0,1.05,-D+0.45,GOLD);
+    for(let i=-3;i<=3;i++) box(root,0.04,0.2,0.04,i*(W*1.6/6),0.95,-D+0.42,GOLD);
+  }
+
+  // Đèn neon: viền trần, dải tường, hộp sáng sau gương
+  neon(root,'#ff2d95', W*2-3,0.05,0.05, 0,H-0.12,-D+1.6);
+  neon(root,'#ff2d95', W*2-3,0.05,0.05, 0,H-0.12, D-1.6);
+  neon(root,'#8a3ffc', 0.05,0.05,D*2-3, -W+1.6,H-0.12,0);
+  neon(root,'#8a3ffc', 0.05,0.05,D*2-3,  W-1.6,H-0.12,0);
+  neon(root,'#ff2d95', 0.05,0.05,D*2-1.2, -W+0.06,3.3,0);
+  neon(root,'#8a3ffc', 0.05,0.05,D*2-1.2,  W-0.06,3.3,0);
+  neon(root,'#ff2d95', W*2-1,0.05,0.05, 0,4.45,-D+0.1);
+  // Vòng neon trên trần giữa phòng
+  neon(root,'#ff5cb8', 8,0.05,0.05, 0,H-0.2,-1.2);
+  neon(root,'#ff5cb8', 8,0.05,0.05, 0,H-0.2, 3.2);
+  neon(root,'#ff5cb8', 0.05,0.05,4.4, -4,H-0.2,1);
+  neon(root,'#ff5cb8', 0.05,0.05,4.4,  4,H-0.2,1);
+
+  // Poster 2 bên tường
+  [[-W+0.02,'L',0],[-W+0.02,'L',1],[W-0.02,'R',2],[W-0.02,'R',3]].forEach((q,i)=>{
+    const pm=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.7), new THREE.MeshBasicMaterial({map:A.posters[q[2]]}));
+    pm.position.set(q[0],2.1,i%2===0?-3.2:3.0);
+    pm.rotation.y=q[1]==='L'?Math.PI/2:-Math.PI/2; root.add(pm);
+    const fr=new THREE.Mesh(new THREE.PlaneGeometry(1.32,1.82),M('#f5c451','b')); fr.position.copy(pm.position);
+    fr.position.x += (q[1]==='L'?-0.005:0.005); fr.rotation.y=pm.rotation.y; root.add(fr);
+  });
+
+  // ---------- 6 cột ----------
+  CONFIG.POLES.forEach(def=>{
+    const g=new THREE.Group(); g.position.set(def.x,0,def.z); root.add(g);
+    const mat=A.pole[def.finish]||A.pole.chrome;
+    // thảm sân khấu + vòng sáng
+    const stage=new THREE.Mesh(new THREE.CircleGeometry(0.85,28), M('#2a0f47','p',{specular:0x442266,shininess:30}));
+    stage.rotation.x=-Math.PI/2; stage.position.y=0.012; g.add(stage);
+    const ring=new THREE.Mesh(new THREE.RingGeometry(0.78,0.86,32), A['ring_'+def.id]);
+    ring.rotation.x=-Math.PI/2; ring.position.y=0.02; g.add(ring);
+    // thân cột
+    const body=new THREE.Mesh(new THREE.CylinderGeometry(def.r,def.r,H,20), mat); body.position.y=H/2;
+    if(def.kind==='spin'){
+      const sp=new THREE.Group(); sp.add(body);
+      const stripe=new THREE.Mesh(new THREE.BoxGeometry(0.012,H-0.4,0.012),M('#ff2d95','b')); stripe.position.set(def.r+0.004,H/2,0); sp.add(stripe);
+      g.add(sp); spinAnim.push({obj:sp,speed:def.r>0.05?1.4:2.2});
+    } else g.add(body);
+    cyl(g,0.2,0.22,0.04,0,0.03,0,mat,24);       // đế
+    cyl(g,0.1,0.1,0.05,0,H-0.03,0,mat,20);      // chụp trần
+    if(!isMirror){
+      const hit=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.45,H,8), new THREE.MeshBasicMaterial({visible:false}));
+      hit.position.y=H/2; hit.userData.pole=def.id; g.add(hit); hitMeshes.push(hit);
+      poleRefs[def.id]={def, ringMat:A['ring_'+def.id]};
+    }
+  });
+
+  // ---------- Khu ghế nghỉ (góc trước phải) ----------
+  const VEL=M('#5b2a86','p',{specular:0x221133,shininess:20}), PINK=M('#e0449a','p',{specular:0x331122,shininess:20});
+  const rug=new THREE.Mesh(new THREE.CircleGeometry(2.4,32),M('#3a1458','p')); rug.rotation.x=-Math.PI/2; rug.position.set(7.5,0.012,5.5); root.add(rug);
+  const rugR=new THREE.Mesh(new THREE.RingGeometry(2.1,2.18,40),M('#f5c451','b')); rugR.rotation.x=-Math.PI/2; rugR.position.set(7.5,0.02,5.5); root.add(rugR);
+  box(root,3.4,0.45,1.0, 7.5,0.225,7.0, VEL);                 // đế sofa
+  box(root,3.4,0.75,0.25,7.5,0.62,7.6, VEL);                  // lưng
+  box(root,0.25,0.65,1.0, 5.9,0.5,7.0, VEL); box(root,0.25,0.65,1.0, 9.1,0.5,7.0, VEL);   // tay vịn
+  box(root,0.9,0.18,0.8, 6.8,0.54,7.0, PINK); box(root,0.9,0.18,0.8, 8.2,0.54,7.0, PINK); // đệm
+  cyl(root,0.58,0.58,0.05, 7.5,0.42,5.0, GOLD,24); cyl(root,0.08,0.08,0.4, 7.5,0.2,5.0, GOLD,10); cyl(root,0.3,0.3,0.03, 7.5,0.02,5.0, GOLD,16);
+  [[5.0,6.2],[10.1,5.0]].forEach(p=>{ cyl(root,0.38,0.38,0.42,p[0],0.21,p[1],PINK,16); });
+
+  // ---------- Quầy lễ tân (góc trước trái) ----------
+  box(root,4.4,1.1,1.0, -7.5,0.55,6.6, DARK);
+  box(root,4.6,0.08,1.2, -7.5,1.12,6.6, GOLD);
+  neon(root,'#ff2d95', 4.2,0.05,0.05, -7.5,0.22,6.08);
+  neon(root,'#8a3ffc', 4.2,0.05,0.05, -7.5,0.95,6.08);
+  box(root,0.7,0.45,0.05, -8.6,1.45,6.7, M('#0d0714','p',{specular:0x8866aa,shininess:90}));   // màn hình
+  cyl(root,0.15,0.15,0.03, -6.3,1.18,6.4, GOLD,12);                                             // chuông
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(5,1.56),A.signMat); sign.position.set(-7.5,2.8,D-0.03); sign.rotation.y=Math.PI; root.add(sign);
+
+  // ---------- Cây cảnh ----------
+  [[-10.2,-7.2],[10.2,-7.2],[10.2,3.2],[-10.2,3.6]].forEach(p=>{
+    cyl(root,0.3,0.22,0.5,p[0],0.25,p[1],M('#1a1a22'),12);
+    [[0,0.9,0,0.38],[0.15,1.25,0.05,0.3],[-0.12,1.5,-0.05,0.24]].forEach(s=>{
+      const m=new THREE.Mesh(new THREE.SphereGeometry(s[3],8,6),M('#2f8f5b')); m.position.set(p[0]+s[0],s[1],p[1]+s[2]); root.add(m);
+    });
+  });
+}
+
+// Vật cản (khớp với vị trí đồ vật ở trên)
+function buildColliders(){
+  CONFIG.POLES.forEach(p=>COLLIDERS.push({t:'c',x:p.x,z:p.z,r:0.28}));
+  COLLIDERS.push({t:'b',x0:-9.85,x1:-5.15,z0:6.0,z1:7.3});     // quầy lễ tân
+  COLLIDERS.push({t:'b',x0:5.7,x1:9.3,z0:6.4,z1:7.9});         // sofa
+  COLLIDERS.push({t:'c',x:7.5,z:5.0,r:0.6});                   // bàn
+  COLLIDERS.push({t:'c',x:5.0,z:6.2,r:0.4},{t:'c',x:10.1,z:5.0,r:0.4}); // pouf
+  [[-10.2,-7.2],[10.2,-7.2],[10.2,3.2],[-10.2,3.6]].forEach(p=>COLLIDERS.push({t:'c',x:p[0],z:p[1],r:0.35}));
+}
+function resolveCollision(p, rad){
+  p.x=clamp(p.x,-ROOM.halfW+0.6,ROOM.halfW-0.6);
+  p.z=clamp(p.z,-ROOM.halfD+1.0,ROOM.halfD-0.6);       // chừa chỗ cho thanh bám trước gương
+  for(const c of COLLIDERS){
+    if(c.t==='c'){
+      const dx=p.x-c.x, dz=p.z-c.z, l=Math.hypot(dx,dz), m=c.r+rad;
+      if(l<m){ if(l<1e-4){p.x=c.x+m;} else {p.x=c.x+dx/l*m; p.z=c.z+dz/l*m;} }
+    } else {
+      const cx=clamp(p.x,c.x0,c.x1), cz=clamp(p.z,c.z0,c.z1), dx=p.x-cx, dz=p.z-cz, l=Math.hypot(dx,dz);
+      if(l<rad){
+        if(l<1e-4){ // nằm trong hộp: đẩy ra cạnh gần nhất
+          const d=[p.x-c.x0,c.x1-p.x,p.z-c.z0,c.z1-p.z], i=d.indexOf(Math.min(...d));
+          if(i===0)p.x=c.x0-rad; else if(i===1)p.x=c.x1+rad; else if(i===2)p.z=c.z0-rad; else p.z=c.z1+rad;
+        } else { p.x=cx+dx/l*rad; p.z=cz+dz/l*rad; }
+      }
+    }
+  }
+}
+
+/* =====================================================================
+   8. NHÂN VẬT LOW-POLY
+   ===================================================================== */
+function buildAvatar(look){
+  const outfit=CONFIG.OUTFITS[look.outfit]||CONFIG.OUTFITS[0];
+  const skin=M(CONFIG.SKINS[look.skin]||CONFIG.SKINS[0]);
+  const top=M(outfit.top), bot=M(outfit.bottom), shoe=M(outfit.shoes);
+  const hairM=M(CONFIG.HAIR_COLORS[look.hairColor]||CONFIG.HAIR_COLORS[0]);
+  const root=new THREE.Group();            // toàn thân (để bồng bềnh khi đi)
+  const P={};                              // các khớp để làm animation
+  const add=(parent,geo,mat,x,y,z)=>{ const m=new THREE.Mesh(geo,mat); m.position.set(x,y,z); parent.add(m); return m; };
+
+  // chân
+  [-1,1].forEach(s=>{
+    const leg=new THREE.Group(); leg.position.set(s*0.1,0.88,0); root.add(leg);
+    add(leg,new THREE.BoxGeometry(0.13,0.74,0.13),skin,0,-0.4,0);
+    add(leg,new THREE.BoxGeometry(0.16,0.26,0.16),bot,0,-0.13,0);
+    add(leg,new THREE.BoxGeometry(0.15,0.09,0.24),shoe,0,-0.8,0.04);
+    P[s<0?'legL':'legR']=leg;
+  });
+  // thân: hông / bụng / ngực
+  add(root,new THREE.BoxGeometry(0.4,0.16,0.22),bot,0,0.95,0);
+  add(root,new THREE.BoxGeometry(0.34,0.14,0.19),skin,0,1.1,0);
+  add(root,new THREE.BoxGeometry(0.42,0.26,0.23),top,0,1.3,0);
+  // tay
+  [-1,1].forEach(s=>{
+    const arm=new THREE.Group(); arm.position.set(s*0.27,1.4,0); root.add(arm);
+    add(arm,new THREE.BoxGeometry(0.09,0.58,0.09),skin,0,-0.28,0);
+    P[s<0?'armL':'armR']=arm;
+  });
+  // cổ + đầu
+  add(root,new THREE.CylinderGeometry(0.045,0.05,0.08,8),skin,0,1.47,0);
+  const head=new THREE.Group(); head.position.set(0,1.62,0); root.add(head); P.head=head;
+  add(head,new THREE.SphereGeometry(0.14,12,10),skin,0,0,0);
+  add(head,new THREE.SphereGeometry(0.018,6,5),M('#15101a'),-0.05,0.01,0.128);
+  add(head,new THREE.SphereGeometry(0.018,6,5),M('#15101a'), 0.05,0.01,0.128);
+  add(head,new THREE.BoxGeometry(0.05,0.014,0.01),M('#e0446f'),0,-0.06,0.134);
+  // tóc: chỏm nón + kiểu riêng
+  const cap=add(head,new THREE.SphereGeometry(0.158,12,8,0,Math.PI*2,0,Math.PI*0.56),hairM,0,0.005,-0.012); cap.rotation.x=-0.38;
+  switch(look.hair){
+    case 0: add(head,new THREE.SphereGeometry(0.075,8,6),hairM,0,0.2,-0.03); break;                        // búi cao
+    case 1: add(head,new THREE.BoxGeometry(0.31,0.52,0.08),hairM,0,-0.2,-0.12);                             // tóc dài
+            add(head,new THREE.BoxGeometry(0.03,0.3,0.14),hairM,-0.15,-0.08,-0.04); add(head,new THREE.BoxGeometry(0.03,0.3,0.14),hairM,0.15,-0.08,-0.04); break;
+    case 2: { const tail=new THREE.Group(); tail.position.set(0,0.06,-0.15); tail.rotation.x=0.55; head.add(tail);
+            add(tail,new THREE.CylinderGeometry(0.035,0.02,0.4,7),hairM,0,-0.2,0); add(head,new THREE.SphereGeometry(0.03,6,5),M('#f5c451'),0,0.07,-0.15); break; } // đuôi ngựa
+    default: add(head,new THREE.BoxGeometry(0.33,0.2,0.27),hairM,0,-0.05,-0.05);                            // bob
+  }
+  // bóng dưới chân
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),A.shadowMat); sh.rotation.x=-Math.PI/2; sh.position.y=0.02;
+  const g=new THREE.Group(); g.add(root); g.add(sh);
+  return {group:g, inner:root, parts:P};
+}
+function disposeGroup(g){ g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
+
+function makeNameTag(text){
+  const c=document.createElement('canvas'); c.width=256; c.height=64;
+  const g=c.getContext('2d'); g.textAlign='center'; g.textBaseline='middle';
+  g.font='700 30px "Be Vietnam Pro",system-ui,sans-serif';
+  const w=Math.min(250,g.measureText(text).width+30);
+  g.fillStyle='rgba(13,7,20,.72)'; g.beginPath(); g.roundRect ? g.roundRect(128-w/2,8,w,48,22) : g.rect(128-w/2,8,w,48); g.fill();
+  g.strokeStyle='rgba(255,45,149,.8)'; g.lineWidth=2; g.stroke();
+  g.fillStyle='#fff3fa'; g.fillText(text,128,33);
+  const tex=new THREE.CanvasTexture(c);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
+  sp.scale.set(1.25,0.31,1); sp.position.y=2.0; sp.renderOrder=5; return sp;
+}
+
+/* Actor = nhân vật + bản phản chiếu trong gương + tên */
+class Actor{
+  constructor(look,name){
+    this.look=look; this.name=name;
+    this.root=new THREE.Group(); this.mroot=new THREE.Group();
+    this.phase=Math.random()*6; this.moving=false; this.pose='idle'; this.yaw=0;
+    this.rebuild(look); this.setName(name);
+  }
+  rebuild(look){
+    this.look=look;
+    if(this.av){ this.root.remove(this.av.group); disposeGroup(this.av.group); this.mroot.remove(this.mav.group); disposeGroup(this.mav.group); }
+    this.av=buildAvatar(look); this.mav=buildAvatar(look);
+    this.root.add(this.av.group); this.mroot.add(this.mav.group);
+  }
+  setName(name){
+    this.name=name;
+    if(this.tag){ this.root.remove(this.tag); this.tag.material.map.dispose(); this.tag.material.dispose(); }
+    this.tag=makeNameTag(name); this.tag.visible=GAME.state.settings.tags; this.root.add(this.tag);
+  }
+  update(dt,t){
+    const P=this.av.parts, k=Math.min(1,dt*10);
+    let lx=0,rx=0,alx=0,arx=0,bob=0;
+    if(this.pose==='hold'){ alx=arx=-2.75; lx=0.25; rx=-0.15; }
+    else if(this.moving){ this.phase+=dt*9; const s=Math.sin(this.phase); lx=s*0.7; rx=-s*0.7; alx=-s*0.6; arx=s*0.6; bob=Math.abs(Math.cos(this.phase))*0.035; }
+    else bob=Math.sin(t*2+this.phase)*0.008;
+    P.legL.rotation.x=lerp(P.legL.rotation.x,lx,k);   P.legR.rotation.x=lerp(P.legR.rotation.x,rx,k);
+    P.armL.rotation.x=lerp(P.armL.rotation.x,alx,k);  P.armR.rotation.x=lerp(P.armR.rotation.x,arx,k);
+    this.av.inner.position.y=bob;
+    this.root.rotation.y=this.yaw;
+    // đồng bộ bản phản chiếu
+    if(mirrorOn){
+      const Q=this.mav.parts;
+      for(const key of ['legL','legR','armL','armR']) Q[key].rotation.x=P[key].rotation.x;
+      this.mav.inner.position.y=bob;
+      this.mroot.position.copy(this.root.position); this.mroot.rotation.y=this.yaw;
+    }
+  }
+}
+
+/* =====================================================================
+   9. NGƯỜI CHƠI, BOT, ĐIỀU KHIỂN
+   ===================================================================== */
+let player, bots=[];
+const input = { keys:{}, pointers:new Map(), downAt:0, moved:0, pinch:0 };
+const cam = { yaw:0, pitch:0.3, dist:6.2, tYaw:0, tPitch:0.3, tDist:6.2, target:new THREE.Vector3() };
+let mode='play';                    // 'play' | 'customize'
+let moveTarget=null, stuckT=0;
+let danceDemo=null;                 // placeholder minigame (Giai đoạn 2 thay thế)
+let marker;
+const _v=new THREE.Vector3(), _ray=new THREE.Raycaster(), _plane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+
+function setupPlayer(){
+  player=new Actor(GAME.state.look, GAME.state.name);
+  player.root.position.set(0,0,3.6); player.yaw=Math.PI; player.speed=3.4;
+  scene.add(player.root); mirrorRoot.add(player.mroot);
+}
+function setupBots(){
+  const spots=[[-3,3],[3,3.5],[-9,0]];
+  CONFIG.BOT_NAMES.forEach((nm,i)=>{
+    const look={hair:i%4,hairColor:(i*2+1)%6,skin:(i+2)%4,outfit:(i+1)%4};
+    const b=new Actor(look,nm); b.root.position.set(spots[i][0],0,spots[i][1]); b.speed=1.8+Math.random()*0.5;
+    b.target=null; b.wait=rand(1,4); b.holdT=0; b.pole=null;
+    scene.add(b.root); mirrorRoot.add(b.mroot); bots.push(b);
+  });
+}
+function updateBots(dt){
+  for(const b of bots){
+    const p=b.root.position;
+    if(b.holdT>0){                    // đang "tập" ở cột
+      b.holdT-=dt; b.moving=false; b.pose='hold';
+      b.orbit+=dt*1.6; const d=b.pole; p.set(d.x+Math.sin(b.orbit)*0.32,0,d.z+Math.cos(b.orbit)*0.32); b.yaw=b.orbit+Math.PI;
+      if(b.holdT<=0){ b.pose='idle'; b.wait=rand(1,3); }
+    } else if(b.target){
+      _v.set(b.target.x-p.x,0,b.target.z-p.z); const l=_v.length();
+      if(l<0.15){ b.target=null; b.moving=false; b.wait=rand(2,5);
+        if(b.nextPole){ b.pole=b.nextPole; b.nextPole=null; b.holdT=rand(4,8); b.orbit=Math.atan2(p.x-b.pole.x,p.z-b.pole.z); } }
+      else { _v.multiplyScalar(1/l); p.x+=_v.x*b.speed*dt; p.z+=_v.z*b.speed*dt; resolveCollisionBot(p);
+        b.moving=true; b.yaw+=angDiff(b.yaw,Math.atan2(_v.x,_v.z))*Math.min(1,dt*8); }
+    } else {
+      b.moving=false; b.wait-=dt;
+      if(b.wait<=0){
+        if(Math.random()<0.5){ const d=CONFIG.POLES[Math.floor(Math.random()*CONFIG.POLES.length)];
+          b.nextPole=d; b.target={x:d.x+Math.sin(1)*0.9,z:d.z+Math.cos(1)*0.9}; }
+        else b.target={x:rand(-9,9),z:rand(-5.5,6)};
+      }
+    }
+    b.update(dt,clock.elapsedTime);
+  }
+}
+function resolveCollisionBot(p){ // bot không bị đẩy ra khỏi cột khi tới "tập"; chỉ giữ trong phòng
+  p.x=clamp(p.x,-ROOM.halfW+0.8,ROOM.halfW-0.8); p.z=clamp(p.z,-ROOM.halfD+1.2,ROOM.halfD-0.8);
+  for(const c of COLLIDERS){ if(c.t!=='b') continue;
+    const cx=clamp(p.x,c.x0,c.x1), cz=clamp(p.z,c.z0,c.z1), dx=p.x-cx, dz=p.z-cz, l=Math.hypot(dx,dz);
+    if(l<0.3 && l>1e-4){ p.x=cx+dx/l*0.3; p.z=cz+dz/l*0.3; } }
+}
+
+function nearestPole(){
+  let best=null, bd=1e9; const p=player.root.position;
+  for(const id in poleRefs){ const d=poleRefs[id].def, dist=Math.hypot(p.x-d.x,p.z-d.z); if(dist<bd){bd=dist;best=d;} }
+  return {def:best,dist:bd};
+}
+
+function updatePlayer(dt){
+  const p=player.root.position;
+  if(danceDemo){
+    danceDemo.t-=dt; danceDemo.a+=dt*1.8; const d=danceDemo.def;
+    p.set(d.x+Math.sin(danceDemo.a)*0.32,0,d.z+Math.cos(danceDemo.a)*0.32); player.yaw=danceDemo.a+Math.PI;
+    player.pose='hold'; player.moving=false;
+    if(danceDemo.t<=0){ danceDemo=null; player.pose='idle'; const o=new THREE.Vector3(Math.sin(0.4),0,Math.cos(0.4)); p.x+=o.x*0.9; p.z+=o.z*0.9; toast('Đây mới là demo tư thế. Minigame múa thật có ở Giai đoạn 2 💃'); }
+    return;
+  }
+  if(mode==='customize'){ player.moving=false; player.yaw+=dt*0.6; return; }
+  // vector di chuyển từ bàn phím (theo hướng camera)
+  const K=input.keys; let ix=(K.d||K.arrowright?1:0)-(K.a||K.arrowleft?1:0), iz=(K.w||K.arrowup?1:0)-(K.s||K.arrowdown?1:0);
+  let dx=0,dz=0;
+  if(ix||iz){
+    const fx=-Math.sin(cam.yaw), fz=-Math.cos(cam.yaw), rx=Math.cos(cam.yaw), rz=-Math.sin(cam.yaw);
+    dx=fx*iz+rx*ix; dz=fz*iz+rz*ix; const l=Math.hypot(dx,dz); dx/=l; dz/=l; moveTarget=null; marker.visible=false;
+  } else if(moveTarget){
+    dx=moveTarget.x-p.x; dz=moveTarget.z-p.z; const l=Math.hypot(dx,dz);
+    if(l<0.12){ moveTarget=null; marker.visible=false; dx=dz=0; } else { dx/=l; dz/=l; }
+  }
+  if(dx||dz){
+    const step=player.speed*dt, bx=p.x, bz=p.z;
+    let s=step; if(moveTarget){ const l=Math.hypot(moveTarget.x-p.x,moveTarget.z-p.z); s=Math.min(step,l); }
+    p.x+=dx*s; p.z+=dz*s; resolveCollision(p,0.26);
+    const moved=Math.hypot(p.x-bx,p.z-bz);
+    if(moveTarget){ stuckT = moved<s*0.25 ? stuckT+dt : 0; if(stuckT>0.4){ moveTarget=null; marker.visible=false; stuckT=0; } }
+    player.moving=true; player.yaw+=angDiff(player.yaw,Math.atan2(dx,dz))*Math.min(1,dt*12);
+  } else player.moving=false;
+  player.pose='idle';
+}
+
+/* ---- Camera ---- */
+function updateCamera(dt){
+  const k=Math.min(1,dt*8);
+  cam.yaw+=angDiff(cam.yaw,cam.tYaw)*k; cam.pitch=lerp(cam.pitch,cam.tPitch,k); cam.dist=lerp(cam.dist,cam.tDist,k);
+  const pp=player.root.position;
+  cam.target.set(pp.x, mode==='customize'?1.0:1.15, pp.z);
+  const cp=Math.cos(cam.pitch);
+  camera.position.set(cam.target.x+Math.sin(cam.yaw)*cp*cam.dist, cam.target.y+Math.sin(cam.pitch)*cam.dist, cam.target.z+Math.cos(cam.yaw)*cp*cam.dist);
+  // giữ camera trong phòng
+  // Tường trước/bên chỉ có 1 mặt (nhìn từ ngoài là trong suốt) nên camera được phép lùi ra ngoài; chỉ chặn phía gương
+  camera.position.x=clamp(camera.position.x,-ROOM.halfW-4,ROOM.halfW+4);
+  camera.position.z=clamp(camera.position.z,-ROOM.halfD+0.5,ROOM.halfD+6);
+  camera.position.y=clamp(camera.position.y,0.5,ROOM.height-0.3);
+  camera.lookAt(cam.target);
+}
+
+/* ---- Input: chạm để đi, kéo để xoay, chụm để zoom ---- */
+function setupInput(){
+  const cv=renderer.domElement;
+  cv.addEventListener('contextmenu',e=>e.preventDefault());
+  cv.addEventListener('pointerdown',e=>{
+    cv.setPointerCapture(e.pointerId);
+    input.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(input.pointers.size===1){ input.downAt=performance.now(); input.moved=0; }
+    if(input.pointers.size===2) input.pinch=pinchDist();
+  });
+  cv.addEventListener('pointermove',e=>{
+    const p=input.pointers.get(e.pointerId); if(!p) return;
+    const dx=e.clientX-p.x, dy=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY;
+    if(input.pointers.size===1){
+      input.moved+=Math.abs(dx)+Math.abs(dy);
+      const s=GAME.state.settings.sens;
+      cam.tYaw-=dx*0.0065*s; cam.tPitch=clamp(cam.tPitch+dy*0.0045*s,0.08,1.3);
+    } else if(input.pointers.size===2){
+      const d=pinchDist(); cam.tDist=clamp(cam.tDist-(d-input.pinch)*0.02,3,12); input.pinch=d; input.moved=999;
+    }
+  });
+  const up=e=>{
+    if(!input.pointers.has(e.pointerId)) return;
+    const wasSingle=input.pointers.size===1; input.pointers.delete(e.pointerId);
+    if(wasSingle && e.type==='pointerup' && input.moved<10 && performance.now()-input.downAt<400) onTap(e.clientX,e.clientY);
+  };
+  cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+  cv.addEventListener('wheel',e=>{ e.preventDefault(); cam.tDist=clamp(cam.tDist+e.deltaY*0.008,3,12); },{passive:false});
+  addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT') return;
+    const k=e.key.toLowerCase(); input.keys[k]=true;
+    if((k==='e'||k===' ')&&$('danceBtn').classList.contains('show')) onDance();
+  });
+  addEventListener('keyup',e=>{ input.keys[e.key.toLowerCase()]=false; });
+  addEventListener('blur',()=>{ input.keys={}; });
+}
+function pinchDist(){ const a=[...input.pointers.values()]; return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); }
+
+function onTap(cx,cy){
+  if(mode!=='play'||danceDemo) return;
+  const r=renderer.domElement.getBoundingClientRect();
+  _ray.setFromCamera(new THREE.Vector2(((cx-r.left)/r.width)*2-1, -((cy-r.top)/r.height)*2+1), camera);
+  const pp=player.root.position;
+  // chạm vào cột → đi tới đứng cạnh cột
+  const hit=_ray.intersectObjects(hitMeshes,false)[0];
+  if(hit){
+    const d=poleRefs[hit.object.userData.pole].def;
+    let vx=pp.x-d.x, vz=pp.z-d.z; const l=Math.hypot(vx,vz)||1; vx/=l; vz/=l;
+    return setMoveTarget(d.x+vx*0.85, d.z+vz*0.85);
+  }
+  const pt=_ray.ray.intersectPlane(_plane,_v.clone()); if(!pt) return;
+  setMoveTarget(pt.x,pt.z);
+}
+function setMoveTarget(x,z){
+  const t={x:x,z:z}; resolveCollision(t,0.26); moveTarget=t; stuckT=0;
+  marker.position.set(t.x,0.03,t.z); marker.visible=true; marker.userData.t=0;
+}
+
+/* =====================================================================
+   10. HUD & GIAO DIỆN
+   ===================================================================== */
+let toastTimer;
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+function updateHUD(){
+  const s=GAME.state, need=GAME.expNeed(s.level);
+  $('hudName').textContent=s.name;
+  $('hudLv').textContent=s.level; $('hudExpTxt').textContent=fmt(s.exp)+'/'+fmt(need)+' EXP';
+  $('hudExp').style.width=(clamp(s.exp/need,0,1)*100)+'%';
+  $('hudSt').style.width=(clamp(s.stamina/CONFIG.STAMINA_MAX,0,1)*100)+'%';
+  $('hudStTxt').textContent=Math.floor(s.stamina)+'/'+CONFIG.STAMINA_MAX;
+  $('sStr').textContent=fmt(s.stats.str); $('sFlex').textContent=fmt(s.stats.flex);
+  $('sBal').textContent=fmt(s.stats.bal); $('sArt').textContent=fmt(s.stats.art);
+  $('sCal').textContent=fmt(s.calo); $('sCoin').textContent=fmt(s.coins);
+}
+function updateNet(){
+  $('btnNet').classList.toggle('on',Net.connected);
+  $('netTxt').textContent=Net.connected?'Online':'Bot';
+}
+
+/* ---- Cửa sổ trượt ---- */
+function openSheet(title,html){
+  $('sheetTitle').textContent=title; $('sheetBody').innerHTML=html; $('sheet').classList.add('open');
+  $('sheetBody').scrollTop=0;
+}
+function closeSheet(){ $('sheet').classList.remove('open'); }
+function soon(icon,title,phase,items){
+  return `<div class="soon"><div class="big">${icon}</div><div class="tag">${phase}</div></div>
+    <p style="text-align:center;margin:0 0 6px">${title}</p><ul>${items.map(i=>'<li>'+i+'</li>').join('')}</ul>`;
+}
+const MENUS = {
+  quests : ()=>['📜 Nhiệm vụ',soon('📜','Nhiệm vụ ngày sẽ có ở Giai đoạn 3.','Sắp ra mắt · Giai đoạn 3',['Hoàn thành 3 lần múa','Mở 1 động tác mới','Thưởng xu + EXP mỗi ngày'])],
+  shop   : ()=>['🛍️ Shop',soon('🛍️','Cửa hàng trang phục, giày, phụ kiện bằng xu.','Sắp ra mắt · Giai đoạn 3',['Trang phục · giày · phụ kiện','Mua bằng 🪙 Xu kiếm được khi múa'])],
+  plans  : ()=>['🎟️ Gói tập',soon('🎟️','Gói thành viên trong game tăng hệ số EXP.','Sắp ra mắt · Giai đoạn 3',['Trải nghiệm · 8 buổi · Không giới hạn','Nút “Đặt lớp thật tại studio” → '+CONFIG.BOOKING_URL])],
+  board  : ()=>['🏆 Bảng xếp hạng',soon('🏆','Xếp hạng theo cấp và tổng điểm (bot giả lập trước).','Sắp ra mắt · Giai đoạn 4',['Top học viên theo cấp','Top tổng điểm','Chừa sẵn chỗ nối Firebase/Supabase'])],
+  profile: ()=>{ const s=GAME.state;
+    return ['👤 Hồ sơ',`<div class="kv">
+      <div><span>Tên</span><b id="pfName"></b></div><div><span>Cấp</span><b>${s.level}/${CONFIG.MAX_LEVEL}</b></div>
+      <div><span>💪 Sức mạnh</span><b>${s.stats.str}</b></div><div><span>🤸 Dẻo dai</span><b>${s.stats.flex}</b></div>
+      <div><span>⚖️ Thăng bằng</span><b>${s.stats.bal}</b></div><div><span>💃 Nghệ thuật</span><b>${s.stats.art}</b></div>
+      <div><span>🔥 Calo</span><b>${fmt(s.calo)}</b></div><div><span>🪙 Xu</span><b>${fmt(s.coins)}</b></div></div>
+      <button class="btn block" id="pfLook">✨ Đổi diện mạo</button>
+      <h3>Động tác đã mở</h3><p style="color:var(--muted);margin:0">Danh sách động tác và huy hiệu sẽ có ở Giai đoạn 2–3.</p>`]; },
+  help   : ()=>['❔ Trợ giúp',`
+    <h3>Di chuyển</h3><ul><li><b>Chạm sàn</b> để nhân vật đi tới đó. Chạm vào <b>cột</b> để đi đến cạnh cột.</li>
+    <li><b>Kéo ngón tay</b> để xoay camera, <b>chụm hai ngón</b> để zoom.</li>
+    <li>Máy tính: <b>WASD / phím mũi tên</b> để đi, <b>kéo chuột</b> để xoay, <b>lăn chuột</b> để zoom.</li></ul>
+    <h3>Múa cột</h3><ul><li>Đứng gần cột (khoảng ${CONFIG.POLE_USE_DISTANCE} m) sẽ hiện nút <b>💃 MÚA</b> (phím <b>E</b>/<b>Space</b>).</li>
+    <li>Mỗi lần múa tốn ⚡ thể lực, thể lực tự hồi dần theo thời gian.</li>
+    <li>Múa tốt để tăng 💪 🤸 ⚖️ 💃, nhận 🪙 Xu và EXP lên cấp (tối đa ${CONFIG.MAX_LEVEL}).</li></ul>
+    <h3>Trạng thái</h3><ul><li><b>Bot</b>: đang chạy chế độ giả lập (chat, bạn bè, bảng xếp hạng là bot).</li></ul>
+    <p style="color:var(--muted);font-size:12px">Tiến trình được lưu tự động trên thiết bị này.</p>`],
+};
+function openMenu(key){
+  if(!MENUS[key]) return;
+  const [t,h]=MENUS[key](); openSheet(t,h);
+  if(key==='profile'){ $('pfName').textContent=GAME.state.name; $('pfLook').onclick=()=>{ closeSheet(); openCustomize(false); }; }
+}
+
+/* ---- Cài đặt ---- */
+function openSettings(){
+  const s=GAME.state;
+  openSheet('⚙️ Cài đặt',`
+    <div class="row"><span>Tên hiển thị</span></div><input type="text" id="stName" maxlength="16">
+    <div class="row"><span>Chất lượng đồ họa</span>
+      <select id="stQ"><option value="low">Thấp (nhẹ máy)</option><option value="med">Vừa</option><option value="high">Cao</option></select></div>
+    <div class="row"><span>Độ nhạy xoay camera</span><input type="range" id="stSens" min="0.5" max="2" step="0.1"></div>
+    <div class="row"><span>Hiện tên trên đầu nhân vật</span><input type="checkbox" id="stTags"></div>
+    <button class="btn block" id="stLook">✨ Đổi diện mạo</button>
+    <button class="btn danger block" id="stReset">🗑️ Xoá toàn bộ tiến trình</button>
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">${CONFIG.STUDIO_NAME} POLE ONLINE · bản thử nghiệm · giai đoạn 1</p>`);
+  $('stName').value=s.name; $('stQ').value=s.settings.quality; $('stSens').value=s.settings.sens; $('stTags').checked=s.settings.tags;
+  $('stName').onchange=e=>setName(e.target.value);
+  $('stQ').onchange=e=>{ s.settings.quality=e.target.value; applyQuality(); GAME.save(); };
+  $('stSens').oninput=e=>{ s.settings.sens=parseFloat(e.target.value); GAME.save(); };
+  $('stTags').onchange=e=>{ s.settings.tags=e.target.checked; player.tag.visible=e.target.checked; bots.forEach(b=>b.tag.visible=e.target.checked); GAME.save(); };
+  $('stLook').onclick=()=>{ closeSheet(); openCustomize(false); };
+  $('stReset').onclick=()=>{ if(confirm('Xoá toàn bộ tiến trình và bắt đầu lại?')) GAME.reset(); };
+}
+function setName(v){
+  v=(v||'').trim().slice(0,16)||CONFIG.DEFAULT_NAME;
+  GAME.state.name=v; player.setName(v); updateHUD(); GAME.save();
+}
+
+/* ---- Tạo / đổi diện mạo ---- */
+function openCustomize(first){
+  mode='customize'; applyView(); document.body.classList.add('customizing');
+  cam.tDist=4.6; cam.tPitch=0.12; cam.tYaw=0;
+  player.root.position.set(0,0,player.root.position.z>6?4:player.root.position.z); moveTarget=null; marker.visible=false;
+  $('cName').value=GAME.state.name===CONFIG.DEFAULT_NAME?'':GAME.state.name;
+  renderOptions(); $('custom').classList.add('open');
+  $('cDone').textContent=first?'Vào studio ✨':'Xong ✔';
+}
+function renderOptions(){
+  const L=GAME.state.look;
+  const fill=(id,key,items,swatch)=>{
+    const el=$(id); el.innerHTML='';
+    items.forEach((it,i)=>{
+      const b=document.createElement('button'); if(L[key]===i) b.classList.add('sel');
+      if(swatch){ b.classList.add('sw'); b.style.background=it; b.setAttribute('aria-label','màu '+(i+1)); } else b.textContent=it;
+      b.onclick=()=>{ L[key]=i; player.rebuild(L); renderOptions(); };
+      el.appendChild(b);
+    });
+  };
+  fill('oHair','hair',CONFIG.HAIR_STYLES); fill('oHairColor','hairColor',CONFIG.HAIR_COLORS,true);
+  fill('oSkin','skin',CONFIG.SKINS,true); fill('oOutfit','outfit',CONFIG.OUTFITS.map(o=>o.name));
+}
+function closeCustomize(){
+  const nm=$('cName').value; if(nm.trim()) setName(nm);
+  GAME.state.firstRun=false; GAME.save();
+  $('custom').classList.remove('open'); document.body.classList.remove('customizing');
+  mode='play'; applyView(); cam.tDist=6.2; cam.tPitch=0.3; cam.tYaw=0; player.yaw=Math.PI;
+  toast('Chào mừng đến '+CONFIG.STUDIO_NAME+' Studio! Chạm sàn để di chuyển 💖');
+}
+
+/* ---- Nút MÚA (placeholder cho Giai đoạn 2) ---- */
+function onDance(){
+  if(mode!=='play'||danceDemo) return;
+  const n=nearestPole(); if(n.dist>CONFIG.POLE_USE_DISTANCE) return;
+  // TODO (Giai đoạn 2): mở bảng chọn động tác + minigame nhịp. Hiện tại chỉ chạy tư thế demo 3 giây.
+  const p=player.root.position;
+  danceDemo={def:n.def,t:3,a:Math.atan2(p.x-n.def.x,p.z-n.def.z)};
+}
+function updateDanceButton(){
+  const b=$('danceBtn');
+  if(mode!=='play'||danceDemo){ b.classList.remove('show'); return; }
+  const n=nearestPole(), near=n.dist<=CONFIG.POLE_USE_DISTANCE;
+  b.classList.toggle('show',near);
+  if(near) $('danceSub').textContent=n.def.name+(n.def.kind==='spin'?' · xoay':' · đứng');
+}
+
+/* ---- Chất lượng đồ họa ---- */
+function applyQuality(){
+  const q=GAME.state.settings.quality||'med';
+  const dpr=window.devicePixelRatio||1;
+  renderer.setPixelRatio(q==='low'?1:q==='med'?Math.min(dpr,1.5):Math.min(dpr,2));
+  mirrorOn=q!=='low'; mirrorRoot.visible=mirrorOn;
+  A.mirrorMat.opacity=mirrorOn?1:1; // khi tắt phản chiếu vẫn giữ lớp gương tối
+  resize();
+}
+function resize(){
+  const w=innerWidth, h=innerHeight;
+  renderer.setSize(w,h,false); camera.aspect=w/h;
+  camera.fov = w/h<0.8 ? 66 : 55;      // màn dọc: mở rộng góc nhìn
+  camera.updateProjectionMatrix(); applyView();
+}
+// Khi mở bảng tạo nhân vật (chiếm nửa dưới), đẩy khung nhìn lên để nhân vật nằm ở nửa trên
+function applyView(){
+  const w=innerWidth, h=innerHeight;
+  if(mode==='customize') camera.setViewOffset(w,h,0,h*0.22,w,h); else camera.clearViewOffset();
+}
+
+/* =====================================================================
+   11. KHỞI TẠO + VÒNG LẶP CHÍNH
+   ===================================================================== */
+let clock, saveTimer=0, hudTimer=0, running=false;
+
+async function init(){
+  const bar=$('ldBar'), msg=$('ldMsg');
+  const step=async(text,pct,fn)=>{ msg.textContent=text; bar.style.width=pct+'%'; await frame(); fn&&fn(); };
+
+  $('ldLogo').textContent=CONFIG.STUDIO_NAME;
+  document.title=CONFIG.STUDIO_NAME+' POLE ONLINE';
+  const copy='© '+CONFIG.YEAR+' '+CONFIG.OWNER;
+  $('copy').textContent=copy; $('ldFoot').textContent=copy;
+
+  if(typeof THREE==='undefined'){ msg.textContent='Không tải được Three.js. Hãy kiểm tra kết nối mạng rồi tải lại trang.'; return; }
+
+  GAME.load();
+  if(!GAME.state.settings.quality) GAME.state.settings.quality = matchMedia('(pointer:coarse)').matches ? 'med' : 'high';
+
+  await step('Đang mở cửa studio…',10,()=>{
+    renderer=new THREE.WebGLRenderer({canvas:$('view'),antialias:true,powerPreference:'high-performance'});
+    renderer.setClearColor(0x0d0714);
+    scene=new THREE.Scene();
+    camera=new THREE.PerspectiveCamera(60,1,0.1,80);
+    clock=new THREE.Clock();
+  });
+  await step('Đang lót sàn gỗ & lắp gương…',30,()=>makeAssets());
+  await step('Đang lắp 6 cột & trang trí…',55,()=>{
+    // Ánh sáng (ít đèn để chạy mượt trên điện thoại)
+    scene.add(new THREE.AmbientLight(0x7a5a98,0.8));
+    scene.add(new THREE.HemisphereLight(0xffd6f0,0x2a1048,0.35));
+    const pl=(c,i,x,y,z)=>{ const l=new THREE.PointLight(c,i,16,1.6); l.position.set(x,y,z); scene.add(l); };
+    pl(0xff2d95,0.9,-6,3.8,-3); pl(0x8a3ffc,1.0,6,3.8,-3); pl(0xffd27a,0.55,0,3.9,4);
+    buildStudio(scene,false);
+    buildColliders();
+    mirrorRoot=new THREE.Group();                // thế giới phản chiếu: lật qua mặt phẳng z = -halfD
+    mirrorWrap=new THREE.Group(); mirrorWrap.position.z=-ROOM.halfD*2; mirrorWrap.scale.z=-1;
+    mirrorWrap.add(mirrorRoot); scene.add(mirrorWrap);
+    const saved=spinAnim; spinAnim=[]; buildStudio(mirrorRoot,true); spinAnim=saved.concat(spinAnim);
+    // dấu chạm sàn
+    marker=new THREE.Mesh(new THREE.RingGeometry(0.16,0.24,24),new THREE.MeshBasicMaterial({color:0xf5c451,transparent:true,opacity:.9,side:THREE.DoubleSide}));
+    marker.rotation.x=-Math.PI/2; marker.visible=false; scene.add(marker);
+  });
+  await step('Đang chuẩn bị học viên…',80,()=>{ setupPlayer(); setupBots(); });
+  await step('Sắp xong…',92,()=>{
+    setupInput(); applyQuality(); updateHUD(); updateNet(); bindUI();
+    Net.connect().then(updateNet);
+  });
+  bar.style.width='100%'; await frame();
+  cam.yaw=cam.tYaw=0;
+  running=true; loop();
+  setTimeout(()=>{ $('loading').classList.add('done'); },350);
+  if(GAME.state.firstRun) setTimeout(()=>openCustomize(true),500);
+  // phục vụ debug / giai đoạn sau
+  window.POLE={CONFIG,GAME,Net,toast,get player(){return player;}};
+}
+
+function bindUI(){
+  $('btnSettings').onclick=openSettings;
+  $('btnHelp').onclick=()=>openMenu('help');
+  $('btnNet').onclick=()=>toast('Đang chạy chế độ bot (giả lập). Kết nối online thật sẽ được thêm sau.');
+  $('sheetClose').onclick=closeSheet;
+  $('sheet').addEventListener('pointerdown',e=>{ if(e.target.id==='sheet') closeSheet(); });
+  document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>openMenu(b.dataset.menu));
+  $('danceBtn').onclick=onDance;
+  $('cDone').onclick=closeCustomize;
+  $('btnChat').onclick=()=>openSheet('💬 Chat',soon('💬','Khung chat với bot giả lập.','Sắp ra mắt · Giai đoạn 4',['Chat chung trong studio (bot)','Chừa sẵn chỗ nối Firebase/Supabase']));
+  $('btnEmote').onclick=()=>openSheet('😊 Emote',soon('😊','Biểu cảm cho nhân vật.','Sắp ra mắt · Giai đoạn 4',['👋 Vẫy tay','👏 Vỗ tay','💃 Tạo dáng']));
+  $('btnFriends').onclick=()=>openSheet('👥 Bạn bè',soon('👥','Danh sách bạn bè (bot giả lập trước).','Sắp ra mắt · Giai đoạn 4',['Thêm bạn, xem ai đang trong studio']));
+  addEventListener('resize',resize);
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) GAME.save(); else { GAME.tickStamina(); clock.getDelta(); } });
+  addEventListener('pagehide',()=>GAME.save());
+  addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); });
+}
+
+function loop(){
+  requestAnimationFrame(loop);
+  if(document.hidden) return;
+  const dt=Math.min(clock.getDelta(),0.05), t=clock.elapsedTime;
+
+  for(const s of spinAnim) s.obj.rotation.y+=dt*s.speed;
+  updatePlayer(dt); player.update(dt,t);
+  updateBots(dt);
+  updateCamera(dt);
+
+  // vòng sáng quanh cột gần nhất nhấp nháy
+  const n=nearestPole();
+  for(const id in poleRefs){
+    const on = mode==='play' && n.def && n.def.id===id && n.dist<=CONFIG.POLE_USE_DISTANCE;
+    const m=poleRefs[id].ringMat; m.opacity=lerp(m.opacity,on?0.75+Math.sin(t*6)*0.25:0.35,Math.min(1,dt*8));
+    m.color.setHex(on?0xf5c451:0xff2d95);
+  }
+  if(marker.visible){ marker.userData.t=(marker.userData.t||0)+dt; const s=1+Math.sin(marker.userData.t*8)*0.15; marker.scale.set(s,s,s); }
+
+  hudTimer-=dt; if(hudTimer<=0){ hudTimer=0.25; GAME.tickStamina(); updateHUD(); updateDanceButton(); }
+  saveTimer+=dt; if(saveTimer>8){ saveTimer=0; GAME.save(); }
+  renderer.render(scene,camera);
+}
+
+init();
+})();
+</script>
+</body>
+</html>
