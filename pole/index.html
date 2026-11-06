@@ -142,6 +142,97 @@ select{padding:8px;border-radius:10px;background:#210d3a;color:var(--text);borde
 .opts button.sw{width:36px;height:36px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.25)}
 .opts button.sw.sel{border-color:var(--gold);box-shadow:0 0 10px rgba(245,196,81,.7)}
 body.customizing #hud,body.customizing .bottom,body.customizing .side,body.customizing #danceBtn{display:none}
+
+/* ---------- Giai đoạn 2-4: minigame, chọn động tác, shop, chat... ---------- */
+.muted{color:var(--muted)}
+body.dancing .bottom,body.dancing .side,body.dancing #emotes{display:none}
+#mini{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:560px;margin:0 auto;height:46dvh;padding:10px 14px calc(12px + var(--safe-b));
+  display:none;flex-direction:column;gap:7px;touch-action:none;
+  background:linear-gradient(180deg,rgba(13,7,20,0) 0%,rgba(13,7,20,.86) 18%,rgba(13,7,20,.97) 100%)}
+#mini.on{display:flex}
+.mi-top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;gap:8px}
+.mi-top b{color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#miCombo{color:var(--pink);min-width:70px;text-align:right}
+#miQuit{padding:4px 10px;border-radius:10px;background:rgba(255,255,255,.1);font-size:12px}
+.mi-prog{height:7px;border-radius:7px;background:rgba(255,255,255,.14);overflow:hidden}
+.mi-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--gold));transition:width .15s}
+#lane{position:relative;flex:1;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(138,63,252,.1),rgba(255,45,149,.22))}
+#laneLine{position:absolute;left:10px;right:10px;height:5px;border-radius:5px;background:var(--gold);box-shadow:0 0 14px var(--gold)}
+#laneRing{position:absolute;left:50%;width:66px;height:66px;margin-left:-33px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 16px var(--gold),inset 0 0 12px rgba(245,196,81,.5)}
+.note{position:absolute;left:50%;margin-left:-25px;top:0;width:50px;height:50px;border-radius:25px;will-change:transform;
+  background:radial-gradient(circle at 35% 30%,#ffd1ea,var(--pink));box-shadow:0 0 14px var(--pink)}
+.note.hold{background:linear-gradient(180deg,rgba(138,63,252,.35),rgba(255,45,149,.85))}
+.note.hold::after{content:'';position:absolute;left:0;bottom:0;width:50px;height:50px;border-radius:25px;background:radial-gradient(circle at 35% 30%,#fff3c4,var(--gold));box-shadow:0 0 14px var(--gold)}
+.note.done{opacity:0;transition:opacity .25s}
+.note.miss{opacity:.22;filter:grayscale(1)}
+#judge{position:absolute;left:0;right:0;top:14%;text-align:center;font-weight:800;font-size:28px;pointer-events:none;opacity:0;text-shadow:0 0 14px currentColor}
+#judge.pop{animation:jp .6s}
+@keyframes jp{0%{opacity:1;transform:scale(.7)}30%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:translateY(-18px)}}
+#pad{height:74px;border-radius:22px;font-weight:800;font-size:17px;letter-spacing:.06em;color:#2a0a1d;display:grid;place-items:center;
+  background:linear-gradient(180deg,#ffe08a,var(--gold) 55%,var(--gold-d));border:2px solid #fff3c4;box-shadow:0 0 22px rgba(245,196,81,.6);pointer-events:none}
+#pad.down{transform:scale(.97);filter:brightness(1.25)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+#fx span{position:absolute;bottom:-30px;font-size:26px;animation:rise 1.8s ease-out forwards}
+@keyframes rise{to{transform:translateY(-95vh) rotate(40deg);opacity:0}}
+#emotes{position:fixed;right:68px;top:50%;transform:translateY(-8%);z-index:12;display:none;gap:8px;padding:8px;border-radius:30px}
+#emotes.open{display:flex}
+#emotes button{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1);font-size:22px;display:grid;place-items:center}
+.side button{position:relative}
+.has-dot::after,.nav button.dot .e::after{content:'';position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:var(--pink);border:2px solid #150826;box-shadow:0 0 8px var(--pink)}
+.nav button .e{position:relative;display:inline-block}
+.nav button.dot .e::after{top:-1px;right:-5px}
+.move{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;margin:7px 0;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.move.locked{opacity:.55}
+.move b{font-size:15px}
+.move .best{margin-left:6px;padding:0 7px;border-radius:8px;background:rgba(245,196,81,.2);color:var(--gold);font-size:12px;font-weight:800}
+.mv-req,.mv-rew{font-size:12px;margin-top:3px;color:var(--muted)}
+.mv-req span{margin-right:8px}
+.mv-req .ok{color:#6ff0a8}.mv-req .bad{color:#ff6b8b;font-weight:700}
+.move .btn{padding:8px 12px;font-size:13px;white-space:nowrap}
+.btn:disabled{opacity:.45;box-shadow:none;cursor:default}
+.res{text-align:center}
+.res .grade{font-size:84px;font-weight:800;line-height:1;text-shadow:0 0 24px currentColor}
+.res .stats{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 14px;margin:10px 0;font-size:13px;color:var(--muted)}
+.res .rew{display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:left}
+.res .rew div{background:rgba(255,255,255,.07);padding:7px 10px;border-radius:10px;font-weight:600}
+.res .up{margin:10px 0;padding:8px;border-radius:12px;background:rgba(245,196,81,.15);border:1px solid var(--gold);color:var(--gold);font-weight:700}
+.btns{display:flex;gap:8px}.btns .btn{flex:1;text-align:center}
+.tabs{display:flex;gap:6px;margin:6px 0 8px}
+.tabs button{flex:1;padding:8px 4px;border-radius:12px;background:rgba(255,255,255,.08);font-size:13px;font-weight:600;border:1px solid transparent}
+.tabs button.sel{border-color:var(--gold);background:rgba(245,196,81,.16);color:var(--gold)}
+.item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.item .sw{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px;border:2px solid rgba(255,255,255,.25)}
+.item .nm{flex:1;min-width:0}.item .nm small{display:block;color:var(--muted)}
+.item .btn{padding:8px 12px;font-size:13px;white-space:nowrap}
+.qrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.qrow .qi{flex:1;min-width:0}.qrow .bar{margin:5px 0 3px;height:8px}
+.qrow .bar i{background:linear-gradient(90deg,var(--purple),var(--pink))}
+.qrow small{color:var(--muted)}
+.qrow .btn{padding:8px 12px;font-size:13px}
+.plan{padding:12px;margin:8px 0;border-radius:16px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(138,63,252,.25),rgba(255,45,149,.18))}
+.plan.act{border-color:var(--gold);box-shadow:0 0 14px rgba(245,196,81,.4)}
+.plan .h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.plan .h b{font-size:16px}
+.plan p{margin:4px 0 8px;color:var(--muted);font-size:13px}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bdg{text-align:center;padding:8px 4px;border-radius:12px;background:rgba(255,255,255,.07);font-size:11px}
+.bdg .e{font-size:26px}.bdg.off{opacity:.35;filter:grayscale(1)}
+.rank{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px}
+.rank:nth-child(odd){background:rgba(255,255,255,.04)}
+.rank.me{background:rgba(245,196,81,.18);border:1px solid var(--gold)}
+.rank .n{width:30px;text-align:center;font-weight:800;color:var(--gold)}
+.rank .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .v{font-weight:700;color:var(--muted);font-size:13px}
+.chatlog{height:42dvh;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0}
+.msg{padding:7px 11px;border-radius:14px;background:rgba(255,255,255,.08);max-width:86%;font-size:13.5px;align-self:flex-start;word-break:break-word}
+.msg b{display:block;font-size:11px;color:var(--pink)}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--pink-d),var(--purple-d))}
+.msg.me b{color:var(--gold)}
+.chatbar{display:flex;gap:8px;margin-top:8px}
+.chatbar input{font-size:16px}
+.chatbar .btn{padding:8px 16px}
+input[type=text]{font-size:16px}
 </style>
 </head>
 <body>
@@ -197,6 +288,21 @@ body.customizing #hud,body.customizing .bottom,body.customizing .side,body.custo
     <div class="copy" id="copy"></div>
   </div>
 </div>
+
+
+<!-- Minigame nhịp -->
+<div id="mini">
+  <div class="mi-top"><b id="miName"></b><span id="miScore">0%</span><span id="miCombo"></span><button id="miQuit">Bỏ</button></div>
+  <div class="mi-prog"><i id="miProg"></i></div>
+  <div id="lane"><div id="laneLine"></div><div id="laneRing"></div><div id="judge"></div></div>
+  <div id="pad">BẤM / GIỮ ĐÚNG NHỊP</div>
+</div>
+<div id="emotes" class="panel">
+  <button data-e="wave" aria-label="Vẫy tay">👋</button>
+  <button data-e="clap" aria-label="Vỗ tay">👏</button>
+  <button data-e="pose" aria-label="Tạo dáng">💃</button>
+</div>
+<div id="fx"></div>
 
 <!-- Tạo / đổi diện mạo -->
 <div id="custom">
@@ -269,8 +375,87 @@ const CONFIG = {
     { name:'Tím Neon',   top:'#8a3ffc', bottom:'#2a1450', shoes:'#f5c451' },
     { name:'Đen Gold',   top:'#15151b', bottom:'#15151b', shoes:'#f5c451' },
     { name:'Trắng Ngọc', top:'#f4eefa', bottom:'#e0449a', shoes:'#8a3ffc' },
+    // Trang phục bán trong Shop (price = xu):
+    { name:'Vàng Hoàng Kim', top:'#f5c451', bottom:'#15151b', shoes:'#ffffff', price:300 },
+    { name:'Đỏ Rực',         top:'#e0183c', bottom:'#15151b', shoes:'#f5c451', price:400 },
+    { name:'Xanh Neon',      top:'#16d6c4', bottom:'#2a1450', shoes:'#ff2d95', price:500 },
+    { name:'Galaxy',         top:'#5a2ea6', bottom:'#ff2d95', shoes:'#f5c451', price:800 },
   ],
   BOT_NAMES : ['Mai Anh','Thảo Vy','Khánh Linh'],
+
+  // ---------- Giày & phụ kiện trong Shop (CHỈNH GIÁ / TÊN TẠI ĐÂY) ----------
+  SHOES : [
+    { id:'shoe_gold',   name:'Giày vàng ánh kim', color:'#f5c451', price:150 },
+    { id:'shoe_pink',   name:'Giày hồng neon',    color:'#ff2d95', price:150 },
+    { id:'shoe_black',  name:'Giày đen',          color:'#15151b', price:100 },
+    { id:'shoe_purple', name:'Giày tím',          color:'#8a3ffc', price:200 },
+    { id:'shoe_white',  name:'Giày trắng ngọc',   color:'#f4eefa', price:120 },
+  ],
+  // slot: head | face | neck | back.  style: headband | bow | crown | glasses | choker | wings
+  ACCESSORIES : [
+    { id:'acc_headband', slot:'head', style:'headband', name:'Băng đô hồng',    icon:'💗', color:'#ff2d95', price:120 },
+    { id:'acc_bow',      slot:'head', style:'bow',      name:'Nơ tóc tím',      icon:'🎀', color:'#8a3ffc', price:100 },
+    { id:'acc_crown',    slot:'head', style:'crown',    name:'Vương miện vàng', icon:'👑', color:'#f5c451', price:600, minLevel:10 },
+    { id:'acc_glasses',  slot:'face', style:'glasses',  name:'Kính râm',        icon:'🕶️', color:'#15151b', price:200 },
+    { id:'acc_choker',   slot:'neck', style:'choker',   name:'Choker vàng',     icon:'📿', color:'#f5c451', price:150 },
+    { id:'acc_wings',    slot:'back', style:'wings',    name:'Cánh thiên thần', icon:'🦋', color:'#fdeaff', price:900, minLevel:15 },
+  ],
+
+  // ---------- Động tác (CHỈNH TÊN / YÊU CẦU / THƯỞNG TẠI ĐÂY) ----------
+  // tier: 0 Beginner | 1 Intermediate | 2 Advanced.   level: cấp mở khóa.   unlock: xu để mở khóa (0 = có sẵn)
+  // req: chỉ số tối thiểu để tập.  cost: thể lực mỗi lần.  exp/coins/calo: thưởng tối đa.
+  // bpm/notes: độ khó minigame.  anim: tên trong ANIMS.  pref: loại cột hợp ('spin' xoay | 'static' đứng) → +15% EXP.
+  MOVES : [
+    { id:'walk',      name:'Walk Around',    tier:0, level:1,  unlock:0,    req:{art:5},                    cost:6,  exp:18,  coins:12,  calo:14, bpm:84,  notes:8,  anim:'walk',      pref:null,     gain:{art:1.2,bal:0.6} },
+    { id:'fireman',   name:'Fireman Spin',   tier:0, level:1,  unlock:0,    req:{str:5},                    cost:8,  exp:22,  coins:14,  calo:18, bpm:90,  notes:8,  anim:'fireman',   pref:'spin',   gain:{str:1.0,bal:0.6,art:0.4} },
+    { id:'chair',     name:'Chair Spin',     tier:0, level:3,  unlock:60,   req:{str:8,flex:6},             cost:9,  exp:28,  coins:18,  calo:22, bpm:94,  notes:9,  anim:'chair',     pref:'spin',   gain:{str:0.8,flex:0.8,bal:0.6} },
+    { id:'hook',      name:'Back Hook Spin', tier:1, level:8,  unlock:150,  req:{str:14,bal:12},            cost:11, exp:48,  coins:30,  calo:30, bpm:100, notes:10, anim:'hook',      pref:'spin',   gain:{str:1.0,bal:1.0,flex:0.5} },
+    { id:'cupid',     name:'Cupid',          tier:1, level:12, unlock:250,  req:{flex:18,bal:16},           cost:12, exp:56,  coins:36,  calo:34, bpm:104, notes:10, anim:'cupid',     pref:'spin',   gain:{flex:1.2,bal:0.8,art:0.6} },
+    { id:'carousel',  name:'Carousel',       tier:1, level:16, unlock:400,  req:{str:22,flex:20,bal:18},    cost:13, exp:66,  coins:44,  calo:40, bpm:108, notes:11, anim:'carousel',  pref:'spin',   gain:{str:0.8,flex:1.0,art:1.0} },
+    { id:'ayesha',    name:'Ayesha',         tier:2, level:22, unlock:800,  req:{str:30,flex:28,bal:28},    cost:15, exp:100, coins:66,  calo:52, bpm:112, notes:12, anim:'ayesha',    pref:'static', gain:{str:1.3,flex:1.0,bal:1.0} },
+    { id:'superman',  name:'Superman',       tier:2, level:28, unlock:1200, req:{str:38,bal:34,art:30},     cost:16, exp:120, coins:80,  calo:58, bpm:116, notes:12, anim:'superman',  pref:'static', gain:{str:1.5,bal:1.2,art:0.8} },
+    { id:'iguana',    name:'Iguana Mount',   tier:2, level:34, unlock:1600, req:{str:44,flex:40,bal:38},    cost:17, exp:140, coins:95,  calo:62, bpm:118, notes:13, anim:'iguana',    pref:'static', gain:{str:1.5,flex:1.2,bal:1.0} },
+    { id:'butterfly', name:'Butterfly',      tier:2, level:40, unlock:2400, req:{str:48,flex:50,art:42},    cost:18, exp:165, coins:110, calo:66, bpm:122, notes:13, anim:'butterfly', pref:'static', gain:{flex:1.6,str:1.2,art:1.0} },
+    { id:'flag',      name:'Flag',           tier:2, level:46, unlock:3200, req:{str:60,bal:50,art:48},     cost:20, exp:200, coins:140, calo:72, bpm:126, notes:14, anim:'flag',      pref:'static', gain:{str:2.0,bal:1.5,art:1.0} },
+  ],
+
+  // ---------- Gói tập trong game (CHỈNH GIÁ / HỆ SỐ EXP TẠI ĐÂY) ----------
+  // days: số ngày hiệu lực | sessions: số lần múa hiệu lực.  expMult: hệ số nhân EXP.
+  PLANS : [
+    { id:'trial', name:'Trải nghiệm',    icon:'🌸', price:150,  expMult:1.25, days:1,     desc:'24 giờ · EXP ×1.25' },
+    { id:'s8',    name:'8 buổi',         icon:'💎', price:600,  expMult:1.6,  sessions:8, desc:'8 lần múa · EXP ×1.6' },
+    { id:'unl',   name:'Không giới hạn', icon:'👑', price:2200, expMult:2.0,  days:7,     desc:'7 ngày · EXP ×2' },
+  ],
+
+  // ---------- Nhiệm vụ ngày (mỗi ngày bốc 3 nhiệm vụ) ----------
+  // type: dances | newmove | perfects | gradeA | buy | chat | emote
+  QUESTS : [
+    { id:'q_dance3',   type:'dances',   target:3, coins:40, exp:30, text:'Hoàn thành 3 lần múa' },
+    { id:'q_dance6',   type:'dances',   target:6, coins:90, exp:70, text:'Hoàn thành 6 lần múa' },
+    { id:'q_newmove',  type:'newmove',  target:1, coins:60, exp:60, text:'Mở 1 động tác mới' },
+    { id:'q_perfect8', type:'perfects', target:8, coins:50, exp:40, text:'Đạt 8 nhịp Hoàn hảo' },
+    { id:'q_gradeA',   type:'gradeA',   target:1, coins:70, exp:50, text:'Đạt hạng A trở lên 1 lần' },
+    { id:'q_buy',      type:'buy',      target:1, coins:30, exp:20, text:'Mua 1 món đồ ở Shop' },
+    { id:'q_chat',     type:'chat',     target:2, coins:25, exp:15, text:'Gửi 2 tin nhắn trong studio' },
+    { id:'q_emote',    type:'emote',    target:3, coins:25, exp:15, text:'Dùng 3 emote' },
+  ],
+
+  // ---------- Huy hiệu ----------
+  BADGES : [
+    { id:'first',  icon:'🌟', name:'Bước đầu',     desc:'Hoàn thành lần múa đầu tiên', test:s=>s.counts.dances>=1 },
+    { id:'d25',    icon:'💃', name:'Chăm chỉ',     desc:'Múa 25 lần',                  test:s=>s.counts.dances>=25 },
+    { id:'d100',   icon:'🔥', name:'Cháy hết mình',desc:'Múa 100 lần',                 test:s=>s.counts.dances>=100 },
+    { id:'p50',    icon:'🎯', name:'Nhịp vàng',    desc:'50 nhịp Hoàn hảo',            test:s=>s.counts.perfects>=50 },
+    { id:'sg',     icon:'🏆', name:'Hạng S',       desc:'Đạt hạng S',                  test:s=>s.counts.sGrades>=1 },
+    { id:'l10',    icon:'🥉', name:'Cấp 10',       desc:'Đạt cấp 10',                  test:s=>s.level>=10 },
+    { id:'l25',    icon:'🥈', name:'Cấp 25',       desc:'Đạt cấp 25',                  test:s=>s.level>=25 },
+    { id:'l50',    icon:'🥇', name:'Cấp 50',       desc:'Đạt cấp tối đa',              test:s=>s.level>=50 },
+    { id:'beg',    icon:'🌸', name:'Hết Beginner', desc:'Mở hết động tác Beginner',    test:s=>CONFIG.MOVES.filter(m=>m.tier===0).every(isUnlocked) },
+    { id:'adv',    icon:'⚡', name:'Cao thủ',      desc:'Mở 1 động tác Advanced',      test:s=>CONFIG.MOVES.some(m=>m.tier===2&&isUnlocked(m)) },
+    { id:'shop',   icon:'🛍️', name:'Sành điệu',    desc:'Sở hữu 5 món đồ',             test:s=>s.inventory.length>=5 },
+    { id:'chat',   icon:'💬', name:'Hoạt ngôn',    desc:'Gửi 10 tin nhắn',             test:s=>s.counts.chats>=10 },
+    { id:'friend', icon:'👯', name:'Hội chị em',   desc:'Có 3 bạn bè',                 test:s=>s.friends.length>=3 },
+  ],
 };
 
 /* =====================================================================
@@ -296,10 +481,11 @@ const GAME = {
       level:1, exp:0,
       stamina:CONFIG.STAMINA_MAX, staminaAt:Date.now(),
       stats:{...CONFIG.START_STATS}, calo:0, coins:CONFIG.START_COINS,
-      look:{ hair:0, hairColor:0, skin:1, outfit:0 },
-      settings:{ quality:null, sens:1, tags:true },
+      look:{ hair:0, hairColor:0, skin:1, outfit:0, shoes:null, acc:{head:null,face:null,neck:null,back:null} },
+      settings:{ quality:null, sens:1, tags:true, sound:true },
       // Các phần dưới sẽ dùng ở giai đoạn sau:
-      unlocked:[], badges:[], totalScore:0, quests:{}, inventory:[], plan:null,
+      unlocked:[], badges:[], totalScore:0, quests:{}, inventory:[], plan:null, friends:[], best:{}, createdAt:Date.now(),
+      counts:{dances:0,perfects:0,sGrades:0,chats:0,emotes:0,bought:0},
     };
   },
   load(){
@@ -311,6 +497,11 @@ const GAME = {
       look:Object.assign(d.look,s.look||{}),
       settings:Object.assign(d.settings,s.settings||{}),
     }) : d;
+    const st=this.state;
+    st.look.acc=Object.assign({head:null,face:null,neck:null,back:null},st.look.acc);
+    st.counts=Object.assign({dances:0,perfects:0,sGrades:0,chats:0,emotes:0,bought:0},st.counts);
+    st.best=st.best||{}; st.friends=st.friends||[]; st.createdAt=st.createdAt||Date.now();
+    if(st.settings.sound===undefined) st.settings.sound=true;
     this.tickStamina();      // hồi thể lực theo thời gian đã offline
   },
   save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(this.state)); }catch(e){} },
@@ -324,7 +515,7 @@ const GAME = {
     s.staminaAt = now;
   },
   // EXP cần để lên cấp kế tiếp (Giai đoạn 2 dùng) — chỉnh công thức tại đây
-  expNeed(level){ return 50 + (level-1)*30; },
+  expNeed(level){ return 40 + (level-1)*18; },
 };
 
 /* =====================================================================
@@ -614,7 +805,8 @@ function resolveCollision(p, rad){
 function buildAvatar(look){
   const outfit=CONFIG.OUTFITS[look.outfit]||CONFIG.OUTFITS[0];
   const skin=M(CONFIG.SKINS[look.skin]||CONFIG.SKINS[0]);
-  const top=M(outfit.top), bot=M(outfit.bottom), shoe=M(outfit.shoes);
+  const shoeDef=CONFIG.SHOES.find(x=>x.id===look.shoes);
+  const top=M(outfit.top), bot=M(outfit.bottom), shoe=M(shoeDef?shoeDef.color:outfit.shoes);
   const hairM=M(CONFIG.HAIR_COLORS[look.hairColor]||CONFIG.HAIR_COLORS[0]);
   const root=new THREE.Group();            // toàn thân (để bồng bềnh khi đi)
   const P={};                              // các khớp để làm animation
@@ -655,10 +847,25 @@ function buildAvatar(look){
             add(tail,new THREE.CylinderGeometry(0.035,0.02,0.4,7),hairM,0,-0.2,0); add(head,new THREE.SphereGeometry(0.03,6,5),M('#f5c451'),0,0.07,-0.15); break; } // đuôi ngựa
     default: add(head,new THREE.BoxGeometry(0.33,0.2,0.27),hairM,0,-0.05,-0.05);                            // bob
   }
+  // phụ kiện (mua ở Shop)
+  const acc=look.acc||{};
+  const ad=(slot)=>CONFIG.ACCESSORIES.find(a=>a.id===acc[slot]);
+  let a=ad('head');
+  if(a){ const c=M(a.color);
+    if(a.style==='headband'){ const t=add(head,new THREE.TorusGeometry(0.152,0.014,6,18),c,0,0.05,0); t.rotation.x=Math.PI/2-0.25; }
+    else if(a.style==='bow'){ add(head,new THREE.SphereGeometry(0.045,6,5),c,-0.06,0.17,-0.04); add(head,new THREE.SphereGeometry(0.045,6,5),c,0.06,0.17,-0.04); add(head,new THREE.SphereGeometry(0.03,6,5),M('#f5c451'),0,0.17,-0.04); }
+    else if(a.style==='crown'){ const cm=M(a.color,'l',{side:THREE.DoubleSide}); add(head,new THREE.CylinderGeometry(0.1,0.12,0.06,8,1,true),cm,0,0.16,-0.01);
+      for(let i=0;i<5;i++){ const ang=i/5*Math.PI*2; add(head,new THREE.ConeGeometry(0.022,0.08,5),c,Math.sin(ang)*0.11,0.22,Math.cos(ang)*0.11-0.01); } } }
+  a=ad('face');
+  if(a){ const c=M(a.color); add(head,new THREE.BoxGeometry(0.075,0.05,0.01),c,-0.052,0.015,0.138); add(head,new THREE.BoxGeometry(0.075,0.05,0.01),c,0.052,0.015,0.138); add(head,new THREE.BoxGeometry(0.03,0.01,0.01),c,0,0.025,0.14); }
+  a=ad('neck');
+  if(a){ const t=add(root,new THREE.TorusGeometry(0.055,0.012,6,12),M(a.color),0,1.45,0); t.rotation.x=Math.PI/2; }
+  a=ad('back');
+  if(a){ const wm=M(a.color,'l',{emissive:0x553366}); [-1,1].forEach(sd=>{ const w=add(root,new THREE.BoxGeometry(0.05,0.55,0.28),wm,sd*0.22,1.3,-0.2); w.rotation.z=sd*0.5; w.rotation.y=sd*0.3; }); }
   // bóng dưới chân
   const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),A.shadowMat); sh.rotation.x=-Math.PI/2; sh.position.y=0.02;
   const g=new THREE.Group(); g.add(root); g.add(sh);
-  return {group:g, inner:root, parts:P};
+  return {group:g, inner:root, parts:P, shadow:sh};
 }
 function disposeGroup(g){ g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
 
@@ -675,12 +882,40 @@ function makeNameTag(text){
   sp.scale.set(1.25,0.31,1); sp.position.y=2.0; sp.renderOrder=5; return sp;
 }
 
-/* Actor = nhân vật + bản phản chiếu trong gương + tên */
+const ANIMS={
+  walk:     {orbit:1.1,lift:0,   arms:'one',legL:0,   legR:0,   rad:0.34},
+  fireman:  {orbit:1.9,lift:0,   arms:'up', legL:0.3, legR:-0.2,rad:0.32},
+  chair:    {orbit:1.9,lift:0.45,arms:'up', legL:-1.0,legR:-1.0,rad:0.32},
+  hook:     {orbit:2.3,lift:0.6, arms:'up', legL:-0.4,legR:0.5, rad:0.32, rz:0.12},
+  cupid:    {orbit:2.0,lift:0.75,arms:'up', legL:-1.3,legR:0.2, rad:0.32},
+  carousel: {orbit:2.8,lift:0.95,arms:'up', legL:0.1, legR:0.1, rad:0.34, spread:0.7},
+  ayesha:   {orbit:1.7,lift:2.3, arms:'up', legL:0.1, legR:0.1, rad:0.32, spread:0.9, rx:Math.PI},
+  superman: {orbit:1.4,lift:1.3, arms:'up', legL:0.1, legR:0.1, rad:0.7,  rx:1.25},
+  iguana:   {orbit:1.8,lift:2.2, arms:'up', legL:-0.6,legR:-0.2,rad:0.32, rx:Math.PI},
+  butterfly:{orbit:2.2,lift:2.4, arms:'up', legL:0.1, legR:0.1, rad:0.32, spread:1.2, rx:Math.PI},
+  flag:     {orbit:0.5,lift:1.6, arms:'up', legL:0,   legR:0,   rad:0.4,  rz:Math.PI/2},
+};
+function makeBubble(text){
+  const c=document.createElement('canvas'); c.width=512; c.height=96; const g=c.getContext('2d');
+  g.font='700 34px "Be Vietnam Pro",system-ui,sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+  let t=text; if(t.length>30) t=t.slice(0,29)+'…';
+  const w=Math.min(500,g.measureText(t).width+44);
+  g.fillStyle='rgba(255,243,250,.96)'; g.beginPath();
+  if(g.roundRect) g.roundRect(256-w/2,6,w,66,28); else g.rect(256-w/2,6,w,66);
+  g.fill(); g.beginPath(); g.moveTo(240,70); g.lineTo(256,92); g.lineTo(272,70); g.fill();
+  g.fillStyle='#2a0f47'; g.fillText(t,256,40);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+  sp.scale.set(2.4,0.45,1); sp.position.y=2.55; sp.renderOrder=6; return sp;
+}
+function killSprite(root,sp){ root.remove(sp); sp.material.map.dispose(); sp.material.dispose(); }
+
+/* Actor = nhân vật + bản phản chiếu trong gương + tên + bong bóng chat + emote */
 class Actor{
   constructor(look,name){
     this.look=look; this.name=name;
     this.root=new THREE.Group(); this.mroot=new THREE.Group();
-    this.phase=Math.random()*6; this.moving=false; this.pose='idle'; this.yaw=0;
+    this.phase=Math.random()*6; this.moving=false; this.anim=null; this.emote=null; this.bubble=null; this.yaw=0;
+    this.fxv={lift:0,rx:0,rz:0};
     this.rebuild(look); this.setName(name);
   }
   rebuild(look){
@@ -691,23 +926,51 @@ class Actor{
   }
   setName(name){
     this.name=name;
-    if(this.tag){ this.root.remove(this.tag); this.tag.material.map.dispose(); this.tag.material.dispose(); }
+    if(this.tag) killSprite(this.root,this.tag);
     this.tag=makeNameTag(name); this.tag.visible=GAME.state.settings.tags; this.root.add(this.tag);
   }
+  say(text,dur){
+    if(this.bubble) killSprite(this.root,this.bubble.sp);
+    const sp=makeBubble(text); this.root.add(sp); this.bubble={sp,t:dur||3.5};
+  }
+  playEmote(type){
+    const dur={wave:2.2,clap:2.2,pose:1.8}[type]||2;
+    this.emote={type,t:0,dur}; this.say({wave:'👋',clap:'👏',pose:'💃'}[type]||'✨',dur);
+  }
   update(dt,t){
-    const P=this.av.parts, k=Math.min(1,dt*10);
-    let lx=0,rx=0,alx=0,arx=0,bob=0;
-    if(this.pose==='hold'){ alx=arx=-2.75; lx=0.25; rx=-0.15; }
-    else if(this.moving){ this.phase+=dt*9; const s=Math.sin(this.phase); lx=s*0.7; rx=-s*0.7; alx=-s*0.6; arx=s*0.6; bob=Math.abs(Math.cos(this.phase))*0.035; }
-    else bob=Math.sin(t*2+this.phase)*0.008;
-    P.legL.rotation.x=lerp(P.legL.rotation.x,lx,k);   P.legR.rotation.x=lerp(P.legR.rotation.x,rx,k);
-    P.armL.rotation.x=lerp(P.armL.rotation.x,alx,k);  P.armR.rotation.x=lerp(P.armR.rotation.x,arx,k);
+    const P=this.av.parts, k=Math.min(1,dt*10), a=this.anim;
+    let lx=0,rx=0,alx=0,arx=0,alz=0,arz=0,sp=0,bob=0,tl=0,tx=0,tz=0;
+    if(a){
+      lx=a.legL||0; rx=a.legR||0; sp=a.spread||0; tl=a.lift||0; tx=a.rx||0; tz=a.rz||0;
+      if(a.arms==='up'){ alx=arx=-2.8; } else if(a.arms==='one'){ arx=-2.8; alx=Math.sin(t*3)*0.3; }
+    } else if(this.moving){
+      this.phase+=dt*9; const s=Math.sin(this.phase); lx=s*0.7; rx=-s*0.7; alx=-s*0.6; arx=s*0.6; bob=Math.abs(Math.cos(this.phase))*0.035;
+    } else bob=Math.sin(t*2+this.phase)*0.008;
+    const em=this.emote;
+    if(em&&!a){
+      em.t+=dt;
+      if(em.t>=em.dur) this.emote=null;
+      else if(em.type==='wave'){ arx=-2.7; arz=Math.sin(em.t*10)*0.4; }
+      else if(em.type==='clap'){ const c=0.05+0.28*Math.abs(Math.sin(em.t*9)); alx=arx=-1.4; alz=c; arz=-c; }
+      else { this.yaw+=dt*4; alz=-1.3; arz=1.3; }
+    }
+    const lr=(o,key,v)=>{ o.rotation[key]=lerp(o.rotation[key],v,k); };
+    lr(P.legL,'x',lx); lr(P.legR,'x',rx); lr(P.legL,'z',-sp); lr(P.legR,'z',sp);
+    lr(P.armL,'x',alx); lr(P.armR,'x',arx); lr(P.armL,'z',alz); lr(P.armR,'z',arz);
+    const f=this.fxv, kf=Math.min(1,dt*5);
+    f.lift=lerp(f.lift,tl,kf); f.rx=lerp(f.rx,tx,kf); f.rz=lerp(f.rz,tz,kf);
+    const g=this.av.group; g.position.y=f.lift; g.rotation.set(f.rx,0,f.rz);
+    const flat=Math.abs(f.rx)<0.3&&Math.abs(f.rz)<0.3;
+    this.av.shadow.visible=flat; this.av.shadow.position.y=0.02-f.lift;
     this.av.inner.position.y=bob;
     this.root.rotation.y=this.yaw;
-    // đồng bộ bản phản chiếu
+    if(this.bubble){ this.bubble.t-=dt; if(this.bubble.t<=0){ killSprite(this.root,this.bubble.sp); this.bubble=null; } }
+    // đồng bộ bản phản chiếu trong gương
     if(mirrorOn){
       const Q=this.mav.parts;
-      for(const key of ['legL','legR','armL','armR']) Q[key].rotation.x=P[key].rotation.x;
+      for(const key of ['legL','legR','armL','armR']){ Q[key].rotation.x=P[key].rotation.x; Q[key].rotation.z=P[key].rotation.z; }
+      const mg=this.mav.group; mg.position.y=g.position.y; mg.rotation.copy(g.rotation);
+      this.mav.shadow.visible=flat; this.mav.shadow.position.y=this.av.shadow.position.y;
       this.mav.inner.position.y=bob;
       this.mroot.position.copy(this.root.position); this.mroot.rotation.y=this.yaw;
     }
@@ -722,7 +985,7 @@ const input = { keys:{}, pointers:new Map(), downAt:0, moved:0, pinch:0 };
 const cam = { yaw:0, pitch:0.3, dist:6.2, tYaw:0, tPitch:0.3, tDist:6.2, target:new THREE.Vector3() };
 let mode='play';                    // 'play' | 'customize'
 let moveTarget=null, stuckT=0;
-let danceDemo=null;                 // placeholder minigame (Giai đoạn 2 thay thế)
+let dance=null;                     // phiên múa đang chạy: {def:cột, move, anim, a, pulse}
 let marker;
 const _v=new THREE.Vector3(), _ray=new THREE.Raycaster(), _plane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
 
@@ -744,20 +1007,22 @@ function updateBots(dt){
   for(const b of bots){
     const p=b.root.position;
     if(b.holdT>0){                    // đang "tập" ở cột
-      b.holdT-=dt; b.moving=false; b.pose='hold';
-      b.orbit+=dt*1.6; const d=b.pole; p.set(d.x+Math.sin(b.orbit)*0.32,0,d.z+Math.cos(b.orbit)*0.32); b.yaw=b.orbit+Math.PI;
-      if(b.holdT<=0){ b.pose='idle'; b.wait=rand(1,3); }
+      b.holdT-=dt; b.moving=false; b.anim=b.curAnim;
+      b.orbit+=dt*b.curAnim.orbit; const d=b.pole, r=b.curAnim.rad;
+      p.set(d.x+Math.sin(b.orbit)*r,0,d.z+Math.cos(b.orbit)*r); b.yaw=b.orbit+Math.PI;
+      if(b.holdT<=0){ b.anim=null; b.wait=rand(1,3); p.set(d.x+Math.sin(b.orbit)*0.95,0,d.z+Math.cos(b.orbit)*0.95); }
     } else if(b.target){
       _v.set(b.target.x-p.x,0,b.target.z-p.z); const l=_v.length();
       if(l<0.15){ b.target=null; b.moving=false; b.wait=rand(2,5);
-        if(b.nextPole){ b.pole=b.nextPole; b.nextPole=null; b.holdT=rand(4,8); b.orbit=Math.atan2(p.x-b.pole.x,p.z-b.pole.z); } }
+        if(b.nextPole){ b.pole=b.nextPole; b.nextPole=null; b.holdT=rand(5,9); b.orbit=Math.atan2(p.x-b.pole.x,p.z-b.pole.z);
+          const keys=Object.keys(ANIMS); b.curAnim=ANIMS[keys[Math.floor(Math.random()*keys.length)]]; } }
       else { _v.multiplyScalar(1/l); p.x+=_v.x*b.speed*dt; p.z+=_v.z*b.speed*dt; resolveCollisionBot(p);
         b.moving=true; b.yaw+=angDiff(b.yaw,Math.atan2(_v.x,_v.z))*Math.min(1,dt*8); }
     } else {
       b.moving=false; b.wait-=dt;
       if(b.wait<=0){
         if(Math.random()<0.5){ const d=CONFIG.POLES[Math.floor(Math.random()*CONFIG.POLES.length)];
-          b.nextPole=d; b.target={x:d.x+Math.sin(1)*0.9,z:d.z+Math.cos(1)*0.9}; }
+          b.nextPole=d; b.target={x:d.x+Math.sin(1)*0.95,z:d.z+Math.cos(1)*0.95}; }
         else b.target={x:rand(-9,9),z:rand(-5.5,6)};
       }
     }
@@ -779,11 +1044,12 @@ function nearestPole(){
 
 function updatePlayer(dt){
   const p=player.root.position;
-  if(danceDemo){
-    danceDemo.t-=dt; danceDemo.a+=dt*1.8; const d=danceDemo.def;
-    p.set(d.x+Math.sin(danceDemo.a)*0.32,0,d.z+Math.cos(danceDemo.a)*0.32); player.yaw=danceDemo.a+Math.PI;
-    player.pose='hold'; player.moving=false;
-    if(danceDemo.t<=0){ danceDemo=null; player.pose='idle'; const o=new THREE.Vector3(Math.sin(0.4),0,Math.cos(0.4)); p.x+=o.x*0.9; p.z+=o.z*0.9; toast('Đây mới là demo tư thế. Minigame múa thật có ở Giai đoạn 2 💃'); }
+  if(dance){
+    dance.pulse*=Math.pow(0.03,dt);                       // nhịp đúng → xoay nhanh hơn rồi hạ dần
+    const an=dance.anim;
+    dance.a+=dt*Math.max(0.25,an.orbit*(1+dance.pulse*0.5));
+    const tx=dance.def.x+Math.sin(dance.a)*an.rad, tz=dance.def.z+Math.cos(dance.a)*an.rad, kk=Math.min(1,dt*7);
+    p.x+=(tx-p.x)*kk; p.z+=(tz-p.z)*kk; player.yaw=dance.a+Math.PI; player.moving=false;
     return;
   }
   if(mode==='customize'){ player.moving=false; player.yaw+=dt*0.6; return; }
@@ -805,7 +1071,6 @@ function updatePlayer(dt){
     if(moveTarget){ stuckT = moved<s*0.25 ? stuckT+dt : 0; if(stuckT>0.4){ moveTarget=null; marker.visible=false; stuckT=0; } }
     player.moving=true; player.yaw+=angDiff(player.yaw,Math.atan2(dx,dz))*Math.min(1,dt*12);
   } else player.moving=false;
-  player.pose='idle';
 }
 
 /* ---- Camera ---- */
@@ -813,7 +1078,7 @@ function updateCamera(dt){
   const k=Math.min(1,dt*8);
   cam.yaw+=angDiff(cam.yaw,cam.tYaw)*k; cam.pitch=lerp(cam.pitch,cam.tPitch,k); cam.dist=lerp(cam.dist,cam.tDist,k);
   const pp=player.root.position;
-  cam.target.set(pp.x, mode==='customize'?1.0:1.15, pp.z);
+  cam.target.set(pp.x, mode==='customize'?1.0:mode==='dance'?1.45:1.15, pp.z);
   const cp=Math.cos(cam.pitch);
   camera.position.set(cam.target.x+Math.sin(cam.yaw)*cp*cam.dist, cam.target.y+Math.sin(cam.pitch)*cam.dist, cam.target.z+Math.cos(cam.yaw)*cp*cam.dist);
   // giữ camera trong phòng
@@ -863,7 +1128,7 @@ function setupInput(){
 function pinchDist(){ const a=[...input.pointers.values()]; return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); }
 
 function onTap(cx,cy){
-  if(mode!=='play'||danceDemo) return;
+  if(mode!=='play') return;
   const r=renderer.domElement.getBoundingClientRect();
   _ray.setFromCamera(new THREE.Vector2(((cx-r.left)/r.width)*2-1, -((cy-r.top)/r.height)*2+1), camera);
   const pp=player.root.position;
@@ -891,15 +1156,18 @@ function toast(msg){
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
 }
 function updateHUD(){
-  const s=GAME.state, need=GAME.expNeed(s.level);
+  const s=GAME.state, need=GAME.expNeed(s.level), fl=Math.floor;
   $('hudName').textContent=s.name;
-  $('hudLv').textContent=s.level; $('hudExpTxt').textContent=fmt(s.exp)+'/'+fmt(need)+' EXP';
-  $('hudExp').style.width=(clamp(s.exp/need,0,1)*100)+'%';
+  $('hudLv').textContent=s.level;
+  $('hudExpTxt').textContent=s.level>=CONFIG.MAX_LEVEL?'TỐI ĐA':fmt(s.exp)+'/'+fmt(need)+' EXP';
+  $('hudExp').style.width=(s.level>=CONFIG.MAX_LEVEL?100:clamp(s.exp/need,0,1)*100)+'%';
   $('hudSt').style.width=(clamp(s.stamina/CONFIG.STAMINA_MAX,0,1)*100)+'%';
-  $('hudStTxt').textContent=Math.floor(s.stamina)+'/'+CONFIG.STAMINA_MAX;
-  $('sStr').textContent=fmt(s.stats.str); $('sFlex').textContent=fmt(s.stats.flex);
-  $('sBal').textContent=fmt(s.stats.bal); $('sArt').textContent=fmt(s.stats.art);
+  $('hudStTxt').textContent=fl(s.stamina)+'/'+CONFIG.STAMINA_MAX;
+  $('sStr').textContent=fl(s.stats.str); $('sFlex').textContent=fl(s.stats.flex);
+  $('sBal').textContent=fl(s.stats.bal); $('sArt').textContent=fl(s.stats.art);
   $('sCal').textContent=fmt(s.calo); $('sCoin').textContent=fmt(s.coins);
+  Quests.ensure();
+  document.querySelector('[data-menu=quests]').classList.toggle('dot',Quests.claimable()>0);
 }
 function updateNet(){
   $('btnNet').classList.toggle('on',Net.connected);
@@ -908,41 +1176,332 @@ function updateNet(){
 
 /* ---- Cửa sổ trượt ---- */
 function openSheet(title,html){
+  Chat.open=false; $('sheetBody').onclick=null;
   $('sheetTitle').textContent=title; $('sheetBody').innerHTML=html; $('sheet').classList.add('open');
   $('sheetBody').scrollTop=0;
 }
-function closeSheet(){ $('sheet').classList.remove('open'); }
+function closeSheet(){ $('sheet').classList.remove('open'); Chat.open=false; }
 function soon(icon,title,phase,items){
   return `<div class="soon"><div class="big">${icon}</div><div class="tag">${phase}</div></div>
     <p style="text-align:center;margin:0 0 6px">${title}</p><ul>${items.map(i=>'<li>'+i+'</li>').join('')}</ul>`;
 }
+/* =====================================================================
+   12. HỆ THỐNG GAME: âm thanh, EXP/cấp, nhiệm vụ, huy hiệu, shop, gói tập
+   ===================================================================== */
+const Snd={ ctx:null,
+  init(){ if(!this.ctx){ try{ this.ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(this.ctx&&this.ctx.state==='suspended') this.ctx.resume(); },
+  tone(f,d,type,v){ if(!GAME.state.settings.sound||!this.ctx) return;
+    try{ const c=this.ctx,o=c.createOscillator(),g=c.createGain(),t=c.currentTime; o.type=type||'sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(v||0.12,t); g.gain.exponentialRampToValueAtTime(0.0001,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d); }catch(e){} },
+  perfect(){ this.tone(988,0.16,'triangle',0.16); this.tone(1318,0.2,'sine',0.08); },
+  good(){ this.tone(660,0.14,'triangle',0.14); },
+  miss(){ this.tone(130,0.2,'sawtooth',0.1); },
+  tick(){ this.tone(330,0.05,'square',0.03); },
+  coin(){ this.tone(1200,0.1,'square',0.06); },
+  levelup(){ [523,659,784,1046].forEach((f,i)=>setTimeout(()=>this.tone(f,0.25,'triangle',0.14),i*110)); },
+};
+function celebrate(){
+  const fx=$('fx'), em=['✨','💖','⭐','🎉','💃','🌟'];
+  for(let i=0;i<22;i++){ const sp=document.createElement('span'); sp.textContent=em[i%em.length];
+    sp.style.left=(Math.random()*95)+'%'; sp.style.animationDelay=(Math.random()*0.5)+'s'; sp.style.fontSize=(18+Math.random()*20)+'px'; fx.appendChild(sp); setTimeout(()=>sp.remove(),2600); }
+}
+const todayKey=()=>{ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); };
+const STAT_ICON={str:'💪',flex:'🤸',bal:'⚖️',art:'💃'};
+const TIER_NAME=['Beginner · Cơ bản','Intermediate · Trung cấp','Advanced · Nâng cao'];
+const GRADES=[['S',0.9,'#ffd24a'],['A',0.75,'#ff5cb8'],['B',0.55,'#b58cff'],['C',0.3,'#8ad0ff'],['D',0,'#9a8aa8']];
+const GRADE_RANK={S:5,A:4,B:3,C:2,D:1};
+const gradeOf=(sc)=>GRADES.find(g=>sc>=g[1]);
+const statOf=(k)=>Math.floor(GAME.state.stats[k]);
+function isUnlocked(m){ return m.unlock===0||GAME.state.unlocked.includes(m.id); }
+function missingReq(m){ return Object.keys(m.req).filter(k=>statOf(k)<m.req[k]); }
+
+/* ---- EXP & lên cấp ---- */
+function addExp(n){
+  const s=GAME.state, ups=[];
+  if(s.level>=CONFIG.MAX_LEVEL) return ups;
+  s.exp+=n;
+  while(s.level<CONFIG.MAX_LEVEL && s.exp>=GAME.expNeed(s.level)){
+    s.exp-=GAME.expNeed(s.level); s.level++;
+    for(const k in s.stats) s.stats[k]+=1;                       // lên cấp: +1 mọi chỉ số
+    s.stamina=Math.min(CONFIG.STAMINA_MAX,s.stamina+25); ups.push(s.level);
+  }
+  if(s.level>=CONFIG.MAX_LEVEL) s.exp=0;
+  if(ups.length){
+    Snd.levelup(); celebrate();
+    const nm=CONFIG.MOVES.filter(m=>m.level>ups[0]-1&&m.level<=s.level&&!isUnlocked(m));
+    toast('🎉 Lên cấp '+s.level+'!'+(nm.length?' Động tác mới có thể mở: '+nm.map(m=>m.name).join(', '):''));
+    Badges.check();
+  }
+  return ups;
+}
+
+/* ---- Huy hiệu ---- */
+const Badges={ check(){ const s=GAME.state; for(const b of CONFIG.BADGES){ if(!s.badges.includes(b.id)&&b.test(s)){ s.badges.push(b.id); toast('🏅 Huy hiệu mới: '+b.name); Snd.coin(); } } } };
+
+/* ---- Gói tập ---- */
+const Plans={
+  active(){
+    const p=GAME.state.plan; if(!p) return null;
+    const def=CONFIG.PLANS.find(x=>x.id===p.id);
+    if(!def||(p.expiresAt&&Date.now()>p.expiresAt)||(def.sessions&&p.left<=0)){ GAME.state.plan=null; return null; }
+    return {def,p};
+  },
+  mult(){ const a=this.active(); return a?a.def.expMult:1; },
+  consume(){ const a=this.active(); if(a&&a.def.sessions) a.p.left--; },
+  left(a){ if(a.def.sessions) return 'Còn '+a.p.left+' buổi'; const ms=a.p.expiresAt-Date.now(), h=Math.floor(ms/36e5); return h>=24?'Còn '+Math.ceil(h/24)+' ngày':'Còn '+h+' giờ '+Math.floor(ms%36e5/6e4)+' phút'; },
+  buy(id){
+    const s=GAME.state, def=CONFIG.PLANS.find(x=>x.id===id); if(!def) return;
+    if(s.coins<def.price) return toast('Không đủ xu 🪙');
+    if(this.active()&&!confirm('Bạn đang có gói tập. Mua gói mới sẽ thay thế gói hiện tại. Tiếp tục?')) return;
+    s.coins-=def.price; s.plan={id:def.id,left:def.sessions||0,expiresAt:def.days?Date.now()+def.days*864e5:0};
+    Snd.coin(); toast('🎟️ Đã kích hoạt gói '+def.name+'!'); GAME.save(); updateHUD(); $('sheetBody').innerHTML=this.html();
+  },
+  html(){
+    const act=this.active();
+    let h=act?`<div class="plan act"><div class="h"><b>${act.def.icon} Đang dùng: ${act.def.name}</b></div><p>${act.def.desc} · ${this.left(act)}</p></div>`:'<p class="muted">Gói tập tăng hệ số EXP khi múa. Mua bằng 🪙 xu kiếm được trong game.</p>';
+    CONFIG.PLANS.forEach(d=>{ h+=`<div class="plan"><div class="h"><b>${d.icon} ${d.name}</b><button class="btn gold" data-plan="${d.id}">🪙 ${fmt(d.price)}</button></div><p>${d.desc}</p></div>`; });
+    h+=`<h3>Muốn tập thật?</h3><p class="muted" style="margin:0 0 4px">Gói trong game chỉ để vui. Hãy đến tập cột thật cùng huấn luyện viên tại studio!</p>
+      <button class="btn gold block" data-book="1">📅 Đặt lớp thật tại studio</button>`;
+    return h;
+  },
+  bind(){
+    $('sheetBody').onclick=e=>{ const b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.plan) this.buy(b.dataset.plan);
+      if(b.dataset.book){ if(/^https?:/i.test(CONFIG.BOOKING_URL)) window.open(CONFIG.BOOKING_URL,'_blank','noopener'); else toast('Chủ studio chưa cài link đặt lớp (CONFIG.BOOKING_URL)'); } };
+  },
+};
+
+/* ---- Nhiệm vụ ngày ---- */
+const Quests={
+  rng(seed){ return ()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; },
+  feasible(q){ const s=GAME.state; if(q.type==='newmove') return CONFIG.MOVES.some(m=>m.level<=s.level&&!isUnlocked(m)); return true; },
+  ensure(){
+    const s=GAME.state, key=todayKey();
+    if(s.quests&&s.quests.date===key&&s.quests.list) return;
+    let seed=0; for(const ch of key) seed=(seed*31+ch.charCodeAt(0))|0;
+    const rnd=this.rng(seed+(s.createdAt%9973));
+    const first=CONFIG.QUESTS.find(q=>q.id===(s.level>=10?'q_dance6':'q_dance3'));
+    const pool=CONFIG.QUESTS.filter(q=>q!==first&&q.type!=='dances'&&this.feasible(q));
+    for(let i=pool.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+    s.quests={date:key,list:[first].concat(pool.slice(0,2)).map(q=>({id:q.id,prog:0,claimed:false}))};
+    GAME.save();
+  },
+  def(q){ return CONFIG.QUESTS.find(x=>x.id===q.id); },
+  add(type,n){
+    this.ensure(); n=n===undefined?1:n; if(!n) return;
+    GAME.state.quests.list.forEach(q=>{ const d=this.def(q); if(!d||d.type!==type||q.claimed||q.prog>=d.target) return;
+      q.prog=Math.min(d.target,q.prog+n); if(q.prog>=d.target) toast('📜 Xong nhiệm vụ: '+d.text+' — vào Nhiệm vụ để nhận thưởng'); });
+  },
+  claimable(){ return GAME.state.quests.list.filter(q=>!q.claimed&&q.prog>=this.def(q).target).length; },
+  claim(i){
+    const q=GAME.state.quests.list[i], d=q&&this.def(q); if(!q||q.claimed||q.prog<d.target) return;
+    q.claimed=true; GAME.state.coins+=d.coins; Snd.coin(); addExp(d.exp);
+    toast('🎁 +'+d.coins+' 🪙  +'+d.exp+' EXP'); GAME.save(); updateHUD(); $('sheetBody').innerHTML=this.html();
+  },
+  html(){
+    this.ensure(); const n=new Date(), end=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1), ms=end-n;
+    let h=`<p class="muted">Làm mới sau ${Math.floor(ms/36e5)} giờ ${Math.floor(ms%36e5/6e4)} phút.</p>`;
+    GAME.state.quests.list.forEach((q,i)=>{ const d=this.def(q), ready=q.prog>=d.target&&!q.claimed;
+      h+=`<div class="qrow"><div class="qi"><b>${d.text}</b><div class="bar"><i style="width:${q.prog/d.target*100}%"></i></div><small>${q.prog}/${d.target} · 🪙 ${d.coins} · ⭐ ${d.exp} EXP</small></div>
+        <button class="btn ${ready?'gold':'ghost'}" data-claim="${i}" ${ready?'':'disabled'}>${q.claimed?'Đã nhận':ready?'Nhận':'Chưa xong'}</button></div>`; });
+    return h;
+  },
+  bind(){ $('sheetBody').onclick=e=>{ const b=e.target.closest('button'); if(b&&b.dataset.claim!==undefined) this.claim(+b.dataset.claim); }; },
+};
+
+/* ---- Shop ---- */
+const Shop={
+  tab:'outfit',
+  items(){
+    if(this.tab==='outfit') return CONFIG.OUTFITS.map((o,i)=>({kind:'outfit',idx:i,id:'outfit:'+i,name:o.name,price:o.price||0,color:o.top,color2:o.bottom}));
+    if(this.tab==='shoe') return [{kind:'shoe',id:null,name:'Giày theo trang phục',price:0,color:'#666'}].concat(CONFIG.SHOES.map(x=>({kind:'shoe',id:x.id,name:x.name,price:x.price,color:x.color})));
+    return CONFIG.ACCESSORIES.map(a=>({kind:'acc',id:a.id,slot:a.slot,name:a.name,price:a.price,icon:a.icon,minLevel:a.minLevel||0}));
+  },
+  owned(it){ return !it.price||it.id===null||GAME.state.inventory.includes(it.id); },
+  equipped(it){ const L=GAME.state.look; return it.kind==='outfit'?L.outfit===it.idx:it.kind==='shoe'?L.shoes===it.id:L.acc[it.slot]===it.id; },
+  html(){
+    const tabs=[['outfit','👗 Trang phục'],['shoe','👟 Giày'],['acc','👑 Phụ kiện']];
+    let h=`<div class="tabs">${tabs.map(t=>`<button data-tab="${t[0]}" class="${t[0]===this.tab?'sel':''}">${t[1]}</button>`).join('')}</div><p class="muted" style="margin:0 0 4px">Bạn có 🪙 <b>${fmt(GAME.state.coins)}</b> xu</p>`;
+    this.items().forEach((it,i)=>{
+      const own=this.owned(it), eq=own&&this.equipped(it), lock=it.minLevel&&GAME.state.level<it.minLevel;
+      const sw=it.kind==='acc'?`<div class="sw">${it.icon}</div>`:`<div class="sw" style="background:${it.color2?`linear-gradient(135deg,${it.color} 50%,${it.color2} 50%)`:it.color}"></div>`;
+      let btn;
+      if(!own) btn=lock?`<button class="btn ghost" disabled>🔒 Cấp ${it.minLevel}</button>`:`<button class="btn gold" data-i="${i}">🪙 ${fmt(it.price)}</button>`;
+      else if(eq) btn=it.kind==='acc'?`<button class="btn ghost" data-i="${i}">Tháo</button>`:`<button class="btn ghost" disabled>Đang mặc</button>`;
+      else btn=`<button class="btn" data-i="${i}">Mặc</button>`;
+      h+=`<div class="item">${sw}<div class="nm">${it.name}<small>${own?(eq?'Đang mặc':'Đã sở hữu'):'Giá '+fmt(it.price)+' 🪙'}</small></div>${btn}</div>`;
+    });
+    return h;
+  },
+  act(i){
+    const it=this.items()[i], s=GAME.state; if(!it) return;
+    if(!this.owned(it)){
+      if(it.minLevel&&s.level<it.minLevel) return toast('Cần đạt cấp '+it.minLevel);
+      if(s.coins<it.price) return toast('Không đủ xu 🪙');
+      s.coins-=it.price; s.inventory.push(it.id); s.counts.bought++; Quests.add('buy'); Badges.check(); Snd.coin(); toast('🛍️ Đã mua '+it.name+'!');
+    }
+    const L=s.look;
+    if(it.kind==='outfit') L.outfit=it.idx; else if(it.kind==='shoe') L.shoes=it.id; else L.acc[it.slot]=(L.acc[it.slot]===it.id&&this.owned(it)&&!arguments[1])?null:it.id;
+    player.rebuild(L); GAME.save(); updateHUD(); $('sheetBody').innerHTML=this.html();
+  },
+  bind(){ $('sheetBody').onclick=e=>{ const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.tab){ this.tab=b.dataset.tab; $('sheetBody').innerHTML=this.html(); }
+    else if(b.dataset.i!==undefined) this.act(+b.dataset.i); }; },
+};
+
+/* ---- Bảng xếp hạng (bot giả lập — sau này thay bằng Net.fetchLeaderboard()) ---- */
+const Board={
+  tab:'level',
+  // [tên, cấp ban đầu, cấp tăng mỗi ngày, hệ số điểm]
+  ROSTER:[['Mai Anh',9,.15,1],['Thảo Vy',14,.1,1.05],['Khánh Linh',5,.2,.9],['Ngọc Diệp',31,.05,1],['Bảo Trân',22,.08,1.1],['Minh Thư',18,.1,.95],
+    ['Gia Hân',40,.03,1.05],['Tuệ Nhi',12,.12,1],['Phương Linh',27,.06,1],['Hà My',7,.18,1.1],['Yến Nhi',35,.04,.95],['Bích Ngọc',3,.25,1],
+    ['Thu Hiền',20,.09,1.05],['Diễm Quỳnh',46,.02,1],['Kim Ngân',11,.13,.9],['Lan Chi',25,.07,1.1],['Trúc Anh',16,.1,1],['Cẩm Tú',29,.06,.95]],
+  hash(str){ let h=0; for(const c of str) h=(h*31+c.charCodeAt(0))|0; return Math.abs(h); },
+  botStat(r){ const days=(Date.now()-GAME.state.createdAt)/864e5, level=clamp(Math.floor(r[1]+days*r[2]),1,CONFIG.MAX_LEVEL);
+    return {name:r[0],level,score:Math.round(level*level*40*r[3]+this.hash(r[0])%300)}; },
+  list(){
+    const s=GAME.state, rows=this.ROSTER.map(r=>this.botStat(r)); rows.push({name:s.name,level:s.level,score:s.totalScore,me:true});
+    const key=this.tab==='level'?'level':'score', other=this.tab==='level'?'score':'level';
+    return rows.sort((a,b)=>b[key]-a[key]||b[other]-a[other]);
+  },
+  html(){
+    const rows=this.list(), key=this.tab==='level'?'level':'score', myIdx=rows.findIndex(r=>r.me);
+    const med=['🥇','🥈','🥉'];
+    const row=(r,i)=>`<div class="rank ${r.me?'me':''}"><div class="n">${med[i]||i+1}</div><div class="nm"></div><div class="v">Cấp ${r.level} · ${fmt(r.score)} điểm</div></div>`;
+    let h=`<div class="tabs"><button data-tab="level" class="${this.tab==='level'?'sel':''}">Theo cấp</button><button data-tab="score" class="${this.tab==='score'?'sel':''}">Theo tổng điểm</button></div>`;
+    rows.slice(0,15).forEach((r,i)=>h+=row(r,i));
+    if(myIdx>=15) h+='<div class="muted" style="text-align:center">…</div>'+row(rows[myIdx],myIdx);
+    h+=`<p class="muted" style="font-size:12px">Hạng của bạn: <b>#${myIdx+1}</b> · bảng đang dùng dữ liệu bot giả lập.</p>`;
+    return h;
+  },
+  fill(){ // gán tên bằng textContent (an toàn)
+    const names=this.list().slice(0,15).map(r=>r.name), rows=document.querySelectorAll('#sheetBody .rank .nm'), me=this.list().findIndex(r=>r.me);
+    rows.forEach((el,i)=>{ el.textContent=i<names.length?names[i]:GAME.state.name; if(i>=names.length&&me>=15) el.textContent=GAME.state.name; });
+  },
+  bind(){ this.fill(); $('sheetBody').onclick=e=>{ const b=e.target.closest('button'); if(b&&b.dataset.tab){ this.tab=b.dataset.tab; $('sheetBody').innerHTML=this.html(); this.fill(); } }; },
+};
+
+/* ---- Bạn bè (bot) ---- */
+const Friends={
+  online(name){ if(bots.some(b=>b.name===name)) return 'studio'; return Board.hash(name+Math.floor(Date.now()/36e5))%3===0?'online':'off'; },
+  html(){
+    const s=GAME.state, mk=(n,isF)=>{ const st=this.online(n), r=Board.botStat(Board.ROSTER.find(x=>x[0]===n)||[n,1,0,1]);
+      const lbl=st==='studio'?'🟢 Đang trong studio':st==='online'?'🟢 Trực tuyến':'⚪ Ngoại tuyến';
+      return `<div class="item"><div class="sw">💃</div><div class="nm"><span class="fn"></span><small>${lbl} · Cấp ${r.level}</small></div>
+        ${isF?`<button class="btn" data-msg="${Board.ROSTER.findIndex(x=>x[0]===n)}">Nhắn</button><button class="btn ghost" data-rm="${n.replace(/"/g,'')}">Xoá</button>`:`<button class="btn gold" data-add="${n.replace(/"/g,'')}">Kết bạn</button>`}</div>`; };
+    let h=`<h3>Bạn bè (${s.friends.length})</h3>`+(s.friends.length?s.friends.map(n=>mk(n,true)).join(''):'<p class="muted">Chưa có bạn bè. Hãy kết bạn bên dưới!</p>');
+    const sug=Board.ROSTER.map(r=>r[0]).filter(n=>!s.friends.includes(n)).sort((a,b)=>(this.online(a)==='off')-(this.online(b)==='off')).slice(0,8);
+    h+='<h3>Gợi ý kết bạn</h3>'+sug.map(n=>mk(n,false)).join('');
+    return h;
+  },
+  fill(){ const names=[...document.querySelectorAll('#sheetBody .item')]; // tên hiển thị bằng textContent
+    const s=GAME.state, sug=Board.ROSTER.map(r=>r[0]).filter(n=>!s.friends.includes(n)).sort((a,b)=>(this.online(a)==='off')-(this.online(b)==='off')).slice(0,8);
+    const all=s.friends.concat(sug); document.querySelectorAll('#sheetBody .fn').forEach((el,i)=>{ el.textContent=all[i]||''; }); },
+  bind(){ this.fill(); $('sheetBody').onclick=e=>{ const b=e.target.closest('button'); if(!b) return; const s=GAME.state;
+    if(b.dataset.add){ s.friends.push(b.dataset.add); Badges.check(); toast('👯 Đã kết bạn với '+b.dataset.add); }
+    else if(b.dataset.rm){ s.friends=s.friends.filter(n=>n!==b.dataset.rm); }
+    else if(b.dataset.msg!==undefined){ Chat.openUI('@'+Board.ROSTER[+b.dataset.msg][0]+' '); return; }
+    GAME.save(); $('sheetBody').innerHTML=this.html(); this.fill(); }; },
+  openUI(){ openSheet('👥 Bạn bè',this.html()); this.bind(); },
+};
+
+/* ---- Chat (bot) — chừa chỗ nối Net.sendChat / Net.onChat ---- */
+const Chat={
+  open:false, log:[], unread:0,
+  // Câu bot tự nói (CHỈNH TẠI ĐÂY). {move} và {lv} sẽ được thay ngẫu nhiên.
+  BOT_LINES:['Chào cả nhà! Hôm nay ai tập cột nào? 💖','Mình vừa đạt hạng S ở {move} nè!','Cột xoay khó giữ thăng bằng quá trời 😵','Nhớ khởi động trước khi múa nha mọi người!',
+    'Ai chỉ mình {move} với 🥺','Studio hôm nay đẹp ghê ✨','Mình đang cày cấp {lv} đây 💪','Hết thể lực rồi, nghỉ chút uống nước thôi 🧃','Cuối tuần này ai đi lớp thật không? 💃'],
+  add(name,text,me){
+    this.log.push({name,text,me}); if(this.log.length>60) this.log.shift();
+    if(this.open) this.renderLog(); else if(!me){ this.unread++; $('btnChat').classList.add('has-dot'); }
+  },
+  botSay(b,text){ this.add(b.name,text,false); b.say(text,4.5); },
+  renderLog(){
+    const el=$('chatLog'); if(!el) return; el.innerHTML='';
+    this.log.forEach(m=>{ const d=document.createElement('div'); d.className='msg'+(m.me?' me':''); const n=document.createElement('b'); n.textContent=m.me?'Bạn':m.name; d.appendChild(n); d.appendChild(document.createTextNode(m.text)); el.appendChild(d); });
+    el.scrollTop=el.scrollHeight;
+  },
+  openUI(prefill){
+    openSheet('💬 Chat studio',`<div class="chatlog" id="chatLog"></div><div class="chatbar"><input type="text" id="chatIn" maxlength="80" placeholder="Nhắn gì đó…" autocomplete="off"><button class="btn" id="chatSend">Gửi</button></div>`);
+    this.open=true; this.unread=0; $('btnChat').classList.remove('has-dot'); this.renderLog();
+    const send=()=>this.send($('chatIn').value); $('chatSend').onclick=send; $('chatIn').onkeydown=e=>{ if(e.key==='Enter') send(); };
+    if(prefill) $('chatIn').value=prefill;
+  },
+  send(text){
+    text=(text||'').trim().slice(0,80); if(!text) return; $('chatIn').value='';
+    const s=GAME.state; this.add(s.name,text,true); player.say(text,4); Net.sendChat(text);
+    s.counts.chats++; Quests.add('chat'); Badges.check(); GAME.save();
+    const b=bots[Math.floor(Math.random()*bots.length)];
+    let pool=['Hihi 😄','Đúng rồi đó!','Cố lên nha 💪','Dễ thương ghê ✨'];
+    if(/chào|\bhi\b|hello|alo/i.test(text)) pool=['Chào bạn nha! 💖','Hello hello! 👋'];
+    else if(/cột|múa|tập/i.test(text)) pool=['Tập đều là lên cấp nhanh lắm đó!','Bạn thử Fireman Spin trước nha 😘'];
+    else if(/\?/.test(text)) pool=['Mình cũng đang thắc mắc nè 😆','Thử hỏi cô giáo ở lớp thật xem sao nha!'];
+    setTimeout(()=>this.botSay(b,pool[Math.floor(Math.random()*pool.length)]),rand(1500,3500));
+  },
+};
+
+/* ---- Xã hội: bot tự nói chuyện / emote, nút emote ---- */
+const Social={
+  chatT:rand(12,25), emoT:rand(10,20),
+  tick(dt){
+    if(!bots.length) return;
+    this.chatT-=dt; if(this.chatT<=0){ this.chatT=rand(25,55);
+      const b=bots[Math.floor(Math.random()*bots.length)], mv=CONFIG.MOVES[Math.floor(Math.random()*CONFIG.MOVES.length)];
+      const t=Chat.BOT_LINES[Math.floor(Math.random()*Chat.BOT_LINES.length)].replace('{move}',mv.name).replace('{lv}',Math.floor(rand(3,30)));
+      Chat.botSay(b,t); }
+    this.emoT-=dt; if(this.emoT<=0){ this.emoT=rand(12,28);
+      const b=bots[Math.floor(Math.random()*bots.length)]; if(!b.moving&&!b.anim) b.playEmote(['wave','clap','pose'][Math.floor(Math.random()*3)]); }
+  },
+  emote(type){
+    $('emotes').classList.remove('open');
+    if(mode!=='play') return;
+    player.anim=null; player.playEmote(type); GAME.state.counts.emotes++; Quests.add('emote'); GAME.save();
+  },
+  bind(){
+    $('btnChat').onclick=()=>Chat.openUI();
+    $('btnFriends').onclick=()=>Friends.openUI();
+    $('btnEmote').onclick=()=>$('emotes').classList.toggle('open');
+    $('emotes').onclick=e=>{ const b=e.target.closest('button'); if(b) this.emote(b.dataset.e); };
+  },
+};
+
 const MENUS = {
-  quests : ()=>['📜 Nhiệm vụ',soon('📜','Nhiệm vụ ngày sẽ có ở Giai đoạn 3.','Sắp ra mắt · Giai đoạn 3',['Hoàn thành 3 lần múa','Mở 1 động tác mới','Thưởng xu + EXP mỗi ngày'])],
-  shop   : ()=>['🛍️ Shop',soon('🛍️','Cửa hàng trang phục, giày, phụ kiện bằng xu.','Sắp ra mắt · Giai đoạn 3',['Trang phục · giày · phụ kiện','Mua bằng 🪙 Xu kiếm được khi múa'])],
-  plans  : ()=>['🎟️ Gói tập',soon('🎟️','Gói thành viên trong game tăng hệ số EXP.','Sắp ra mắt · Giai đoạn 3',['Trải nghiệm · 8 buổi · Không giới hạn','Nút “Đặt lớp thật tại studio” → '+CONFIG.BOOKING_URL])],
-  board  : ()=>['🏆 Bảng xếp hạng',soon('🏆','Xếp hạng theo cấp và tổng điểm (bot giả lập trước).','Sắp ra mắt · Giai đoạn 4',['Top học viên theo cấp','Top tổng điểm','Chừa sẵn chỗ nối Firebase/Supabase'])],
-  profile: ()=>{ const s=GAME.state;
+  quests : ()=>['📜 Nhiệm vụ ngày',Quests.html(),()=>Quests.bind()],
+  shop   : ()=>['🛍️ Shop',Shop.html(),()=>Shop.bind()],
+  plans  : ()=>['🎟️ Gói tập',Plans.html(),()=>Plans.bind()],
+  board  : ()=>['🏆 Bảng xếp hạng',Board.html(),()=>Board.bind()],
+  profile: ()=>{ const s=GAME.state, fl=Math.floor, plan=Plans.active();
+    const moves=CONFIG.MOVES.filter(isUnlocked).map(m=>`<span style="display:inline-block;margin:3px 4px 3px 0;padding:3px 10px;border-radius:10px;background:rgba(255,255,255,.08)">${m.name}${s.best[m.id]?' <b style="color:var(--gold)">'+s.best[m.id]+'</b>':''}</span>`).join('');
+    const bd=CONFIG.BADGES.map(b=>`<div class="bdg ${s.badges.includes(b.id)?'':'off'}" title="${b.desc}"><div class="e">${b.icon}</div>${b.name}<div class="muted" style="font-size:10px">${b.desc}</div></div>`).join('');
     return ['👤 Hồ sơ',`<div class="kv">
       <div><span>Tên</span><b id="pfName"></b></div><div><span>Cấp</span><b>${s.level}/${CONFIG.MAX_LEVEL}</b></div>
-      <div><span>💪 Sức mạnh</span><b>${s.stats.str}</b></div><div><span>🤸 Dẻo dai</span><b>${s.stats.flex}</b></div>
-      <div><span>⚖️ Thăng bằng</span><b>${s.stats.bal}</b></div><div><span>💃 Nghệ thuật</span><b>${s.stats.art}</b></div>
-      <div><span>🔥 Calo</span><b>${fmt(s.calo)}</b></div><div><span>🪙 Xu</span><b>${fmt(s.coins)}</b></div></div>
+      <div><span>💪 Sức mạnh</span><b>${fl(s.stats.str)}</b></div><div><span>🤸 Dẻo dai</span><b>${fl(s.stats.flex)}</b></div>
+      <div><span>⚖️ Thăng bằng</span><b>${fl(s.stats.bal)}</b></div><div><span>💃 Nghệ thuật</span><b>${fl(s.stats.art)}</b></div>
+      <div><span>🔥 Calo</span><b>${fmt(s.calo)}</b></div><div><span>🪙 Xu</span><b>${fmt(s.coins)}</b></div>
+      <div><span>🏆 Tổng điểm</span><b>${fmt(s.totalScore)}</b></div><div><span>💃 Số lần múa</span><b>${fmt(s.counts.dances)}</b></div></div>
+      ${plan?`<p style="margin:10px 0 0">🎟️ Gói: <b>${plan.def.name}</b> · ${Plans.left(plan)}</p>`:''}
       <button class="btn block" id="pfLook">✨ Đổi diện mạo</button>
-      <h3>Động tác đã mở</h3><p style="color:var(--muted);margin:0">Danh sách động tác và huy hiệu sẽ có ở Giai đoạn 2–3.</p>`]; },
+      <h3>Động tác đã mở (${CONFIG.MOVES.filter(isUnlocked).length}/${CONFIG.MOVES.length})</h3><div>${moves}</div>
+      <h3>Huy hiệu (${s.badges.length}/${CONFIG.BADGES.length})</h3><div class="badges">${bd}</div>`,
+      ()=>{ $('pfName').textContent=s.name; $('pfLook').onclick=()=>{ closeSheet(); openCustomize(false); }; }]; },
   help   : ()=>['❔ Trợ giúp',`
     <h3>Di chuyển</h3><ul><li><b>Chạm sàn</b> để nhân vật đi tới đó. Chạm vào <b>cột</b> để đi đến cạnh cột.</li>
     <li><b>Kéo ngón tay</b> để xoay camera, <b>chụm hai ngón</b> để zoom.</li>
     <li>Máy tính: <b>WASD / phím mũi tên</b> để đi, <b>kéo chuột</b> để xoay, <b>lăn chuột</b> để zoom.</li></ul>
-    <h3>Múa cột</h3><ul><li>Đứng gần cột (khoảng ${CONFIG.POLE_USE_DISTANCE} m) sẽ hiện nút <b>💃 MÚA</b> (phím <b>E</b>/<b>Space</b>).</li>
-    <li>Mỗi lần múa tốn ⚡ thể lực, thể lực tự hồi dần theo thời gian.</li>
-    <li>Múa tốt để tăng 💪 🤸 ⚖️ 💃, nhận 🪙 Xu và EXP lên cấp (tối đa ${CONFIG.MAX_LEVEL}).</li></ul>
-    <h3>Trạng thái</h3><ul><li><b>Bot</b>: đang chạy chế độ giả lập (chat, bạn bè, bảng xếp hạng là bot).</li></ul>
-    <p style="color:var(--muted);font-size:12px">Tiến trình được lưu tự động trên thiết bị này.</p>`],
+    <h3>Múa cột</h3><ul><li>Đứng gần cột (khoảng ${CONFIG.POLE_USE_DISTANCE} m) sẽ hiện nút <b>💃 MÚA</b> (phím <b>E</b>).</li>
+    <li>Chọn một động tác đã mở khóa. Mỗi lần múa tốn ⚡ thể lực (tự hồi dần theo thời gian).</li>
+    <li><b>Minigame nhịp:</b> khi quả cầu chạm vạch vàng thì <b>bấm</b> (hoặc phím <b>Space</b>). Thanh dài thì <b>giữ</b> rồi thả đúng lúc kết thúc.</li>
+    <li>Điểm tốt → tăng 💪 🤸 ⚖️ 💃, nhận 🪙 xu và EXP. Lên cấp tối đa ${CONFIG.MAX_LEVEL}.</li>
+    <li>Động tác cấp cao cần đủ <b>cấp</b>, <b>chỉ số tối thiểu</b> và xu để <b>mở khóa</b>.</li>
+    <li>Cột xoay hợp với động tác quay, cột đứng hợp với động tác leo/đảo ngược: được +15% EXP.</li></ul>
+    <h3>Khác</h3><ul><li>📜 Nhiệm vụ ngày · 🛍️ Shop · 🎟️ Gói tập tăng EXP · 🏆 Bảng xếp hạng · 👤 Hồ sơ & huy hiệu.</li>
+    <li>💬 Chat, 😊 Emote, 👥 Bạn bè ở các nút bên phải.</li>
+    <li><b>Bot</b> ở góc trên: chat, bạn bè, bảng xếp hạng đang là bot giả lập.</li></ul>
+    <p class="muted" style="font-size:12px">Tiến trình được lưu tự động trên thiết bị này.</p>`],
 };
 function openMenu(key){
   if(!MENUS[key]) return;
-  const [t,h]=MENUS[key](); openSheet(t,h);
-  if(key==='profile'){ $('pfName').textContent=GAME.state.name; $('pfLook').onclick=()=>{ closeSheet(); openCustomize(false); }; }
+  const r=MENUS[key](); openSheet(r[0],r[1]); if(r[2]) r[2]();
 }
 
 /* ---- Cài đặt ---- */
@@ -954,14 +1513,16 @@ function openSettings(){
       <select id="stQ"><option value="low">Thấp (nhẹ máy)</option><option value="med">Vừa</option><option value="high">Cao</option></select></div>
     <div class="row"><span>Độ nhạy xoay camera</span><input type="range" id="stSens" min="0.5" max="2" step="0.1"></div>
     <div class="row"><span>Hiện tên trên đầu nhân vật</span><input type="checkbox" id="stTags"></div>
+    <div class="row"><span>Âm thanh</span><input type="checkbox" id="stSnd"></div>
     <button class="btn block" id="stLook">✨ Đổi diện mạo</button>
     <button class="btn danger block" id="stReset">🗑️ Xoá toàn bộ tiến trình</button>
-    <p style="color:var(--muted);font-size:12px;margin-top:12px">${CONFIG.STUDIO_NAME} POLE ONLINE · bản thử nghiệm · giai đoạn 1</p>`);
-  $('stName').value=s.name; $('stQ').value=s.settings.quality; $('stSens').value=s.settings.sens; $('stTags').checked=s.settings.tags;
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">${CONFIG.STUDIO_NAME} POLE ONLINE · bản thử nghiệm</p>`);
+  $('stName').value=s.name; $('stQ').value=s.settings.quality; $('stSens').value=s.settings.sens; $('stTags').checked=s.settings.tags; $('stSnd').checked=s.settings.sound;
   $('stName').onchange=e=>setName(e.target.value);
   $('stQ').onchange=e=>{ s.settings.quality=e.target.value; applyQuality(); GAME.save(); };
   $('stSens').oninput=e=>{ s.settings.sens=parseFloat(e.target.value); GAME.save(); };
   $('stTags').onchange=e=>{ s.settings.tags=e.target.checked; player.tag.visible=e.target.checked; bots.forEach(b=>b.tag.visible=e.target.checked); GAME.save(); };
+  $('stSnd').onchange=e=>{ s.settings.sound=e.target.checked; GAME.save(); };
   $('stLook').onclick=()=>{ closeSheet(); openCustomize(false); };
   $('stReset').onclick=()=>{ if(confirm('Xoá toàn bộ tiến trình và bắt đầu lại?')) GAME.reset(); };
 }
@@ -980,42 +1541,212 @@ function openCustomize(first){
   $('cDone').textContent=first?'Vào studio ✨':'Xong ✔';
 }
 function renderOptions(){
-  const L=GAME.state.look;
-  const fill=(id,key,items,swatch)=>{
+  const L=GAME.state.look, inv=GAME.state.inventory;
+  const fill=(id,key,items,swatch)=>{          // items: [[chỉ số, nhãn/màu], ...]
     const el=$(id); el.innerHTML='';
-    items.forEach((it,i)=>{
+    items.forEach(([i,v])=>{
       const b=document.createElement('button'); if(L[key]===i) b.classList.add('sel');
-      if(swatch){ b.classList.add('sw'); b.style.background=it; b.setAttribute('aria-label','màu '+(i+1)); } else b.textContent=it;
+      if(swatch){ b.classList.add('sw'); b.style.background=v; b.setAttribute('aria-label','màu '+(i+1)); } else b.textContent=v;
       b.onclick=()=>{ L[key]=i; player.rebuild(L); renderOptions(); };
       el.appendChild(b);
     });
   };
-  fill('oHair','hair',CONFIG.HAIR_STYLES); fill('oHairColor','hairColor',CONFIG.HAIR_COLORS,true);
-  fill('oSkin','skin',CONFIG.SKINS,true); fill('oOutfit','outfit',CONFIG.OUTFITS.map(o=>o.name));
+  fill('oHair','hair',CONFIG.HAIR_STYLES.map((v,i)=>[i,v]));
+  fill('oHairColor','hairColor',CONFIG.HAIR_COLORS.map((v,i)=>[i,v]),true);
+  fill('oSkin','skin',CONFIG.SKINS.map((v,i)=>[i,v]),true);
+  fill('oOutfit','outfit',CONFIG.OUTFITS.map((o,i)=>[i,o.name]).filter(([i])=>!CONFIG.OUTFITS[i].price||inv.includes('outfit:'+i)));
 }
 function closeCustomize(){
   const nm=$('cName').value; if(nm.trim()) setName(nm);
   GAME.state.firstRun=false; GAME.save();
   $('custom').classList.remove('open'); document.body.classList.remove('customizing');
   mode='play'; applyView(); cam.tDist=6.2; cam.tPitch=0.3; cam.tYaw=0; player.yaw=Math.PI;
-  toast('Chào mừng đến '+CONFIG.STUDIO_NAME+' Studio! Chạm sàn để di chuyển 💖');
+  toast('Chào mừng đến '+CONFIG.STUDIO_NAME+' Studio! Chạm sàn để di chuyển, đến gần cột để múa 💖');
 }
 
-/* ---- Nút MÚA (placeholder cho Giai đoạn 2) ---- */
+/* =====================================================================
+   13. MÚA: chọn động tác → minigame nhịp → thưởng
+   ===================================================================== */
+let pickPole=null;
 function onDance(){
-  if(mode!=='play'||danceDemo) return;
+  if(mode!=='play') return;
   const n=nearestPole(); if(n.dist>CONFIG.POLE_USE_DISTANCE) return;
-  // TODO (Giai đoạn 2): mở bảng chọn động tác + minigame nhịp. Hiện tại chỉ chạy tư thế demo 3 giây.
-  const p=player.root.position;
-  danceDemo={def:n.def,t:3,a:Math.atan2(p.x-n.def.x,p.z-n.def.z)};
+  openMovePicker(n.def);
 }
 function updateDanceButton(){
   const b=$('danceBtn');
-  if(mode!=='play'||danceDemo){ b.classList.remove('show'); return; }
+  if(mode!=='play'){ b.classList.remove('show'); return; }
   const n=nearestPole(), near=n.dist<=CONFIG.POLE_USE_DISTANCE;
   b.classList.toggle('show',near);
   if(near) $('danceSub').textContent=n.def.name+(n.def.kind==='spin'?' · xoay':' · đứng');
 }
+function unlockMove(m){
+  const s=GAME.state;
+  if(s.level<m.level) return toast('Cần đạt cấp '+m.level);
+  if(s.coins<m.unlock) return toast('Không đủ xu 🪙');
+  s.coins-=m.unlock; s.unlocked.push(m.id); Quests.add('newmove'); Badges.check(); Snd.coin();
+  toast('🔓 Đã mở khóa '+m.name+'!'); GAME.save(); updateHUD();
+}
+function openMovePicker(pole){
+  pickPole=pole;
+  GAME.tickStamina();
+  const s=GAME.state;
+  let h=`<p class="muted" style="margin:0">Cột: <b>${pole.name}</b> (${pole.kind==='spin'?'xoay':'đứng'}) · ⚡ ${Math.floor(s.stamina)}/${CONFIG.STAMINA_MAX}${Plans.active()?' · 🎟️ EXP ×'+Plans.mult():''}</p>`;
+  for(let t=0;t<3;t++){
+    h+=`<h3>${TIER_NAME[t]}</h3>`;
+    CONFIG.MOVES.filter(m=>m.tier===t).forEach(m=>{
+      const un=isUnlocked(m), miss=missingReq(m), low=s.level<m.level, noSt=s.stamina<m.cost;
+      const req=Object.keys(m.req).map(k=>`<span class="${statOf(k)>=m.req[k]?'ok':'bad'}">${STAT_ICON[k]} ${statOf(k)}/${m.req[k]}</span>`).join('');
+      let btn;
+      if(low) btn=`<button class="btn ghost" disabled>🔒 Cấp ${m.level}</button>`;
+      else if(!un) btn=`<button class="btn gold" data-unlock="${m.id}">🔓 ${fmt(m.unlock)} 🪙</button>`;
+      else if(miss.length) btn=`<button class="btn ghost" disabled>Thiếu chỉ số</button>`;
+      else if(noSt) btn=`<button class="btn ghost" disabled>Hết thể lực</button>`;
+      else btn=`<button class="btn" data-dance="${m.id}">💃 Múa</button>`;
+      const bonus=(!low&&m.pref===pole.kind)?' · <b style="color:var(--gold)">+15% hợp cột</b>':'';
+      h+=`<div class="move ${low?'locked':''}"><div><b>${m.name}</b>${s.best[m.id]?`<span class="best">${s.best[m.id]}</span>`:''}
+        <div class="mv-req">${req}</div><div class="mv-rew">⚡ -${m.cost} · ⭐ ${m.exp} · 🪙 ${m.coins} · 🔥 ${m.calo}${bonus}</div></div>${btn}</div>`;
+    });
+  }
+  openSheet('💃 Chọn động tác',h);
+  $('sheetBody').onclick=e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.unlock){ unlockMove(CONFIG.MOVES.find(m=>m.id===b.dataset.unlock)); const sc=$('sheetBody').scrollTop; openMovePicker(pickPole); $('sheetBody').scrollTop=sc; }
+    else if(b.dataset.dance) startDance(CONFIG.MOVES.find(m=>m.id===b.dataset.dance),pickPole);
+  };
+}
+
+function startDance(m,pole){
+  const s=GAME.state; GAME.tickStamina();
+  if(s.stamina<m.cost) return toast('Hết thể lực, hãy nghỉ một chút ⚡');
+  if(missingReq(m).length) return toast('Chưa đủ chỉ số tối thiểu');
+  s.stamina-=m.cost; s.staminaAt=Date.now(); updateHUD();
+  closeSheet(); Snd.init();
+  const p=player.root.position;
+  mode='dance'; document.body.classList.add('dancing'); $('emotes').classList.remove('open');
+  moveTarget=null; marker.visible=false;
+  dance={def:pole,move:m,anim:ANIMS[m.anim],a:Math.atan2(p.x-pole.x,p.z-pole.z),pulse:0};
+  player.anim=dance.anim; player.emote=null; player.moving=false; player.tag.visible=false;
+  cam.tDist=4.8; cam.tPitch=0.18; applyView();
+  Mini.start(m);
+}
+function endDance(){
+  if(!dance) return;
+  const p=player.root.position, d=dance.def;
+  p.set(d.x+Math.sin(dance.a)*0.95,0,d.z+Math.cos(dance.a)*0.95); resolveCollision(p,0.26);
+  dance=null; player.anim=null; player.tag.visible=GAME.state.settings.tags; mode='play'; document.body.classList.remove('dancing');
+  cam.tDist=6.2; cam.tPitch=0.3; applyView();
+}
+function finishDance(res){
+  const s=GAME.state, m=dance.move, pole=dance.def, sc=res.sc, g=gradeOf(sc);
+  const gb={S:1.25,A:1.1,B:1,C:0.9,D:0.8}[g[0]], poleBonus=(m.pref&&m.pref===pole.kind)?1.15:1, planM=Plans.mult();
+  const exp=Math.max(1,Math.round(m.exp*(0.35+0.65*sc)*gb*poleBonus*planM));
+  const coins=Math.round(m.coins*(0.3+0.7*sc)*gb), calo=Math.round(m.calo*(0.6+0.4*sc));
+  const gains={}; for(const k in m.gain){ gains[k]=Math.round(m.gain[k]*(0.4+0.6*sc)*10)/10; s.stats[k]+=gains[k]; }
+  s.coins+=coins; s.calo+=calo; s.totalScore+=Math.round(sc*100*(1+m.tier*0.5));
+  s.counts.dances++; s.counts.perfects+=res.perfects; if(g[0]==='S') s.counts.sGrades++;
+  if(!s.best[m.id]||GRADE_RANK[g[0]]>GRADE_RANK[s.best[m.id]]) s.best[m.id]=g[0];
+  Plans.consume();
+  Quests.add('dances'); Quests.add('perfects',res.perfects); if(GRADE_RANK[g[0]]>=4) Quests.add('gradeA');
+  const lv0=s.level; addExp(exp); Badges.check();
+  GAME.save(); updateHUD(); endDance();
+  const gainTxt=Object.keys(gains).map(k=>`${STAT_ICON[k]} +${gains[k]}`).join(' &nbsp; ');
+  let h=`<div class="res"><div class="muted">${m.name}</div><div class="grade" style="color:${g[2]}">${g[0]}</div>
+    <div class="stats"><span>🎯 ${Math.round(sc*100)}%</span><span>✨ Hoàn hảo ${res.perfects}</span><span>👍 Tốt ${res.goods}</span><span>❌ Trượt ${res.misses}</span><span>🔗 Combo ${res.maxCombo}</span></div>
+    <div class="rew"><div>⭐ +${exp} EXP${planM>1?' (×'+planM+')':''}</div><div>🪙 +${coins} xu</div><div>🔥 +${calo} calo</div><div>${gainTxt}</div></div>
+    ${s.level>lv0?`<div class="up">🎉 Lên cấp ${s.level}! Mọi chỉ số +1</div>`:''}
+    <div class="btns" style="margin-top:12px"><button class="btn ghost" data-r="close">Xong</button><button class="btn gold" data-r="again">💃 Múa tiếp</button></div></div>`;
+  openSheet('Kết quả buổi tập',h);
+  $('sheetBody').onclick=e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.r==='again') openMovePicker(pole); else closeSheet(); };
+}
+
+/* ---- Minigame nhịp ---- */
+const Mini={
+  active:false,
+  gen(m){
+    const beat=60/m.bpm, arr=[]; let t=1.8;
+    for(let i=0;i<m.notes;i++){
+      const hold=m.tier>=1&&i>1&&Math.random()<(m.tier===1?0.2:0.3), dur=hold?beat*1.6:0;
+      arr.push({t,dur,state:'wait',pts:0,el:null});
+      t+=dur+beat*(Math.random()<0.35?1.5:1);
+    }
+    return arr;
+  },
+  start(m){
+    this.m=m; this.beat=60/m.bpm; this.fall=[1.7,1.5,1.3][m.tier];
+    this.notes=this.gen(m); this.score=0; this.combo=0; this.maxCombo=0; this.perfects=0; this.goods=0; this.misses=0; this.holding=null; this.lastBeat=-1;
+    this.endT=this.notes[this.notes.length-1].t+this.notes[this.notes.length-1].dur+0.7;
+    $('mini').classList.add('on'); $('miName').textContent=m.name+' · '+dance.def.name;
+    const lane=$('lane'); this.laneH=lane.clientHeight; this.lineY=this.laneH-48; this.pps=this.lineY/this.fall;
+    $('laneLine').style.top=(this.lineY-2)+'px'; $('laneRing').style.top=(this.lineY-33)+'px';
+    lane.querySelectorAll('.note').forEach(n=>n.remove());
+    this.notes.forEach(n=>{ const el=document.createElement('div'); el.className='note'+(n.dur?' hold':''); el.style.height=(50+n.dur*this.pps)+'px'; el.style.transform='translate3d(0,-200px,0)'; lane.appendChild(el); n.el=el; });
+    this.top(); this.t0=performance.now(); this.active=true;
+  },
+  top(){
+    const total=this.notes.length*100;
+    $('miScore').textContent=Math.round(this.score/total*100)+'%';
+    $('miCombo').textContent=this.combo>1?'🔗 x'+this.combo:'';
+    $('miProg').style.width=Math.min(100,Math.max(0,(performance.now()-this.t0)/1000/this.endT*100))+'%';
+  },
+  popup(text,color){ const j=$('judge'); j.textContent=text; j.style.color=color; j.classList.remove('pop'); void j.offsetWidth; j.classList.add('pop'); },
+  judge(n,kind){
+    if(kind==='miss'){ this.misses++; this.combo=0; n.state='gone'; n.el.classList.add('miss'); this.popup('TRƯỢT','#9a8aa8'); Snd.miss(); if(dance) dance.pulse=-0.6; return; }
+    const perfect=kind==='perfect';
+    if(perfect){ this.perfects++; this.popup('HOÀN HẢO!','#ffd24a'); Snd.perfect(); } else { this.goods++; this.popup('TỐT','#ff5cb8'); Snd.good(); }
+    this.combo++; this.maxCombo=Math.max(this.maxCombo,this.combo);
+    if(dance) dance.pulse=Math.min(1.5,dance.pulse+(perfect?0.8:0.4));
+    const pts=perfect?100:60;
+    if(n.dur){ n.state='hold'; n.pts=pts; this.holding=n; }
+    else { this.score+=pts; n.state='done'; n.el.classList.add('done'); }
+  },
+  press(){
+    if(!this.active||this.holding) return;
+    const now=this.now||0; let best=null,bd=1;
+    for(const n of this.notes){ if(n.state!=='wait') continue; const d=Math.abs(now-n.t); if(d<=0.22&&d<bd){ bd=d; best=n; } }
+    if(best) this.judge(best,bd<=0.09?'perfect':'good');
+    this.top();
+  },
+  release(){
+    const n=this.holding; if(!n||!this.active) return;
+    const err=Math.abs((this.now||0)-(n.t+n.dur)), frac=err<=0.15?1:err<=0.35?0.75:0.5;
+    this.finishHold(n,frac);
+  },
+  finishHold(n,frac){
+    this.score+=n.pts*frac; n.state='done'; n.el.classList.add('done'); this.holding=null;
+    if(frac<0.75){ this.combo=0; this.popup('SỚM/MUỘN','#b58cff'); } else this.popup('GIỮ TỐT!','#6ff0a8');
+    this.top();
+  },
+  update(){
+    if(!this.active) return;
+    const now=(performance.now()-this.t0)/1000; this.now=now;
+    for(const n of this.notes){
+      if(n.state==='done'||n.state==='gone') continue;
+      if(n.state==='wait'&&now>n.t+0.22) this.judge(n,'miss');
+      else if(n.state==='hold'&&now>n.t+n.dur+0.35) this.finishHold(n,0.5);
+      if(n.state==='wait'||n.state==='gone'){ n.el.style.transform=`translate3d(0,${this.lineY-(n.t-now)*this.pps-25-n.dur*this.pps}px,0)`; }
+      else if(n.state==='hold'){ // thanh ngắn dần khi đang giữ
+        const rem=Math.max(0,(n.t+n.dur-now)*this.pps); n.el.style.height=(50+rem)+'px'; n.el.style.transform=`translate3d(0,${this.lineY-25-rem}px,0)`; }
+    }
+    const bi=Math.floor(now/this.beat); if(now>=0&&bi!==this.lastBeat){ this.lastBeat=bi; Snd.tick(); }
+    this.top();
+    if(now>this.endT&&!this.holding&&this.notes.every(n=>n.state==='done'||n.state==='gone')) this.finish();
+  },
+  finish(){
+    this.active=false; $('mini').classList.remove('on'); $('pad').classList.remove('down');
+    finishDance({sc:clamp(this.score/(this.notes.length*100),0,1),perfects:this.perfects,goods:this.goods,misses:this.misses,maxCombo:this.maxCombo});
+  },
+  abort(){ if(!this.active) return; this.active=false; this.holding=null; $('mini').classList.remove('on'); endDance(); toast('Đã bỏ buổi tập 😅'); },
+  bind(){
+    const el=$('mini'), up=()=>{ $('pad').classList.remove('down'); this.release(); };
+    el.addEventListener('pointerdown',e=>{ if(e.target.closest('#miQuit')) return; e.preventDefault(); $('pad').classList.add('down'); this.press(); });
+    el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up);
+    addEventListener('pointerup',()=>{ if(this.holding) up(); });
+    addEventListener('keydown',e=>{ if(this.active&&e.code==='Space'&&!e.repeat){ e.preventDefault(); $('pad').classList.add('down'); this.press(); } });
+    addEventListener('keyup',e=>{ if(this.active&&e.code==='Space') up(); });
+    $('miQuit').onclick=()=>{ if(confirm('Bỏ buổi tập này? Bạn sẽ mất thể lực và không nhận thưởng.')) this.abort(); };
+  },
+};
 
 /* ---- Chất lượng đồ họa ---- */
 function applyQuality(){
@@ -1035,7 +1766,7 @@ function resize(){
 // Khi mở bảng tạo nhân vật (chiếm nửa dưới), đẩy khung nhìn lên để nhân vật nằm ở nửa trên
 function applyView(){
   const w=innerWidth, h=innerHeight;
-  if(mode==='customize') camera.setViewOffset(w,h,0,h*0.22,w,h); else camera.clearViewOffset();
+  if(mode==='customize'||mode==='dance') camera.setViewOffset(w,h,0,h*(mode==='dance'?0.13:0.22),w,h); else camera.clearViewOffset();
 }
 
 /* =====================================================================
@@ -1083,7 +1814,7 @@ async function init(){
   });
   await step('Đang chuẩn bị học viên…',80,()=>{ setupPlayer(); setupBots(); });
   await step('Sắp xong…',92,()=>{
-    setupInput(); applyQuality(); updateHUD(); updateNet(); bindUI();
+    setupInput(); applyQuality(); Quests.ensure(); Badges.check(); updateHUD(); updateNet(); bindUI();
     Net.connect().then(updateNet);
   });
   bar.style.width='100%'; await frame();
@@ -1092,7 +1823,7 @@ async function init(){
   setTimeout(()=>{ $('loading').classList.add('done'); },350);
   if(GAME.state.firstRun) setTimeout(()=>openCustomize(true),500);
   // phục vụ debug / giai đoạn sau
-  window.POLE={CONFIG,GAME,Net,toast,get player(){return player;}};
+  window.POLE={CONFIG,GAME,Net,toast,addExp,Quests,Shop,Board,Plans,Chat,Mini,get player(){return player;},get dance(){return dance;}};
 }
 
 function bindUI(){
@@ -1104,9 +1835,7 @@ function bindUI(){
   document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>openMenu(b.dataset.menu));
   $('danceBtn').onclick=onDance;
   $('cDone').onclick=closeCustomize;
-  $('btnChat').onclick=()=>openSheet('💬 Chat',soon('💬','Khung chat với bot giả lập.','Sắp ra mắt · Giai đoạn 4',['Chat chung trong studio (bot)','Chừa sẵn chỗ nối Firebase/Supabase']));
-  $('btnEmote').onclick=()=>openSheet('😊 Emote',soon('😊','Biểu cảm cho nhân vật.','Sắp ra mắt · Giai đoạn 4',['👋 Vẫy tay','👏 Vỗ tay','💃 Tạo dáng']));
-  $('btnFriends').onclick=()=>openSheet('👥 Bạn bè',soon('👥','Danh sách bạn bè (bot giả lập trước).','Sắp ra mắt · Giai đoạn 4',['Thêm bạn, xem ai đang trong studio']));
+  Social.bind(); Mini.bind();
   addEventListener('resize',resize);
   document.addEventListener('visibilitychange',()=>{ if(document.hidden) GAME.save(); else { GAME.tickStamina(); clock.getDelta(); } });
   addEventListener('pagehide',()=>GAME.save());
@@ -1120,7 +1849,7 @@ function loop(){
 
   for(const s of spinAnim) s.obj.rotation.y+=dt*s.speed;
   updatePlayer(dt); player.update(dt,t);
-  updateBots(dt);
+  updateBots(dt); Mini.update(); Social.tick(dt);
   updateCamera(dt);
 
   // vòng sáng quanh cột gần nhất nhấp nháy
