@@ -233,6 +233,18 @@ body.dancing .bottom,body.dancing .side,body.dancing #emotes{display:none}
 .chatbar input{font-size:16px}
 .chatbar .btn{padding:8px 16px}
 input[type=text]{font-size:16px}
+
+/* ---------- Conditioning: minigame giữ thăng bằng ---------- */
+#holdbox{display:none;flex:1;align-items:center;justify-content:center;gap:16px;border-radius:18px;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(22,214,196,.08),rgba(255,45,149,.18));padding:10px}
+#mini.holdmode #lane{display:none}
+#mini.holdmode #holdbox{display:flex}
+#htrack{position:relative;width:64px;height:100%;border-radius:32px;background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.25);overflow:hidden}
+#hzone{position:absolute;left:0;right:0;border-radius:30px;background:rgba(111,240,168,.4);border:2px solid #6ff0a8;box-shadow:0 0 14px #6ff0a8}
+#hmark{position:absolute;left:50%;width:30px;height:30px;margin:0 0 -15px -15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--pink));box-shadow:0 0 14px var(--pink);transition:background .1s}
+#hmark.in{background:radial-gradient(circle at 35% 30%,#fff,#6ff0a8);box-shadow:0 0 18px #6ff0a8}
+#hhint{max-width:150px;font-size:13px;line-height:1.45;color:var(--muted)}
+#hhint b{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -272,7 +284,7 @@ input[type=text]{font-size:16px}
     <button id="btnFriends" aria-label="Bạn bè">👥</button>
   </div>
 
-  <button id="danceBtn">💃 MÚA<small id="danceSub"></small></button>
+  <button id="danceBtn"><span id="danceLbl">💃 MÚA</span><small id="danceSub"></small></button>
   <div id="toast"></div>
 
   <!-- Menu dưới -->
@@ -295,6 +307,8 @@ input[type=text]{font-size:16px}
   <div class="mi-top"><b id="miName"></b><span id="miScore">0%</span><span id="miCombo"></span><button id="miQuit">Bỏ</button></div>
   <div class="mi-prog"><i id="miProg"></i></div>
   <div id="lane"><div id="laneLine"></div><div id="laneRing"></div><div id="judge"></div></div>
+  <div id="holdbox"><div id="htrack"><div id="hzone"></div><div id="hmark"></div></div>
+    <div id="hhint"><b>GIỮ</b> để nâng chấm lên,<br><b>THẢ</b> để hạ xuống.<br>Giữ chấm trong <b style="color:#6ff0a8">vùng xanh</b> càng lâu càng tốt!</div></div>
   <div id="pad">BẤM / GIỮ ĐÚNG NHỊP</div>
 </div>
 <div id="emotes" class="panel">
@@ -419,6 +433,30 @@ const CONFIG = {
     { id:'flag',      name:'Flag',           tier:2, level:46, unlock:3200, req:{str:60,bal:50,art:48},     cost:20, exp:200, coins:140, calo:72, bpm:126, notes:14, anim:'flag',      pref:'static', gain:{str:2.0,bal:1.5,art:1.0} },
   ],
 
+  // ---------- Khu CONDITIONING (thang gióng + thảm yoga) ----------
+  // Điểm tập trong phòng. stand = chỗ nhân vật đứng khi tập, exit = chỗ đứng sau khi tập, useR = bán kính hiện nút [TẬP].
+  STATIONS : [
+    { id:'wb1',  kind:'wallbars', name:'Thang gióng (kem)', x:-10.25, z:-1.2, stand:{x:-10.25,z:-1.2,yaw:-Math.PI/2}, exit:{x:-8.9,z:-1.2}, camYaw: Math.PI/2, useR:1.3 },
+    { id:'wb2',  kind:'wallbars', name:'Thang gióng (đen)', x:-10.25, z: 0.9, stand:{x:-10.25,z: 0.9,yaw:-Math.PI/2}, exit:{x:-8.9,z: 0.9}, camYaw: Math.PI/2, useR:1.3 },
+    { id:'mat1', kind:'mat', name:'Thảm yoga hồng', x:7.8, z:-1.6, stand:{x:7.8,z:-1.6,yaw:0}, exit:{x:7.8,z:0.7}, camYaw:-Math.PI/2, useR:1.3 },
+    { id:'mat2', kind:'mat', name:'Thảm yoga tím',  x:8.8, z:-1.6, stand:{x:8.8,z:-1.6,yaw:0}, exit:{x:8.8,z:0.7}, camYaw:-Math.PI/2, useR:1.3 },
+    { id:'mat3', kind:'mat', name:'Thảm yoga ngọc', x:9.8, z:-1.6, stand:{x:9.8,z:-1.6,yaw:0}, exit:{x:9.8,z:0.7}, camYaw:-Math.PI/2, useR:1.3 },
+  ],
+  // Bài conditioning. station: wallbars | mat.  hold: dur = số giây, zone = độ rộng vùng xanh (0-1), drift = tốc độ vùng xanh trôi.
+  // (Cùng cách chỉnh với MOVES: tier, level, req, cost, exp, coins, calo, gain. yaw = hướng nhân vật, tuỳ chọn)
+  CONDITIONING : [
+    { id:'c_hang',    station:'wallbars', name:'Dead Hang',          tier:0, level:1,  unlock:0, req:{str:5},          cost:7,  exp:20,  coins:12, calo:16, anim:'hang',      hold:{dur:10,zone:0.34,drift:0.8}, gain:{str:1.2,bal:0.4}, pref:null },
+    { id:'c_knee',    station:'wallbars', name:'Hanging Knee Raise', tier:0, level:3,  unlock:0, req:{str:8},          cost:8,  exp:26,  coins:16, calo:22, anim:'kneeRaise', hold:{dur:11,zone:0.30,drift:0.9}, gain:{str:1.2,bal:0.6}, pref:null },
+    { id:'c_pullup',  station:'wallbars', name:'Pull-up',            tier:1, level:7,  unlock:0, req:{str:14},         cost:10, exp:46,  coins:28, calo:32, anim:'pullup',    hold:{dur:12,zone:0.26,drift:1.1}, gain:{str:1.6,bal:0.5}, pref:null },
+    { id:'c_legraise',station:'wallbars', name:'Hanging Leg Raise',  tier:1, level:13, unlock:0, req:{str:22,bal:14},  cost:12, exp:58,  coins:36, calo:38, anim:'legRaise',  hold:{dur:12,zone:0.24,drift:1.2}, gain:{str:1.5,bal:1.0}, pref:null },
+    { id:'c_lsit',    station:'wallbars', name:'L-Sit Hold',         tier:2, level:22, unlock:0, req:{str:34,bal:26},  cost:14, exp:92,  coins:58, calo:48, anim:'lsit',      hold:{dur:14,zone:0.18,drift:1.5}, gain:{str:2.0,bal:1.2}, pref:null },
+    { id:'c_plank',   station:'mat', name:'Plank Hold',   tier:0, level:1,  unlock:0, req:{str:5},         cost:7,  exp:20,  coins:12, calo:18, anim:'plank',     hold:{dur:10,zone:0.34,drift:0.8}, gain:{str:1.0,bal:0.8}, pref:null },
+    { id:'c_split',   station:'mat', name:'Splits Stretch',tier:0, level:5,  unlock:0, req:{flex:10},       cost:8,  exp:28,  coins:18, calo:20, anim:'split',     hold:{dur:11,zone:0.30,drift:0.9}, gain:{flex:1.6,bal:0.4}, pref:null },
+    { id:'c_boat',    station:'mat', name:'Boat Pose',    tier:1, level:9,  unlock:0, req:{str:14,bal:12}, cost:10, exp:44,  coins:28, calo:30, anim:'boat',      hold:{dur:12,zone:0.26,drift:1.1}, gain:{str:1.2,bal:1.2}, pref:null },
+    { id:'c_side',    station:'mat', name:'Side Plank',   tier:1, level:13, unlock:0, req:{str:22,bal:18}, cost:11, exp:54,  coins:34, calo:34, anim:'sidePlank', hold:{dur:12,zone:0.24,drift:1.2}, gain:{str:1.3,bal:1.3}, pref:null, yaw:Math.PI/2 },
+    { id:'c_head',    station:'mat', name:'Headstand',    tier:2, level:20, unlock:0, req:{str:28,bal:30}, cost:14, exp:88,  coins:56, calo:44, anim:'headstand', hold:{dur:14,zone:0.18,drift:1.5}, gain:{bal:2.0,str:1.2}, pref:null },
+  ],
+
   // ---------- Gói tập trong game (CHỈNH GIÁ / HỆ SỐ EXP TẠI ĐÂY) ----------
   // days: số ngày hiệu lực | sessions: số lần múa hiệu lực.  expMult: hệ số nhân EXP.
   PLANS : [
@@ -438,6 +476,7 @@ const CONFIG = {
     { id:'q_buy',      type:'buy',      target:1, coins:30, exp:20, text:'Mua 1 món đồ ở Shop' },
     { id:'q_chat',     type:'chat',     target:2, coins:25, exp:15, text:'Gửi 2 tin nhắn trong studio' },
     { id:'q_emote',    type:'emote',    target:3, coins:25, exp:15, text:'Dùng 3 emote' },
+    { id:'q_cond',     type:'cond',     target:2, coins:45, exp:40, text:'Hoàn thành 2 bài conditioning (thang gióng / thảm yoga)' },
   ],
 
   // ---------- Huy hiệu ----------
@@ -454,6 +493,7 @@ const CONFIG = {
     { id:'adv',    icon:'⚡', name:'Cao thủ',      desc:'Mở 1 động tác Advanced',      test:s=>CONFIG.MOVES.some(m=>m.tier===2&&isUnlocked(m)) },
     { id:'shop',   icon:'🛍️', name:'Sành điệu',    desc:'Sở hữu 5 món đồ',             test:s=>s.inventory.length>=5 },
     { id:'chat',   icon:'💬', name:'Hoạt ngôn',    desc:'Gửi 10 tin nhắn',             test:s=>s.counts.chats>=10 },
+    { id:'cond10', icon:'🧘', name:'Bền bỉ',       desc:'Hoàn thành 10 bài conditioning', test:s=>s.counts.cond>=10 },
     { id:'friend', icon:'👯', name:'Hội chị em',   desc:'Có 3 bạn bè',                 test:s=>s.friends.length>=3 },
   ],
 };
@@ -485,7 +525,7 @@ const GAME = {
       settings:{ quality:null, sens:1, tags:true, sound:true },
       // Các phần dưới sẽ dùng ở giai đoạn sau:
       unlocked:[], badges:[], totalScore:0, quests:{}, inventory:[], plan:null, friends:[], best:{}, createdAt:Date.now(),
-      counts:{dances:0,perfects:0,sGrades:0,chats:0,emotes:0,bought:0},
+      counts:{dances:0,perfects:0,sGrades:0,chats:0,emotes:0,bought:0,cond:0},
     };
   },
   load(){
@@ -499,7 +539,7 @@ const GAME = {
     }) : d;
     const st=this.state;
     st.look.acc=Object.assign({head:null,face:null,neck:null,back:null},st.look.acc);
-    st.counts=Object.assign({dances:0,perfects:0,sGrades:0,chats:0,emotes:0,bought:0},st.counts);
+    st.counts=Object.assign({dances:0,perfects:0,sGrades:0,chats:0,emotes:0,bought:0,cond:0},st.counts);
     st.best=st.best||{}; st.friends=st.friends||[]; st.createdAt=st.createdAt||Date.now();
     if(st.settings.sound===undefined) st.settings.sound=true;
     this.tickStamina();      // hồi thể lực theo thời gian đã offline
@@ -542,6 +582,7 @@ let renderer, scene, camera;
 const A = {};                           // kho tài nguyên (texture, vật liệu) dùng chung
 const matCache = {};
 const ROOM = CONFIG.ROOM;
+const STATIONS = CONFIG.STATIONS;
 const COLLIDERS = [];                   // vật cản (để nhân vật không đi xuyên)
 const poleRefs = {};                    // id -> { ringMat, hit, def }
 const hitMeshes = [];                   // hộp va chạm vô hình để chạm vào cột
@@ -619,6 +660,12 @@ function makeAssets(){
     g.fillText('P O L E   O N L I N E',w/2,126);
   });
   A.signMat = new THREE.MeshBasicMaterial({map:A.signTex, transparent:true, depthWrite:false});
+  A.condTex = canvasTex(512,128,(g,w,h)=>{
+    g.textAlign='center'; g.textBaseline='middle'; g.shadowColor='#16d6c4'; g.shadowBlur=20; g.fillStyle='#d6fff9';
+    g.font='800 56px "Be Vietnam Pro",system-ui,sans-serif'; g.fillText('CONDITIONING',w/2,52);
+    g.shadowColor='#ff2d95'; g.fillStyle='#ffd6ee'; g.font='700 28px "Be Vietnam Pro",system-ui,sans-serif'; g.fillText('S T R O N G   ·   F L E X I B L E',w/2,100);
+  });
+  A.condMat = new THREE.MeshBasicMaterial({map:A.condTex, transparent:true, depthWrite:false});
 
   // Poster
   A.posters = ['STRONG','FLEXIBLE','FEARLESS','FLY'].map((t,i)=>canvasTex(256,360,(g,w,h)=>{
@@ -645,7 +692,7 @@ function makeAssets(){
     black :new THREE.MeshPhongMaterial({color:0x1b1b22, specular:0x9a8ab0, shininess:80}),
     rose  :new THREE.MeshPhongMaterial({color:0xf2a0b8, specular:0xffffff, shininess:100}),
   };
-  CONFIG.POLES.forEach(p=>{
+  CONFIG.POLES.concat(CONFIG.STATIONS).forEach(p=>{
     A['ring_'+p.id] = new THREE.MeshBasicMaterial({color:0xff2d95, transparent:true, opacity:.55, side:THREE.DoubleSide});
   });
 }
@@ -762,6 +809,35 @@ function buildStudio(root, isMirror){
   cyl(root,0.15,0.15,0.03, -6.3,1.18,6.4, GOLD,12);                                             // chuông
   const sign=new THREE.Mesh(new THREE.PlaneGeometry(5,1.56),A.signMat); sign.position.set(-7.5,2.8,D-0.03); sign.rotation.y=Math.PI; root.add(sign);
 
+  // ---------- Khu CONDITIONING: thang gióng (kem + đen) & thảm yoga ----------
+  const WOOD=M('#c8975a','p',{specular:0x331a08,shininess:20});
+  const wallBars=(z,col)=>{
+    const FR=M(col,'p',{specular:0x888888,shininess:40}), x0=-W;
+    [-0.34,0.34].forEach(o=>box(root,0.06,2.75,0.07,x0+0.07,1.55,z+o,FR));                                    // 2 trụ
+    for(let i=0;i<10;i++){ const r=cyl(root,0.02,0.02,0.68,x0+0.14,0.42+i*0.19,z,WOOD,8); r.rotation.x=Math.PI/2; }   // 10 xà gỗ
+    [-0.34,0.34].forEach(o=>box(root,0.45,0.05,0.06,x0+0.3,2.78,z+o,FR));                                      // tay đỡ xà đơn
+    const bar=cyl(root,0.027,0.027,0.9,x0+0.52,2.82,z,WOOD,10); bar.rotation.x=Math.PI/2;                      // xà đơn
+    [-0.42,0.42].forEach(o=>{ const h=cyl(root,0.02,0.02,0.3,x0+0.28,1.45,z+o,WOOD,8); h.rotation.z=Math.PI/2; box(root,0.05,0.2,0.05,x0+0.1,1.4,z+o,FR); }); // tay vịn
+  };
+  wallBars(-1.2,'#f1ead9'); wallBars(0.9,'#1a1a22');
+  [[7.8,'#ff2d95'],[8.8,'#8a3ffc'],[9.8,'#16d6c4']].forEach(m=>{
+    box(root,0.64,0.025,1.8,m[0],0.0135,-0.8,M(m[1],'p',{specular:0x222222,shininess:15}));
+    box(root,0.5,0.005,1.66,m[0],0.028,-0.8,M('#ffffff','b',{transparent:true,opacity:0.12}));
+  });
+  const ball=new THREE.Mesh(new THREE.SphereGeometry(0.32,12,10),M('#ff5cb8','p',{specular:0xffffff,shininess:60})); ball.position.set(10.25,0.32,1.4); root.add(ball);   // bóng yoga
+  const roller=cyl(root,0.08,0.08,0.6,7.6,0.08,1.25,M('#8a3ffc','p'),12); roller.rotation.z=Math.PI/2;                                                        // foam roller
+  const csign=new THREE.Mesh(new THREE.PlaneGeometry(3.2,0.8),A.condMat); csign.position.set(W-0.03,2.35,-0.8); csign.rotation.y=-Math.PI/2; root.add(csign);
+  neon(root,'#16d6c4',0.05,0.05,3.0, W-0.06,1.85,-0.8);
+  CONFIG.STATIONS.forEach(st=>{
+    const rg=new THREE.Mesh(new THREE.RingGeometry(0.42,0.5,28),A['ring_'+st.id]); rg.rotation.x=-Math.PI/2; rg.position.set(st.stand.x,0.03,st.stand.z); root.add(rg);
+    if(!isMirror){
+      const hb=st.kind==='wallbars'?new THREE.BoxGeometry(0.9,3,1.0):new THREE.BoxGeometry(0.7,0.5,1.9);
+      const hit=new THREE.Mesh(hb,new THREE.MeshBasicMaterial({visible:false}));
+      hit.position.set(st.kind==='wallbars'?-W+0.45:st.x, st.kind==='wallbars'?1.5:0.25, st.kind==='wallbars'?st.z:-0.8);
+      hit.userData.station=st.id; root.add(hit); hitMeshes.push(hit);
+    }
+  });
+
   // ---------- Cây cảnh ----------
   [[-10.2,-7.2],[10.2,-7.2],[10.2,3.2],[-10.2,3.6]].forEach(p=>{
     cyl(root,0.3,0.22,0.5,p[0],0.25,p[1],M('#1a1a22'),12);
@@ -777,6 +853,7 @@ function buildColliders(){
   COLLIDERS.push({t:'b',x0:-9.85,x1:-5.15,z0:6.0,z1:7.3});     // quầy lễ tân
   COLLIDERS.push({t:'b',x0:5.7,x1:9.3,z0:6.4,z1:7.9});         // sofa
   COLLIDERS.push({t:'c',x:7.5,z:5.0,r:0.6});                   // bàn
+  COLLIDERS.push({t:'c',x:10.25,z:1.4,r:0.4});                 // bóng yoga
   COLLIDERS.push({t:'c',x:5.0,z:6.2,r:0.4},{t:'c',x:10.1,z:5.0,r:0.4}); // pouf
   [[-10.2,-7.2],[10.2,-7.2],[10.2,3.2],[-10.2,3.6]].forEach(p=>COLLIDERS.push({t:'c',x:p[0],z:p[1],r:0.35}));
 }
@@ -894,6 +971,17 @@ const ANIMS={
   iguana:   {orbit:1.8,lift:2.2, arms:'up', legL:-0.6,legR:-0.2,rad:0.32, rx:Math.PI},
   butterfly:{orbit:2.2,lift:2.4, arms:'up', legL:0.1, legR:0.1, rad:0.32, spread:1.2, rx:Math.PI},
   flag:     {orbit:0.5,lift:1.6, arms:'up', legL:0,   legR:0,   rad:0.4,  rz:Math.PI/2},
+  // --- Conditioning (orbit:0 = đứng yên tại chỗ) ---
+  hang:     {orbit:0,lift:1.0, arms:'up',  legL:0.05,legR:0.05, osc:{amp:0.03,freq:3}},
+  kneeRaise:{orbit:0,lift:1.0, arms:'up',  legL:-1.1,legR:-1.1, legOsc:{amp:0.45,freq:3.2}},
+  pullup:   {orbit:0,lift:1.2, arms:'up',  legL:0.3, legR:0.3,  osc:{amp:0.28,freq:2.4}},
+  legRaise: {orbit:0,lift:1.0, arms:'up',  legL:-1.5,legR:-1.5, legOsc:{amp:0.12,freq:2}},
+  lsit:     {orbit:0,lift:1.05,arms:'up',  legL:-1.55,legR:-1.55,spread:0.12, osc:{amp:0.02,freq:4}},
+  plank:    {orbit:0,lift:0.2, rx:1.45, arms:'fwd', legL:0,legR:0, osc:{amp:0.01,freq:5}},
+  split:    {orbit:0,lift:-0.72,arms:'out',legL:0.05,legR:0.05,spread:1.4},
+  boat:     {orbit:0,lift:0.35,rx:-0.6, arms:'fwd', legL:-1.0,legR:-1.0, osc:{amp:0.01,freq:5}},
+  sidePlank:{orbit:0,lift:0.2, rz:1.45, arms:'up',  legL:0,legR:0},
+  headstand:{orbit:0,lift:1.8, rx:Math.PI,arms:'up',legL:0.1,legR:0.1, osc:{amp:0.015,freq:4}},
 };
 function makeBubble(text){
   const c=document.createElement('canvas'); c.width=512; c.height=96; const g=c.getContext('2d');
@@ -943,6 +1031,9 @@ class Actor{
     if(a){
       lx=a.legL||0; rx=a.legR||0; sp=a.spread||0; tl=a.lift||0; tx=a.rx||0; tz=a.rz||0;
       if(a.arms==='up'){ alx=arx=-2.8; } else if(a.arms==='one'){ arx=-2.8; alx=Math.sin(t*3)*0.3; }
+      else if(a.arms==='fwd'){ alx=arx=-1.5; } else if(a.arms==='out'){ alz=-1.3; arz=1.3; }
+      if(a.osc) tl+=a.osc.amp*Math.sin(t*a.osc.freq);
+      if(a.legOsc){ const o=a.legOsc.amp*Math.sin(t*a.legOsc.freq); lx+=o; rx+=o; }
     } else if(this.moving){
       this.phase+=dt*9; const s=Math.sin(this.phase); lx=s*0.7; rx=-s*0.7; alx=-s*0.6; arx=s*0.6; bob=Math.abs(Math.cos(this.phase))*0.035;
     } else bob=Math.sin(t*2+this.phase)*0.008;
@@ -1006,23 +1097,29 @@ function setupBots(){
 function updateBots(dt){
   for(const b of bots){
     const p=b.root.position;
-    if(b.holdT>0){                    // đang "tập" ở cột
-      b.holdT-=dt; b.moving=false; b.anim=b.curAnim;
-      b.orbit+=dt*b.curAnim.orbit; const d=b.pole, r=b.curAnim.rad;
-      p.set(d.x+Math.sin(b.orbit)*r,0,d.z+Math.cos(b.orbit)*r); b.yaw=b.orbit+Math.PI;
-      if(b.holdT<=0){ b.anim=null; b.wait=rand(1,3); p.set(d.x+Math.sin(b.orbit)*0.95,0,d.z+Math.cos(b.orbit)*0.95); }
+    if(b.holdT>0){                    // đang "tập" ở cột / thang gióng / thảm
+      b.holdT-=dt; b.moving=false; b.anim=b.curAnim; const d=b.pole;
+      if(d.stand){ p.set(d.stand.x,0,d.stand.z); b.yaw=b.curYaw; }
+      else { b.orbit+=dt*b.curAnim.orbit; const r=b.curAnim.rad; p.set(d.x+Math.sin(b.orbit)*r,0,d.z+Math.cos(b.orbit)*r); b.yaw=b.orbit+Math.PI; }
+      if(b.holdT<=0){ b.anim=null; b.wait=rand(1,3);
+        if(d.stand) p.set(d.exit.x,0,d.exit.z); else p.set(d.x+Math.sin(b.orbit)*0.95,0,d.z+Math.cos(b.orbit)*0.95); }
     } else if(b.target){
       _v.set(b.target.x-p.x,0,b.target.z-p.z); const l=_v.length();
       if(l<0.15){ b.target=null; b.moving=false; b.wait=rand(2,5);
-        if(b.nextPole){ b.pole=b.nextPole; b.nextPole=null; b.holdT=rand(5,9); b.orbit=Math.atan2(p.x-b.pole.x,p.z-b.pole.z);
-          const keys=Object.keys(ANIMS); b.curAnim=ANIMS[keys[Math.floor(Math.random()*keys.length)]]; } }
+        if(b.nextPole){ b.pole=b.nextPole; b.nextPole=null; b.holdT=rand(5,9);
+          if(b.pole.stand){ const ex=CONFIG.CONDITIONING.filter(c=>c.station===b.pole.kind), e=ex[Math.floor(Math.random()*ex.length)];
+            b.curAnim=ANIMS[e.anim]; b.curYaw=e.yaw!==undefined?e.yaw:b.pole.stand.yaw; }
+          else { b.orbit=Math.atan2(p.x-b.pole.x,p.z-b.pole.z);
+            const keys=Object.keys(ANIMS).filter(k=>ANIMS[k].orbit>0); b.curAnim=ANIMS[keys[Math.floor(Math.random()*keys.length)]]; } } }
       else { _v.multiplyScalar(1/l); p.x+=_v.x*b.speed*dt; p.z+=_v.z*b.speed*dt; resolveCollisionBot(p);
         b.moving=true; b.yaw+=angDiff(b.yaw,Math.atan2(_v.x,_v.z))*Math.min(1,dt*8); }
     } else {
       b.moving=false; b.wait-=dt;
       if(b.wait<=0){
-        if(Math.random()<0.5){ const d=CONFIG.POLES[Math.floor(Math.random()*CONFIG.POLES.length)];
+        const r=Math.random();
+        if(r<0.3){ const d=CONFIG.POLES[Math.floor(Math.random()*CONFIG.POLES.length)];
           b.nextPole=d; b.target={x:d.x+Math.sin(1)*0.95,z:d.z+Math.cos(1)*0.95}; }
+        else if(r<0.5){ const S=STATIONS[Math.floor(Math.random()*STATIONS.length)]; b.nextPole=S; b.target={x:S.stand.x,z:S.stand.z}; }
         else b.target={x:rand(-9,9),z:rand(-5.5,6)};
       }
     }
@@ -1036,14 +1133,20 @@ function resolveCollisionBot(p){ // bot không bị đẩy ra khỏi cột khi t
     if(l<0.3 && l>1e-4){ p.x=cx+dx/l*0.3; p.z=cz+dz/l*0.3; } }
 }
 
-function nearestPole(){
-  let best=null, bd=1e9; const p=player.root.position;
-  for(const id in poleRefs){ const d=poleRefs[id].def, dist=Math.hypot(p.x-d.x,p.z-d.z); if(dist<bd){bd=dist;best=d;} }
+function nearestPole(){      // điểm tập gần nhất: cột hoặc trạm conditioning
+  let best=null, bd=1e9, bs=1e9; const p=player.root.position;
+  const all=[]; for(const id in poleRefs) all.push(poleRefs[id].def); STATIONS.forEach(x=>all.push(x));
+  for(const d of all){ const dist=Math.hypot(p.x-d.x,p.z-d.z), sc=dist-(d.useR||CONFIG.POLE_USE_DISTANCE); if(sc<bs){ bs=sc; bd=dist; best=d; } }
   return {def:best,dist:bd};
 }
-
+function inRange(n){ return !!n.def&&n.dist<=(n.def.useR||CONFIG.POLE_USE_DISTANCE); }
 function updatePlayer(dt){
   const p=player.root.position;
+  if(dance&&dance.fixed){          // tập tại chỗ (thang gióng / thảm)
+    const S=dance.def.stand, kk=Math.min(1,dt*7);
+    p.x+=(S.x-p.x)*kk; p.z+=(S.z-p.z)*kk; player.yaw+=angDiff(player.yaw,dance.yaw)*Math.min(1,dt*8); player.moving=false;
+    return;
+  }
   if(dance){
     dance.pulse*=Math.pow(0.03,dt);                       // nhịp đúng → xoay nhanh hơn rồi hạ dần
     const an=dance.anim;
@@ -1135,6 +1238,8 @@ function onTap(cx,cy){
   // chạm vào cột → đi tới đứng cạnh cột
   const hit=_ray.intersectObjects(hitMeshes,false)[0];
   if(hit){
+    const stId=hit.object.userData.station;
+    if(stId){ const S=STATIONS.find(x=>x.id===stId); return setMoveTarget(S.stand.x,S.stand.z); }
     const d=poleRefs[hit.object.userData.pole].def;
     let vx=pp.x-d.x, vz=pp.z-d.z; const l=Math.hypot(vx,vz)||1; vx/=l; vz/=l;
     return setMoveTarget(d.x+vx*0.85, d.z+vz*0.85);
@@ -1493,6 +1598,7 @@ const MENUS = {
     <li><b>Minigame nhịp:</b> khi quả cầu chạm vạch vàng thì <b>bấm</b> (hoặc phím <b>Space</b>). Thanh dài thì <b>giữ</b> rồi thả đúng lúc kết thúc.</li>
     <li>Điểm tốt → tăng 💪 🤸 ⚖️ 💃, nhận 🪙 xu và EXP. Lên cấp tối đa ${CONFIG.MAX_LEVEL}.</li>
     <li>Động tác cấp cao cần đủ <b>cấp</b>, <b>chỉ số tối thiểu</b> và xu để <b>mở khóa</b>.</li>
+    <li><b>Khu Conditioning:</b> đứng gần <b>thang gióng</b> (tường trái) hoặc <b>thảm yoga</b> (tường phải) để hiện nút <b>💪 TẬP</b>. Minigame: <b>giữ</b> để nâng chấm, <b>thả</b> để hạ, giữ chấm trong vùng xanh càng lâu càng tốt.</li>
     <li>Cột xoay hợp với động tác quay, cột đứng hợp với động tác leo/đảo ngược: được +15% EXP.</li></ul>
     <h3>Khác</h3><ul><li>📜 Nhiệm vụ ngày · 🛍️ Shop · 🎟️ Gói tập tăng EXP · 🏆 Bảng xếp hạng · 👤 Hồ sơ & huy hiệu.</li>
     <li>💬 Chat, 😊 Emote, 👥 Bạn bè ở các nút bên phải.</li>
@@ -1568,17 +1674,19 @@ function closeCustomize(){
    13. MÚA: chọn động tác → minigame nhịp → thưởng
    ===================================================================== */
 let pickPole=null;
+const KIND_LABEL={spin:'cột xoay',static:'cột đứng',wallbars:'thang gióng',mat:'thảm yoga'};
+const ALL_MOVES=()=>CONFIG.MOVES.concat(CONFIG.CONDITIONING);
 function onDance(){
   if(mode!=='play') return;
-  const n=nearestPole(); if(n.dist>CONFIG.POLE_USE_DISTANCE) return;
+  const n=nearestPole(); if(!inRange(n)) return;
   openMovePicker(n.def);
 }
 function updateDanceButton(){
   const b=$('danceBtn');
   if(mode!=='play'){ b.classList.remove('show'); return; }
-  const n=nearestPole(), near=n.dist<=CONFIG.POLE_USE_DISTANCE;
+  const n=nearestPole(), near=inRange(n);
   b.classList.toggle('show',near);
-  if(near) $('danceSub').textContent=n.def.name+(n.def.kind==='spin'?' · xoay':' · đứng');
+  if(near){ $('danceLbl').textContent=n.def.stand?'💪 TẬP':'💃 MÚA'; $('danceSub').textContent=n.def.name+' · '+KIND_LABEL[n.def.kind]; }
 }
 function unlockMove(m){
   const s=GAME.state;
@@ -1591,10 +1699,12 @@ function openMovePicker(pole){
   pickPole=pole;
   GAME.tickStamina();
   const s=GAME.state;
-  let h=`<p class="muted" style="margin:0">Cột: <b>${pole.name}</b> (${pole.kind==='spin'?'xoay':'đứng'}) · ⚡ ${Math.floor(s.stamina)}/${CONFIG.STAMINA_MAX}${Plans.active()?' · 🎟️ EXP ×'+Plans.mult():''}</p>`;
+  let h=`<p class="muted" style="margin:0">Vị trí: <b>${pole.name}</b> (${KIND_LABEL[pole.kind]}) · ⚡ ${Math.floor(s.stamina)}/${CONFIG.STAMINA_MAX}${Plans.active()?' · 🎟️ EXP ×'+Plans.mult():''}</p>`;
+  const list=pole.stand?CONFIG.CONDITIONING.filter(c=>c.station===pole.kind):CONFIG.MOVES;
   for(let t=0;t<3;t++){
+    const tl=list.filter(m=>m.tier===t); if(!tl.length) continue;
     h+=`<h3>${TIER_NAME[t]}</h3>`;
-    CONFIG.MOVES.filter(m=>m.tier===t).forEach(m=>{
+    tl.forEach(m=>{
       const un=isUnlocked(m), miss=missingReq(m), low=s.level<m.level, noSt=s.stamina<m.cost;
       const req=Object.keys(m.req).map(k=>`<span class="${statOf(k)>=m.req[k]?'ok':'bad'}">${STAT_ICON[k]} ${statOf(k)}/${m.req[k]}</span>`).join('');
       let btn;
@@ -1612,7 +1722,7 @@ function openMovePicker(pole){
   $('sheetBody').onclick=e=>{
     const b=e.target.closest('button'); if(!b) return;
     if(b.dataset.unlock){ unlockMove(CONFIG.MOVES.find(m=>m.id===b.dataset.unlock)); const sc=$('sheetBody').scrollTop; openMovePicker(pickPole); $('sheetBody').scrollTop=sc; }
-    else if(b.dataset.dance) startDance(CONFIG.MOVES.find(m=>m.id===b.dataset.dance),pickPole);
+    else if(b.dataset.dance) startDance(ALL_MOVES().find(m=>m.id===b.dataset.dance),pickPole);
   };
 }
 
@@ -1625,15 +1735,17 @@ function startDance(m,pole){
   const p=player.root.position;
   mode='dance'; document.body.classList.add('dancing'); $('emotes').classList.remove('open');
   moveTarget=null; marker.visible=false;
-  dance={def:pole,move:m,anim:ANIMS[m.anim],a:Math.atan2(p.x-pole.x,p.z-pole.z),pulse:0};
+  const fixed=!!pole.stand;
+  dance={def:pole,move:m,anim:ANIMS[m.anim],a:Math.atan2(p.x-pole.x,p.z-pole.z),pulse:0,fixed,yaw:fixed?(m.yaw!==undefined?m.yaw:pole.stand.yaw):0};
   player.anim=dance.anim; player.emote=null; player.moving=false; player.tag.visible=false;
-  cam.tDist=4.8; cam.tPitch=0.18; applyView();
-  Mini.start(m);
+  cam.tDist=4.8; cam.tPitch=0.18; if(fixed) cam.tYaw=pole.camYaw; applyView();
+  if(fixed) Hold.start(m); else Mini.start(m);
 }
 function endDance(){
   if(!dance) return;
   const p=player.root.position, d=dance.def;
-  p.set(d.x+Math.sin(dance.a)*0.95,0,d.z+Math.cos(dance.a)*0.95); resolveCollision(p,0.26);
+  if(dance.fixed){ p.set(d.exit.x,0,d.exit.z); cam.tYaw=0; } else p.set(d.x+Math.sin(dance.a)*0.95,0,d.z+Math.cos(dance.a)*0.95);
+  resolveCollision(p,0.26);
   dance=null; player.anim=null; player.tag.visible=GAME.state.settings.tags; mode='play'; document.body.classList.remove('dancing');
   cam.tDist=6.2; cam.tPitch=0.3; applyView();
 }
@@ -1644,15 +1756,19 @@ function finishDance(res){
   const coins=Math.round(m.coins*(0.3+0.7*sc)*gb), calo=Math.round(m.calo*(0.6+0.4*sc));
   const gains={}; for(const k in m.gain){ gains[k]=Math.round(m.gain[k]*(0.4+0.6*sc)*10)/10; s.stats[k]+=gains[k]; }
   s.coins+=coins; s.calo+=calo; s.totalScore+=Math.round(sc*100*(1+m.tier*0.5));
-  s.counts.dances++; s.counts.perfects+=res.perfects; if(g[0]==='S') s.counts.sGrades++;
+  if(res.hold) s.counts.cond++; else { s.counts.dances++; s.counts.perfects+=res.perfects; }
+  if(g[0]==='S') s.counts.sGrades++;
   if(!s.best[m.id]||GRADE_RANK[g[0]]>GRADE_RANK[s.best[m.id]]) s.best[m.id]=g[0];
   Plans.consume();
-  Quests.add('dances'); Quests.add('perfects',res.perfects); if(GRADE_RANK[g[0]]>=4) Quests.add('gradeA');
+  if(res.hold) Quests.add('cond'); else { Quests.add('dances'); Quests.add('perfects',res.perfects); }
+  if(GRADE_RANK[g[0]]>=4) Quests.add('gradeA');
   const lv0=s.level; addExp(exp); Badges.check();
   GAME.save(); updateHUD(); endDance();
   const gainTxt=Object.keys(gains).map(k=>`${STAT_ICON[k]} +${gains[k]}`).join(' &nbsp; ');
+  const stLine=res.hold?`<span>🎯 ${Math.round(sc*100)}%</span><span>⏱ Giữ trong vùng xanh ${res.inZone.toFixed(1)}/${res.dur}s</span>`
+    :`<span>🎯 ${Math.round(sc*100)}%</span><span>✨ Hoàn hảo ${res.perfects}</span><span>👍 Tốt ${res.goods}</span><span>❌ Trượt ${res.misses}</span><span>🔗 Combo ${res.maxCombo}</span>`;
   let h=`<div class="res"><div class="muted">${m.name}</div><div class="grade" style="color:${g[2]}">${g[0]}</div>
-    <div class="stats"><span>🎯 ${Math.round(sc*100)}%</span><span>✨ Hoàn hảo ${res.perfects}</span><span>👍 Tốt ${res.goods}</span><span>❌ Trượt ${res.misses}</span><span>🔗 Combo ${res.maxCombo}</span></div>
+    <div class="stats">${stLine}</div>
     <div class="rew"><div>⭐ +${exp} EXP${planM>1?' (×'+planM+')':''}</div><div>🪙 +${coins} xu</div><div>🔥 +${calo} calo</div><div>${gainTxt}</div></div>
     ${s.level>lv0?`<div class="up">🎉 Lên cấp ${s.level}! Mọi chỉ số +1</div>`:''}
     <div class="btns" style="margin-top:12px"><button class="btn ghost" data-r="close">Xong</button><button class="btn gold" data-r="again">💃 Múa tiếp</button></div></div>`;
@@ -1701,6 +1817,7 @@ const Mini={
     else { this.score+=pts; n.state='done'; n.el.classList.add('done'); }
   },
   press(){
+    if(Hold.active) return Hold.press();
     if(!this.active||this.holding) return;
     const now=this.now||0; let best=null,bd=1;
     for(const n of this.notes){ if(n.state!=='wait') continue; const d=Math.abs(now-n.t); if(d<=0.22&&d<bd){ bd=d; best=n; } }
@@ -1708,6 +1825,7 @@ const Mini={
     this.top();
   },
   release(){
+    if(Hold.active) return Hold.release();
     const n=this.holding; if(!n||!this.active) return;
     const err=Math.abs((this.now||0)-(n.t+n.dur)), frac=err<=0.15?1:err<=0.35?0.75:0.5;
     this.finishHold(n,frac);
@@ -1741,11 +1859,44 @@ const Mini={
     const el=$('mini'), up=()=>{ $('pad').classList.remove('down'); this.release(); };
     el.addEventListener('pointerdown',e=>{ if(e.target.closest('#miQuit')) return; e.preventDefault(); $('pad').classList.add('down'); this.press(); });
     el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up);
-    addEventListener('pointerup',()=>{ if(this.holding) up(); });
-    addEventListener('keydown',e=>{ if(this.active&&e.code==='Space'&&!e.repeat){ e.preventDefault(); $('pad').classList.add('down'); this.press(); } });
-    addEventListener('keyup',e=>{ if(this.active&&e.code==='Space') up(); });
-    $('miQuit').onclick=()=>{ if(confirm('Bỏ buổi tập này? Bạn sẽ mất thể lực và không nhận thưởng.')) this.abort(); };
+    addEventListener('pointerup',()=>{ if(this.holding||Hold.held) up(); });
+    addEventListener('keydown',e=>{ if((this.active||Hold.active)&&e.code==='Space'&&!e.repeat){ e.preventDefault(); $('pad').classList.add('down'); this.press(); } });
+    addEventListener('keyup',e=>{ if((this.active||Hold.active)&&e.code==='Space') up(); });
+    $('miQuit').onclick=()=>{ if(confirm('Bỏ buổi tập này? Bạn sẽ mất thể lực và không nhận thưởng.')) (Hold.active?Hold.abort():this.abort()); };
   },
+};
+
+/* ---- Minigame conditioning: giữ chấm trong vùng xanh (thăng bằng / sức bền) ---- */
+const Hold={
+  active:false, held:false,
+  start(m){
+    this.m=m; this.dur=m.hold.dur; this.t=0; this.score=0; this.y=0.2; this.vel=0; this.held=false; this.inz=false; this.last=performance.now(); this.active=true;
+    $('mini').classList.add('on','holdmode'); $('miName').textContent=m.name+' · '+dance.def.name; $('pad').textContent='GIỮ ĐỂ NÂNG · THẢ ĐỂ HẠ'; this.draw();
+  },
+  press(){ this.held=true; }, release(){ this.held=false; },
+  zone(t){ const d=this.m.hold.drift; return clamp(0.5+0.28*Math.sin(t*0.9*d)+0.12*Math.sin(t*2.1*d+1.3),0.16,0.84); },
+  update(){
+    if(!this.active) return;
+    const now=performance.now(), dt=Math.min(0.05,(now-this.last)/1000); this.last=now; this.t+=dt;
+    const h=this.m.hold;
+    this.vel+=(this.held?(h.accel||3.2):-(h.grav||2.0))*dt; this.vel*=Math.pow(0.15,dt); this.y+=this.vel*dt;
+    if(this.y<0){ this.y=0; this.vel=0; } if(this.y>1){ this.y=1; this.vel=0; }
+    this.c=this.zone(this.t); this.inz=Math.abs(this.y-this.c)<=h.zone/2; if(this.inz) this.score+=dt;
+    this.draw(); if(this.t>=this.dur) this.finish();
+  },
+  draw(){
+    const h=this.m.hold, c=this.c===undefined?this.zone(0):this.c;
+    const z=$('hzone'); z.style.bottom=((c-h.zone/2)*100)+'%'; z.style.height=(h.zone*100)+'%';
+    const mk=$('hmark'); mk.style.bottom=(this.y*100)+'%'; mk.classList.toggle('in',!!this.inz);
+    $('miScore').textContent=Math.round(this.score/this.dur*100)+'%';
+    $('miCombo').textContent='⏱ '+Math.max(0,Math.ceil(this.dur-this.t))+'s';
+    $('miProg').style.width=Math.min(100,this.t/this.dur*100)+'%';
+  },
+  finish(){
+    this.active=false; this.held=false; $('mini').classList.remove('on','holdmode'); $('pad').classList.remove('down'); $('pad').textContent='BẤM / GIỮ ĐÚNG NHỊP';
+    finishDance({sc:clamp(this.score/this.dur/0.8,0,1),hold:true,inZone:this.score,dur:this.dur,perfects:0,goods:0,misses:0,maxCombo:0});
+  },
+  abort(){ if(!this.active) return; this.active=false; this.held=false; $('mini').classList.remove('on','holdmode'); $('pad').textContent='BẤM / GIỮ ĐÚNG NHỊP'; endDance(); toast('Đã bỏ buổi tập 😅'); },
 };
 
 /* ---- Chất lượng đồ họa ---- */
@@ -1823,7 +1974,7 @@ async function init(){
   setTimeout(()=>{ $('loading').classList.add('done'); },350);
   if(GAME.state.firstRun) setTimeout(()=>openCustomize(true),500);
   // phục vụ debug / giai đoạn sau
-  window.POLE={CONFIG,GAME,Net,toast,addExp,Quests,Shop,Board,Plans,Chat,Mini,get player(){return player;},get dance(){return dance;}};
+  window.POLE={CONFIG,GAME,Net,toast,addExp,Quests,Shop,Board,Plans,Chat,Mini,get player(){return player;},get dance(){return dance;},startDance,STATIONS,Hold,ANIMS};
 }
 
 function bindUI(){
@@ -1849,15 +2000,19 @@ function loop(){
 
   for(const s of spinAnim) s.obj.rotation.y+=dt*s.speed;
   updatePlayer(dt); player.update(dt,t);
-  updateBots(dt); Mini.update(); Social.tick(dt);
+  updateBots(dt); Mini.update(); Hold.update(); Social.tick(dt);
   updateCamera(dt);
 
   // vòng sáng quanh cột gần nhất nhấp nháy
   const n=nearestPole();
   for(const id in poleRefs){
-    const on = mode==='play' && n.def && n.def.id===id && n.dist<=CONFIG.POLE_USE_DISTANCE;
+    const on = mode==='play' && n.def && n.def.id===id && inRange(n);
     const m=poleRefs[id].ringMat; m.opacity=lerp(m.opacity,on?0.75+Math.sin(t*6)*0.25:0.35,Math.min(1,dt*8));
     m.color.setHex(on?0xf5c451:0xff2d95);
+  }
+  for(const S of STATIONS){
+    const on = mode==='play' && n.def && n.def.id===S.id && inRange(n), m=A['ring_'+S.id];
+    m.opacity=lerp(m.opacity,on?0.75+Math.sin(t*6)*0.25:0.3,Math.min(1,dt*8)); m.color.setHex(on?0xf5c451:0x16d6c4);
   }
   if(marker.visible){ marker.userData.t=(marker.userData.t||0)+dt; const s=1+Math.sin(marker.userData.t*8)*0.15; marker.scale.set(s,s,s); }
 
